@@ -12,6 +12,8 @@ import {structureTool} from 'sanity/structure'
 import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
+import {ApproveSubmissionAction} from './sanity/actions/approveSubmission'
+import {RejectSubmissionAction} from './sanity/actions/rejectSubmission'
 
 export default defineConfig({
   basePath: '/studio',
@@ -25,4 +27,13 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({defaultApiVersion: apiVersion}),
   ],
+  document: {
+    actions: (prev, context) => {
+      // Only add approval/rejection actions to "submission" documents
+      if (context.schemaType === 'submission') {
+        return [ApproveSubmissionAction, RejectSubmissionAction, ...prev]
+      }
+      return prev
+    },
+  },
 })

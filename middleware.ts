@@ -18,7 +18,8 @@ export async function middleware(request: NextRequest) {
     if (!session) {
       return NextResponse.redirect(new URL("/login", request.url))
     }
-    if (session.user?.role !== "admin") {
+    const user = session.user as any
+    if (user?.role !== "admin") {
       return NextResponse.redirect(new URL("/dashboard", request.url))
     }
   }
