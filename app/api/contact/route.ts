@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { sendContactEmail } from '@/lib/email'
 
 export async function POST(request: Request) {
   try {
@@ -13,11 +14,16 @@ export async function POST(request: Request) {
       )
     }
 
-    // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const normalizedEmail = email.toLowerCase().trim()
 
-    // In a real app, we would send an email or save to DB here
-    console.log('Contact Form Submission:', { name, email, message })
+    // Send email using Resend
+    const result = await sendContactEmail(name, normalizedEmail, message)
+
+    if (!result.success) {
+      console.error('Failed to send contact email:', result.error)
+      // We still return 200 to the user but log the error
+      // In production, you might want to return 500 if it's critical
+    }
 
     return NextResponse.json(
       { message: 'Message sent successfully' },

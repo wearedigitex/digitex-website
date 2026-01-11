@@ -92,3 +92,42 @@ export async function sendApprovalEmail(email: string, articleTitle: string, app
     return { success: false, error: error instanceof Error ? error.message : error }
   }
 }
+
+export async function sendContactEmail(name: string, email: string, message: string) {
+  try {
+    if (!resend) {
+      console.warn('Resend API key missing. Email not sent.')
+      return { success: false, error: 'API key missing' }
+    }
+    const { data, error } = await resend.emails.send({
+      from: 'Digitex Contact <onboarding@resend.dev>',
+      to: 'wearedigitex@gmail.com',
+      replyTo: email,
+      subject: `New Contact Form Submission from ${name}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h1 style="color: #28829E;">New Message from Digitex Website</h1>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap;">
+            ${message}
+          </div>
+          <p style="color: #666; font-size: 12px; margin-top: 40px;">
+            This email was sent from the contact form on the Digitex website.
+          </p>
+        </div>
+      `,
+    })
+
+    if (error) {
+      console.error('Resend API error:', error)
+      return { success: false, error: error.message || error }
+    }
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Failed to send contact email:', error)
+    return { success: false, error: error instanceof Error ? error.message : error }
+  }
+}
