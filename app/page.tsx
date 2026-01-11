@@ -223,8 +223,12 @@ export default function HomePage() {
       </section>
 
       {/* Team Section */}
-      <section id="team" className="relative z-10 py-32 bg-[#020202]">
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="team" className="relative z-10 py-32 bg-[#020202] overflow-hidden">
+        {/* Ambient Orbs needing flow */}
+        <Orb color="bg-purple-600" className="-left-64 top-1/4 opacity-10 blur-[100px]" />
+        <Orb color="bg-teal-600" className="-right-64 bottom-1/4 opacity-10 blur-[100px]" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-16">Meet the Team</h2>
           
           {teamMembers.length > 0 ? (
@@ -242,7 +246,10 @@ export default function HomePage() {
 
       {/* Contact Section */}
       <section id="contact" className="relative z-10 py-32 bg-black overflow-hidden">
-        <Orb color="bg-[#28829E]" className="right-0 top-0 opacity-10" />
+        {/* Adjusted Orb position to prevent cutoff look */}
+        <div className="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none">
+             <Orb color="bg-[#28829E]" className="-right-20 -top-20 opacity-15 blur-[80px]" />
+        </div>
         
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
