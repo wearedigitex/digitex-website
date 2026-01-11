@@ -1,0 +1,131 @@
+"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Menu, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+
+export function Navigation() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
+
+  // Handle scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // SPA Links
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/#foundation", label: "Foundation" }, // Section
+    { href: "/#team", label: "Team" }, // Section
+    { href: "/blog", label: "Blog" }, // Page
+    { href: "/#contact", label: "Contact" }, // Section
+  ]
+
+  return (
+    <>
+      <header 
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 pointer-events-auto",
+          scrolled ? "bg-black/90 backdrop-blur-xl border-b border-white/10 py-4" : "bg-transparent py-6"
+        )}
+      >
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          
+          {/* Logo */}
+          <Link href="/" className="group flex items-center gap-2">
+             <div className="flex items-center gap-1">
+               <span className="font-bold text-2xl tracking-tight text-white">Digi<span className="text-[#28829E]">teX</span></span>
+             </div>
+          </Link>
+
+          {/* Desktop Nav Links */}
+          <nav className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => {
+              // Simple check for active state on main pages
+              const isActive = pathname === link.href
+              return (
+                <Link 
+                  key={link.href} 
+                  href={link.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors relative",
+                     "text-[#CCCCCC] hover:text-white"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* Right: Login Button */}
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/login">
+              <Button className="bg-[#0EA5E9] hover:bg-[#0284c7] text-white rounded-lg font-bold px-6 h-10 shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                Login
+              </Button>
+            </Link>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden text-white"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-[100] bg-black/95 pointer-events-auto pt-24 px-6"
+          >
+             <button 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="absolute top-6 right-6 text-white"
+              >
+                <X className="w-8 h-8" />
+              </button>
+
+              <div className="flex flex-col gap-6 items-center text-center">
+                {navLinks.map((link) => (
+                   <Link 
+                    key={link.href}
+                    href={link.href}
+                    className="text-2xl font-bold text-gray-300 hover:text-[#28829E] transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                   >
+                     {link.label}
+                   </Link>
+                ))}
+                
+                <div className="h-px w-20 bg-white/10 my-4" />
+                
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full bg-[#0EA5E9] text-white rounded-lg h-12 text-lg px-12">
+                     Login
+                  </Button>
+                </Link>
+              </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
