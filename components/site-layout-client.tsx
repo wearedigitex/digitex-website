@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
+import { SessionProvider } from "next-auth/react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { CustomCursor } from "@/components/custom-cursor"
@@ -16,19 +17,21 @@ export function SiteLayoutClient({
   const pathname = usePathname()
   const isStudioPage = pathname?.startsWith("/studio")
 
-  if (isStudioPage) {
-    return <>{children}</>
-  }
-
   return (
-    <div className="hide-system-cursor cursor-none [&_*]:cursor-none">
-      <NoiseOverlay />
-      <Navigation />
-      <PageTransition>
-        {children}
-        <Footer />
-      </PageTransition>
-      <CustomCursor />
-    </div>
+    <SessionProvider>
+      {isStudioPage ? (
+        <>{children}</>
+      ) : (
+        <div className="hide-system-cursor cursor-none [&_*]:cursor-none">
+          <NoiseOverlay />
+          <Navigation />
+          <PageTransition>
+            {children}
+            <Footer />
+          </PageTransition>
+          <CustomCursor />
+        </div>
+      )}
+    </SessionProvider>
   )
 }
