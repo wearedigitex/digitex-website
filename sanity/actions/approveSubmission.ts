@@ -22,6 +22,7 @@ export const ApproveSubmissionAction: DocumentActionComponent = (props: Document
         mainImage: doc.mainImage,
         excerpt: doc.excerpt,
         body: doc.body,
+        bodyHtml: doc.bodyHtml,
         viewCount: 0,
         commentCount: 0,
       }

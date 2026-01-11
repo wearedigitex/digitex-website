@@ -128,14 +128,14 @@ function WritePageContent() {
     isSaving ? setSaving(true) : setSubmitting(true)
 
     try {
-      const body = editor?.getHTML() // Use HTML for Sanity-friendly storage or JSON
+      const bodyHtml = editor?.getHTML()
       
       const payload = {
         title,
         slug,
         category,
         excerpt,
-        body,
+        bodyHtml,
         mainImage: mainImage ? {
           _type: "image",
           asset: {

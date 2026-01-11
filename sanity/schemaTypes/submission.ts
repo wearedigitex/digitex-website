@@ -40,9 +40,14 @@ export const submission = defineType({
     }),
     defineField({
       name: 'body',
-      title: 'Body',
+      title: 'Body (Portable Text)',
       type: 'array',
       of: [{ type: 'block' }],
+    }),
+    defineField({
+      name: 'bodyHtml',
+      title: 'Body (HTML)',
+      type: 'text',
     }),
     defineField({
       name: 'mainImage',

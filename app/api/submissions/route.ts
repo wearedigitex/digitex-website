@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
       category: data.category,
       excerpt: data.excerpt,
       body: data.body,
+      bodyHtml: data.bodyHtml,
       mainImage: data.mainImage,
       author: user.author,
       submittedBy: { _type: "reference", _ref: user._id },

@@ -140,26 +140,30 @@ export default function ArticlePage() {
 
         {/* Article Body */}
         <div className="prose prose-invert prose-lg max-w-none mb-16">
-          <PortableText
-            value={post.body}
-            components={{
-              block: {
-                normal: ({ children }) => <p className="text-gray-300 leading-relaxed mb-6">{children}</p>,
-                h1: ({ children }) => <h1 className="text-4xl font-bold mb-6 mt-12">{children}</h1>,
-                h2: ({ children }) => <h2 className="text-3xl font-bold mb-4 mt-10">{children}</h2>,
-                h3: ({ children }) => <h3 className="text-2xl font-bold mb-3 mt-8">{children}</h3>,
-              },
-              marks: {
-                strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
-                em: ({ children }) => <em className="italic">{children}</em>,
-                link: ({ value, children }) => (
-                  <a href={value.href} className="text-[#28829E] hover:underline" target="_blank" rel="noopener noreferrer">
-                    {children}
-                  </a>
-                ),
-              },
-            }}
-          />
+          {post.bodyHtml ? (
+            <div dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />
+          ) : post.body ? (
+            <PortableText
+              value={post.body}
+              components={{
+                block: {
+                  normal: ({ children }) => <p className="text-gray-300 leading-relaxed mb-6">{children}</p>,
+                  h1: ({ children }) => <h1 className="text-4xl font-bold mb-6 mt-12">{children}</h1>,
+                  h2: ({ children }) => <h2 className="text-3xl font-bold mb-4 mt-10">{children}</h2>,
+                  h3: ({ children }) => <h3 className="text-2xl font-bold mb-3 mt-8">{children}</h3>,
+                },
+                marks: {
+                  strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
+                  em: ({ children }) => <em className="italic">{children}</em>,
+                  link: ({ value, children }) => (
+                    <a href={value.href} className="text-[#28829E] hover:underline" target="_blank" rel="noopener noreferrer">
+                      {children}
+                    </a>
+                  ),
+                },
+              }}
+            />
+          ) : null}
         </div>
 
         {/* Author Bio */}
