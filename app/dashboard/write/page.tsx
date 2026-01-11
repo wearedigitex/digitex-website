@@ -66,8 +66,12 @@ function WritePageContent() {
             // Reconstruct the image URL or just keep the ref
             setMainImage(data.mainImage.asset._ref)
           }
-          if (editor && data.body) {
-            editor.commands.setContent(data.body)
+          if (editor) {
+            if (data.bodyHtml) {
+              editor.commands.setContent(data.bodyHtml)
+            } else if (data.body) {
+              editor.commands.setContent(data.body)
+            }
           }
         })
     }
@@ -110,9 +114,9 @@ function WritePageContent() {
       const file = e.target.files?.[0]
       if (!file) return
 
-      // Show temporary loading indicator
+      // Insert placeholder and keep track of position
       if (editor) {
-        editor.chain().focus().insertContent("<p><i>Uploading image...</i></p>").run()
+        editor.chain().focus().insertContent("<p id='temp-loading'><i>Uploading image...</i></p>").run()
       }
 
       const formData = new FormData()
@@ -126,9 +130,11 @@ function WritePageContent() {
         const data = await res.json()
         
         if (data.success && editor) {
-          // Remove loading message (basic way: find and replace or just append)
-          // For simplicity, we'll just insert the image at current focus
-          editor.chain().focus().setImage({ src: data.url }).run()
+          // Find the temporary loading text and replace it
+          const content = editor.getHTML()
+          const newContent = content.replace("<p id=\"temp-loading\"><i>Uploading image...</i></p>", `<img src="${data.url}" />`)
+          editor.commands.setContent(newContent, false) // false to not emit update event immediately if not needed
+          editor.commands.focus()
         } else {
           alert("Failed to upload image")
         }
