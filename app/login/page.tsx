@@ -45,6 +45,46 @@ export default function LoginPage() {
     }
   }
 
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || "Registration failed")
+        setLoading(false)
+        return
+      }
+
+      // Auto-login after successful registration
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        setError("Account created but login failed. Please try logging in manually.")
+        setLoading(false)
+      } else {
+        router.push("/dashboard")
+        router.refresh()
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.")
+      setLoading(false)
+    }
+  }
+
   return (
     <main className="relative min-h-screen w-full bg-black flex items-center justify-center overflow-hidden">
       {/* 3D Background */}
