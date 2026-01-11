@@ -153,7 +153,7 @@ export default function BlogPage() {
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1.5rem center',
               backgroundSize: '1.25rem',
-              paddingRight: '2.5rem'
+              paddingRight: '3.5rem'
             }}
           >
             <option value="All Years">All Years</option>
@@ -171,7 +171,7 @@ export default function BlogPage() {
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1.5rem center',
               backgroundSize: '1.25rem',
-              paddingRight: '2.5rem'
+              paddingRight: '3.5rem'
             }}
           >
             {SORT_OPTIONS.map(option => (
