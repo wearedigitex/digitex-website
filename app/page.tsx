@@ -223,7 +223,7 @@ export default function HomePage() {
       </section>
 
       {/* Team Section */}
-      <section id="team" className="relative z-10 py-32 bg-[#020202] overflow-hidden">
+      <section id="team" className="relative z-10 py-32 bg-black overflow-hidden">
         {/* Ambient Orbs needing flow */}
         <Orb color="bg-purple-600" className="-left-64 top-1/4 opacity-10 blur-[100px]" />
         <Orb color="bg-teal-600" className="-right-64 bottom-1/4 opacity-10 blur-[100px]" />

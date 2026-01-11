@@ -48,5 +48,17 @@ export const author = defineType({
       title: 'Bio',
       type: 'text',
     }),
+    defineField({
+      name: 'order',
+      title: 'Order',
+      type: 'number',
+      description: 'Used to sort members (1, 2, 3...)',
+    }),
+    defineField({
+      name: 'linkedin',
+      title: 'LinkedIn URL',
+      type: 'url',
+      description: 'Full URL to LinkedIn profile',
+    }),
   ],
 })
