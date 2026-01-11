@@ -13,6 +13,13 @@ export function SiteLayoutClient({
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+  const isStudioPage = pathname?.startsWith("/studio")
+
+  if (isStudioPage) {
+    return <>{children}</>
+  }
+
   return (
     <div className="hide-system-cursor cursor-none [&_*]:cursor-none">
       <NoiseOverlay />
