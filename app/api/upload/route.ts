@@ -31,7 +31,13 @@ export async function POST(request: NextRequest) {
       url: asset.url
     })
   } catch (error) {
-    console.error("Upload error:", error)
-    return NextResponse.json({ error: "Failed to upload image" }, { status: 500 })
+    console.error("Upload error details:", {
+      error,
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined
+    })
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : "Failed to upload image" 
+    }, { status: 500 })
   }
 }

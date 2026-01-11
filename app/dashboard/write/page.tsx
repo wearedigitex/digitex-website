@@ -118,9 +118,10 @@ function WritePageContent() {
       const file = e.target.files?.[0]
       if (!file) return
 
-      // Insert placeholder and keep track of position
+      // Insert placeholder with unique ID
+      const loadingId = `loading-${Date.now()}`
       if (editor) {
-        editor.chain().focus().insertContent("<p id='temp-loading'><i>Uploading image...</i></p>").run()
+        editor.chain().focus().insertContent(`<p id="${loadingId}"><i>Uploading image...</i></p>`).run()
       }
 
       const formData = new FormData()
@@ -136,15 +137,28 @@ function WritePageContent() {
         if (data.success && editor) {
           // Find the temporary loading text and replace it
           const content = editor.getHTML()
-          const newContent = content.replace("<p id=\"temp-loading\"><i>Uploading image...</i></p>", `<img src="${data.url}" />`)
+          const newContent = content.replace(`<p id="${loadingId}"><i>Uploading image...</i></p>`, `<img src="${data.url}" />`)
           editor.commands.setContent(newContent)
           editor.commands.focus()
         } else {
-          alert("Failed to upload image")
+          // Remove loading placeholder on error
+          if (editor) {
+            const content = editor.getHTML()
+            const newContent = content.replace(`<p id="${loadingId}"><i>Uploading image...</i></p>`, "")
+            editor.commands.setContent(newContent)
+          }
+          console.error("Upload failed:", data)
+          alert(`Failed to upload image: ${data.error || "Unknown error"}`)
         }
       } catch (err) {
+        // Remove loading placeholder on error
+        if (editor) {
+          const content = editor.getHTML()
+          const newContent = content.replace(`<p id="${loadingId}"><i>Uploading image...</i></p>`, "")
+          editor.commands.setContent(newContent)
+        }
         console.error("Body image upload error:", err)
-        alert("Error uploading image")
+        alert("Error uploading image. Please try again.")
       }
     }
     input.click()
