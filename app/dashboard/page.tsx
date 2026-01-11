@@ -93,7 +93,7 @@ export default function DashboardPage() {
           </Link>
 
           {isAdmin && (
-            <Link href="/studio">
+            <Link href="/studio" target="_blank" rel="noopener noreferrer">
               <div className="group p-8 bg-gradient-to-br from-purple-500/20 to-[#28829E]/10 border border-purple-500/30 rounded-2xl hover:border-purple-500/60 transition-all cursor-pointer">
                 <Database className="w-12 h-12 text-purple-400 mb-4 group-hover:scale-110 transition-transform" />
                 <h3 className="text-2xl font-bold mb-2">Admin Studio</h3>
