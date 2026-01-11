@@ -9,7 +9,7 @@ export async function sendInvitationEmail(email: string, password: string) {
       console.warn('Resend API key missing. Email not sent.')
       return { success: false, error: 'API key missing' }
     }
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'Digitex <onboarding@resend.dev>', // Change this to your verified domain
       to: email,
       subject: 'Welcome to Digitex - Your Account Details',
@@ -36,11 +36,16 @@ export async function sendInvitationEmail(email: string, password: string) {
         </div>
       `,
     })
+
+    if (error) {
+      console.error('Resend API error:', error)
+      return { success: false, error: error.message || error }
+    }
     
-    return { success: true }
+    return { success: true, data }
   } catch (error) {
     console.error('Failed to send invitation email:', error)
-    return { success: false, error }
+    return { success: false, error: error instanceof Error ? error.message : error }
   }
 }
 
@@ -50,7 +55,7 @@ export async function sendApprovalEmail(email: string, articleTitle: string, app
       console.warn('Resend API key missing. Email not sent.')
       return { success: false, error: 'API key missing' }
     }
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'Digitex <onboarding@resend.dev>',
       to: email,
       subject: approved 
@@ -74,9 +79,14 @@ export async function sendApprovalEmail(email: string, articleTitle: string, app
         `,
     })
     
-    return { success: true }
+    if (error) {
+      console.error('Resend API error:', error)
+      return { success: false, error: error.message || error }
+    }
+
+    return { success: true, data }
   } catch (error) {
     console.error('Failed to send approval email:', error)
-    return { success: false, error }
+    return { success: false, error: error instanceof Error ? error.message : error }
   }
 }
