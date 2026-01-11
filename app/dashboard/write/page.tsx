@@ -15,6 +15,7 @@ import {
 
 const CATEGORIES = ["TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 
+import { urlFor } from "@/lib/sanity"
 import { Suspense } from "react"
 
 function WritePageContent() {
@@ -65,6 +66,7 @@ function WritePageContent() {
           if (data.mainImage) {
             // Reconstruct the image URL or just keep the ref
             setMainImage(data.mainImage.asset._ref)
+            setMainImagePreview(urlFor(data.mainImage).url())
           }
           if (editor) {
             if (data.bodyHtml) {
