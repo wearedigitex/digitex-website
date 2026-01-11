@@ -35,9 +35,9 @@ export default function BlogPage() {
         setPosts(data)
         
         // Extract unique years
-        const uniqueYears = Array.from(
+        const uniqueYears = (Array.from(
           new Set(data.map((p: any) => new Date(p.publishedAt).getFullYear().toString()))
-        ).sort((a: string, b: string) => parseInt(b) - parseInt(a))
+        ) as string[]).sort((a, b) => parseInt(b) - parseInt(a))
         setYears(uniqueYears)
       } catch (error) {
         console.error("Failed to fetch posts:", error)
