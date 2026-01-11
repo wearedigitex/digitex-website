@@ -14,6 +14,7 @@ import {schema} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
 import {ApproveSubmissionAction} from './sanity/actions/approveSubmission'
 import {RejectSubmissionAction} from './sanity/actions/rejectSubmission'
+import {InviteUserForm} from './components/admin/invite-user-form'
 
 export default defineConfig({
   basePath: '/studio',
@@ -27,6 +28,16 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({defaultApiVersion: apiVersion}),
   ],
+  tools: (prev) => {
+    return [
+      ...prev,
+      {
+        name: 'invite',
+        title: 'Invite Team',
+        component: InviteUserForm,
+      },
+    ]
+  },
   document: {
     actions: (prev, context) => {
       // Only add approval/rejection actions to "submission" documents
