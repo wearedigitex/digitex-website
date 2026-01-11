@@ -122,9 +122,6 @@ export default function HomePage() {
        {/* Background Grid & Lines */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
-        {/* Global Deep Gradient Overlay - Getting darker/richer as we scroll */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/80"></div>
-
         {/* Vertical Glowing Lines */}
         <div className="absolute left-1/4 top-0 w-px h-0 bg-gradient-to-b from-transparent via-teal-500/50 to-transparent bg-line"></div>
         <div className="absolute left-1/2 top-0 w-px h-0 bg-gradient-to-b from-transparent via-purple-500/50 to-transparent bg-line delay-75"></div>
@@ -174,14 +171,11 @@ export default function HomePage() {
          </div>
       </section>
 
-      {/* Our Foundation Section - Transparent Layer */}
-      <section id="foundation" className="relative z-10 py-32 overflow-visible">
-        {/* Bridging Element: Hero -> Foundation */}
-        <Orb color="bg-teal-600" className="left-1/2 -translate-x-1/2 -top-32 opacity-20 w-[800px] h-[800px] blur-[120px]" />
-        
+      {/* Our Foundation Section */}
+      <section id="foundation" className="relative z-10 py-32 bg-black/90 border-t border-white/5 overflow-hidden backdrop-blur-sm">
         {/* Background Orbs */}
-        <Orb color="bg-purple-600" className="-left-40 top-20 opacity-20" />
-        <Orb color="bg-teal-600" className="-right-40 bottom-20 opacity-15" />
+        <Orb color="bg-teal-600" className="-left-40 top-20 opacity-30" />
+        <Orb color="bg-purple-600" className="-right-40 bottom-20 opacity-20" />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-20">
@@ -228,16 +222,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Shared Wrapper for Seamless Flow - Transparent */}
-      <div className="relative z-10 overflow-visible py-20 pb-32">
-          {/* Bridging Element: Foundation -> Team */}
-          <div className="absolute inset-x-0 -top-64 h-96 bg-gradient-to-b from-transparent to-black/40 pointer-events-none"></div>
-
+      {/* Shared Wrapper for Seamless Flow */}
+      <div className="relative z-10 bg-black overflow-hidden py-20 pb-32">
           {/* Ambient Orbs Flowing Across Sections */}
-          <Orb color="bg-purple-600" className="-left-64 top-[10%] opacity-15 blur-[120px]" />
-          <Orb color="bg-purple-900" className="left-1/3 top-[5%] opacity-10 w-[600px] h-[600px] blur-[150px]" />
+          <Orb color="bg-purple-600" className="-left-64 top-[10%] opacity-10 blur-[100px]" />
           <Orb color="bg-teal-600" className="-right-64 top-[40%] opacity-10 blur-[100px]" />
-          <Orb color="bg-[#28829E]" className="-right-20 bottom-0 opacity-10 blur-[80px]" />
+          <Orb color="bg-[#28829E]" className="-right-20 bottom-0 opacity-15 blur-[80px]" />
 
           {/* Team Section */}
           <section id="team" className="relative z-10 pt-12 pb-24">
