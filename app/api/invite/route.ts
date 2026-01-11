@@ -60,14 +60,13 @@ export async function POST(request: NextRequest) {
 
     // 5. Send invitation email
     console.log("Sending invitation email to:", normalizedEmail)
-    try {
-      await sendInvitationEmail(normalizedEmail, password)
-    } catch (emailError) {
-      console.error("Failed to send email, but user was created:", emailError)
-      // We don't fail the whole request if the email fails, but we might want to tell the user
+    const emailResult = await sendInvitationEmail(normalizedEmail, password)
+    
+    if (!emailResult.success) {
+      console.error("Failed to send email, but user was created:", emailResult.error)
       return NextResponse.json({ 
         success: true, 
-        message: "User created, but email failed to send. Please share credentials manually.",
+        message: "User created, but email failed to send (likely Resend sandbox restriction).",
         tempPassword: password,
         userId: newUser._id 
       })
