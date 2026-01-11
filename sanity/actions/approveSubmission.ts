@@ -6,13 +6,36 @@ export const ApproveSubmissionAction: DocumentActionComponent = (props: Document
 
   const onHandle = async () => {
     const { draft, published } = props
-    const doc = draft || published
+    const doc = (draft || published) as any
 
     if (!doc) return
 
+    // Double check if already published to prevent double-click issues
+    if (doc.status === 'published') {
+      alert('This article is already published.')
+      return
+    }
+
+    const confirmPublish = window.confirm('Are you sure you want to approve and publish this article?')
+    if (!confirmPublish) return
+
     try {
-      // 1. Create the new "post" document
-      const newPost = {
+      // Check if a post with this slug already exists to prevent duplicates
+      const existingPost = await client.fetch(
+        `*[_type == "post" && slug.current == $slug][0]`,
+        { slug: doc.slug.current }
+      )
+
+      if (existingPost) {
+        const proceed = window.confirm('A post with this slug already exists. Do you want to overwrite it or cancel? (OK to overwrite, Cancel to stop)')
+        if (!proceed) {
+          props.onComplete()
+          return
+        }
+      }
+
+      // 1. Prepare the new "post" document
+      const newPost: any = {
         _type: 'post',
         title: doc.title,
         slug: doc.slug,
@@ -27,7 +50,13 @@ export const ApproveSubmissionAction: DocumentActionComponent = (props: Document
         commentCount: 0,
       }
 
-      const createdPost = await client.create(newPost)
+      if (existingPost) {
+        // Overwrite existing post
+        await client.patch(existingPost._id).set(newPost).commit()
+      } else {
+        // Create new post
+        await client.create(newPost)
+      }
 
       // 2. Update the submission status to "published"
       await client
@@ -38,11 +67,6 @@ export const ApproveSubmissionAction: DocumentActionComponent = (props: Document
         })
         .commit()
 
-      // 3. Trigger email notification (via API)
-      // Note: In a production app, you might use a Sanity webhook or background task
-      // For now, we'll assume the status change triggers the notification elsewhere
-      // or we can call the API directly if we had a secret token accessible here.
-
       props.onComplete()
       alert('Article published successfully!')
     } catch (err) {
@@ -51,9 +75,11 @@ export const ApproveSubmissionAction: DocumentActionComponent = (props: Document
     }
   }
 
+  const isPublished = props.published?.status === 'published' || props.draft?.status === 'published'
+
   return {
-    disabled: props.published?.status === 'published' || props.draft?.status === 'published',
-    label: 'Approve & Publish',
+    disabled: isPublished,
+    label: isPublished ? 'Published' : 'Approve & Publish',
     icon: CheckCircle,
     onHandle,
   }

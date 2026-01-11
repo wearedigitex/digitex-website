@@ -7,11 +7,13 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useSession, signOut } from "next-auth/react"
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   // Handle scroll detection
   useEffect(() => {
@@ -87,11 +89,26 @@ export function Navigation() {
 
           {/* Right: Login Button */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/login">
-              <Button className="bg-[#0EA5E9] hover:bg-[#0284c7] text-white rounded-lg font-bold px-6 h-10 shadow-[0_0_15px_rgba(14,165,233,0.3)]">
-                Login
-              </Button>
-            </Link>
+            {session ? (
+              <>
+                <Link href="/dashboard" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                  Dashboard
+                </Link>
+                <Button 
+                  onClick={() => signOut()}
+                  variant="outline"
+                  className="border-white/20 hover:bg-white/10 text-white rounded-lg font-bold px-6 h-10"
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link href="/login">
+                <Button className="bg-[#0EA5E9] hover:bg-[#0284c7] text-white rounded-lg font-bold px-6 h-10 shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -134,11 +151,33 @@ export function Navigation() {
                 
                 <div className="h-px w-20 bg-white/10 my-4" />
                 
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full bg-[#0EA5E9] text-white rounded-lg h-12 text-lg px-12">
-                     Login
-                  </Button>
-                </Link>
+                {session ? (
+                  <>
+                    <Link 
+                      href="/dashboard" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-2xl font-bold text-gray-300 hover:text-[#28829E] transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                    <Button 
+                      onClick={() => {
+                        setMobileMenuOpen(false)
+                        signOut()
+                      }}
+                      variant="outline"
+                      className="w-full border-white/20 text-white rounded-lg h-12 text-lg px-12"
+                    >
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full bg-[#0EA5E9] text-white rounded-lg h-12 text-lg px-12">
+                      Login
+                    </Button>
+                  </Link>
+                )}
               </div>
           </motion.div>
         )}

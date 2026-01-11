@@ -49,7 +49,7 @@ export default function LoginPage() {
       <HeroScene />
       
       {/* Back Button */}
-      <div className="absolute top-8 left-8 z-20">
+      <div className="absolute top-32 left-8 z-20">
         <Link href="/">
           <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
             <ArrowLeft className="w-4 h-4" /> Back to Home
@@ -58,7 +58,7 @@ export default function LoginPage() {
       </div>
 
       {/* Login Card */}
-      <div className="relative z-10 w-full max-w-md p-8 md:p-10">
+      <div className="relative z-10 w-full max-w-lg p-6 pt-48">
         <div className="glass-card rounded-2xl p-8 md:p-12 relative overflow-hidden group">
           {/* Glowing Border Effect */}
           <div className="absolute inset-0 border border-[#0EA5E9]/50 rounded-2xl shadow-[0_0_30px_rgba(14,165,233,0.15)] pointer-events-none"></div>

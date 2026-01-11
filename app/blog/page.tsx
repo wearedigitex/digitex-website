@@ -135,19 +135,26 @@ export default function BlogPage() {
         {/* Search, Year, Sort, Clear */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <Input 
               placeholder="Search articles..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-[#111] border-white/10 text-white rounded-full h-12 focus:border-[#28829E]"
+              className="pl-11 bg-[#111] border-white/10 text-white rounded-xl h-12 focus:border-[#28829E]"
             />
           </div>
           
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
-            className="px-6 py-3 bg-[#111] border border-white/10 text-white rounded-full focus:border-[#28829E] focus:outline-none cursor-pointer"
+            className="w-full md:w-auto min-w-[120px] px-4 h-12 bg-[#111] border border-white/10 text-white rounded-xl focus:border-[#28829E] focus:outline-none cursor-pointer text-sm appearance-none"
+            style={{ 
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 1.5rem center',
+              backgroundSize: '1.25rem',
+              paddingRight: '2.5rem'
+            }}
           >
             <option value="All Years">All Years</option>
             {years.map(year => (
@@ -158,7 +165,14 @@ export default function BlogPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-6 py-3 bg-[#111] border border-white/10 text-white rounded-full focus:border-[#28829E] focus:outline-none cursor-pointer"
+            className="w-full md:w-auto min-w-[150px] px-4 h-12 bg-[#111] border border-white/10 text-white rounded-xl focus:border-[#28829E] focus:outline-none cursor-pointer text-sm appearance-none"
+            style={{ 
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 1.5rem center',
+              backgroundSize: '1.25rem',
+              paddingRight: '2.5rem'
+            }}
           >
             {SORT_OPTIONS.map(option => (
               <option key={option.value} value={option.value}>{option.label}</option>

@@ -56,7 +56,9 @@ export async function getBlogPosts() {
       "imageUrl": mainImage.asset->url,
       viewCount,
       commentCount
-    }`
+    }`,
+    {},
+    { next: { revalidate: 0 } }
   )
 }
 
@@ -71,20 +73,39 @@ export async function getPostBySlug(slug: string) {
       publishedAt,
       excerpt,
       body,
+      bodyHtml,
       "author": author->{name, role, "imageUrl": image.asset->url},
       "imageUrl": mainImage.asset->url,
       viewCount,
       commentCount
     }`,
-    { slug }
+    { slug },
+    { next: { revalidate: 0 } }
   )
 }
 
 // Function to increment view count
 export async function incrementViewCount(postId: string) {
-  return client
+  return adminClient
     .patch(postId)
     .setIfMissing({ viewCount: 0 })
     .inc({ viewCount: 1 })
     .commit()
+}
+
+// Function to fetch recent posts (excluding current)
+export async function getRecentPosts(excludeId: string, limit: number = 3) {
+  return client.fetch(
+    `*[_type == "post" && _id != $excludeId] | order(publishedAt desc)[0...$limit] {
+      _id,
+      title,
+      "slug": slug.current,
+      category,
+      publishedAt,
+      "imageUrl": mainImage.asset->url,
+      viewCount
+    }`,
+    { excludeId, limit },
+    { next: { revalidate: 0 } }
+  )
 }

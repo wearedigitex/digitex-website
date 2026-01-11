@@ -5,7 +5,7 @@ import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Users, Zap, Globe, MessageSquare } from "lucide-react"
+import { ArrowRight, Users, User, Zap, Globe, MessageSquare } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -103,48 +103,52 @@ export default function HomePage() {
       <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">{title}</h3>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {members.map((member) => (
-           <div key={member._id} className="group relative overflow-hidden rounded-3xl bg-[#0A0A0A] border border-white/5 aspect-[4/5] hover:shadow-[0_0_30px_rgba(40,130,158,0.3)] transition-all duration-300">
-             {/* Background Image */}
-             {member.imageUrl ? (
-               <Image 
-                 src={member.imageUrl} 
-                 alt={member.name} 
-                 fill 
-                 className="object-cover transition-transform duration-500 group-hover:scale-110"
-               />
-             ) : (
-                <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center">
-                   <div className="text-center">
-                      <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-teal-500 to-purple-600 mb-4 mx-auto opacity-80 blur-xl"></div>
-                      <span className="text-gray-500 font-mono text-sm tracking-widest uppercase">{member.name}</span>
-                   </div>
+          <div key={member._id} className="group h-[480px] [perspective:1000px] relative mt-16">
+            <div className="relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+              
+              {/* Front Side */}
+              <div className="absolute inset-0 h-full w-full [backface-visibility:hidden]">
+                {/* Card Body */}
+                <div className="absolute inset-0 h-full w-full rounded-3xl bg-white border border-white/20 p-6 flex flex-col items-center justify-center text-center shadow-xl">
+                  {/* Image Circle */}
+                  <div className="w-32 h-32 rounded-full border-4 border-[#28829E] bg-[#0A0A0A] overflow-hidden shadow-[0_0_20px_rgba(40,130,158,0.3)] mb-6 relative">
+                    {member.imageUrl ? (
+                      <Image 
+                        src={member.imageUrl} 
+                        alt={member.name} 
+                        fill 
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                         <User className="w-12 h-12 text-gray-700" />
+                      </div>
+                    )}
+                  </div>
+
+                  <h3 className="text-2xl font-bold text-black mb-2">{member.name}</h3>
+                  <p className="text-[#28829E] font-bold text-sm uppercase tracking-[0.2em]">{member.role}</p>
+                  
+                  {/* Subtle Grid Pattern Overlay */}
+                  <div className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-3xl" 
+                       style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '20px 20px' }} />
                 </div>
-             )}
-              
-              {/* Default Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 group-hover:opacity-0 transition-opacity duration-300"></div>
-              
-              {/* Bio Overlay (appears on hover) */}
-              <div className="absolute inset-0 bg-black/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500/20 to-purple-500/20 mb-4 flex items-center justify-center border border-white/10 transform scale-75 group-hover:scale-100 transition-transform duration-500">
+              </div>
+
+              {/* Back Side (Bio) */}
+              <div className="absolute inset-0 h-full w-full rounded-3xl bg-[#0A0A0A] border border-[#28829E]/30 p-8 text-center [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center shadow-[0_0_40px_rgba(40,130,158,0.1)]">
+                <div className="w-16 h-16 rounded-full bg-[#28829E]/10 flex items-center justify-center mb-6 border border-[#28829E]/20">
                    <Users className="w-8 h-8 text-[#28829E]" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">{member.name}</h3>
-                <div className="w-8 h-1 bg-[#28829E] rounded-full mb-4 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 delay-100"></div>
-                <p className="text-gray-300 text-sm leading-relaxed overflow-y-auto max-h-[60%] scrollbar-hide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-150">
+                <h3 className="text-xl font-bold text-white mb-2">{member.name}</h3>
+                <div className="w-12 h-0.5 bg-[#28829E] rounded-full mb-6" />
+                <p className="text-gray-400 text-sm leading-relaxed overflow-y-auto pr-2 scrollbar-hide">
                   {member.bio || "No bio available."}
                 </p>
               </div>
               
-              {/* Default Info (visible when not hovering) */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 z-10 text-center transform translate-y-0 group-hover:translate-y-full transition-transform duration-300">
-                <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
-                <p className="text-[#28829E] font-medium tracking-wide text-sm mb-4">{member.role}</p>
-                <div className="inline-flex items-center gap-2 text-xs text-gray-400 border border-white/10 rounded-full px-3 py-1 bg-black/40 backdrop-blur-md">
-                  Hover for Bio <ArrowRight className="w-3 h-3" />
-                </div>
-              </div>
-           </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>

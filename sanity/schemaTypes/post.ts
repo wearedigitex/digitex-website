@@ -58,7 +58,20 @@ export const post = defineType({
       name: 'body',
       title: 'Body (Portable Text)',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [
+        { type: 'block' },
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative Text',
+            }
+          ]
+        }
+      ],
     }),
     defineField({
       name: 'bodyHtml',
