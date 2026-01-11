@@ -222,40 +222,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section id="team" className="relative z-10 py-32 bg-black overflow-hidden">
-        {/* Ambient Orbs needing flow */}
-        <Orb color="bg-purple-600" className="-left-64 top-1/4 opacity-10 blur-[100px]" />
-        <Orb color="bg-teal-600" className="-right-64 bottom-1/4 opacity-10 blur-[100px]" />
+      {/* Shared Wrapper for Seamless Flow */}
+      <div className="relative z-10 bg-black overflow-hidden py-20 pb-32">
+          {/* Ambient Orbs Flowing Across Sections */}
+          <Orb color="bg-purple-600" className="-left-64 top-[10%] opacity-10 blur-[100px]" />
+          <Orb color="bg-teal-600" className="-right-64 top-[40%] opacity-10 blur-[100px]" />
+          <Orb color="bg-[#28829E]" className="-right-20 bottom-0 opacity-15 blur-[80px]" />
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-16">Meet the Team</h2>
-          
-          {teamMembers.length > 0 ? (
-            <div className="space-y-16">
-              {renderTeamGrid(leardership, "Leadership")}
-              {renderTeamGrid(techTeam, "Technology")}
-              {renderTeamGrid(medTeam, "Medicine")}
-              {renderTeamGrid(commTeam, "Commerce")}
+          {/* Team Section */}
+          <section id="team" className="relative z-10 pt-12 pb-24">
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold mb-16">Meet the Team</h2>
+              
+              {teamMembers.length > 0 ? (
+                <div className="space-y-16">
+                  {renderTeamGrid(leardership, "Leadership")}
+                  {renderTeamGrid(techTeam, "Technology")}
+                  {renderTeamGrid(medTeam, "Medicine")}
+                  {renderTeamGrid(commTeam, "Commerce")}
+                </div>
+              ) : (
+                <div className="text-center text-gray-500 py-10">Loading Team...</div>
+              )}
             </div>
-          ) : (
-            <div className="text-center text-gray-500 py-10">Loading Team...</div>
-          )}
-        </div>
-      </section>
+          </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="relative z-10 py-32 bg-black overflow-hidden">
-        {/* Adjusted Orb position to prevent cutoff look */}
-        <div className="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none">
-             <Orb color="bg-[#28829E]" className="-right-20 -top-20 opacity-15 blur-[80px]" />
-        </div>
-        
-        <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
-          <p className="text-gray-400 mb-12 text-lg">
-            Have a story to pitch or want to join the team? Drop us a line.
-          </p>
+
+          {/* Contact Section */}
+          <section id="contact" className="relative z-10">
+            <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
+              <p className="text-gray-400 mb-12 text-lg">
+                Have a story to pitch or want to join the team? Drop us a line.
+              </p>
 
           <div className="bg-[#0A0A0A]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 text-left shadow-2xl">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -318,6 +317,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </div>
 
     </main>
   )
