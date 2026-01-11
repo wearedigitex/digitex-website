@@ -1,0 +1,187 @@
+{
+  "team": [
+    {
+      "name": "Anuraag Vombatkere",
+      "role": "President",
+      "department": "Leadership",
+      "image_url": "https://digitex.zone.id/images/anurag.jpg",
+      "bio": "Anuraag loves AI and machine learning and founded Digitex to share breakthroughs, build projects, and bring curious minds together across fields."
+    },
+    {
+      "name": "Vasipalli Eshan Aditya",
+      "role": "Vice President",
+      "department": "Leadership",
+      "image_url": "https://digitex.zone.id/images/vasi.jpg",
+      "bio": "Working with Tech & Hardware for 6 years, Eshan is passionate about building innovative solutions and exploring the latest trends in technology."
+    },
+    {
+      "name": "Iraj Gupta",
+      "role": "Secretary",
+      "department": "Leadership",
+      "image_url": "https://digitex.zone.id/images/irag.jpg",
+      "bio": "Iraj is an aspiring doctor passionate about medicine, especially diabetes and stem cell research through genetics. Obsessively curious and always eager to learn something new, he loves exploring medical textbooks and watching accurate medical dramas like The Good Doctor."
+    },
+    {
+      "name": "Raahi Chheda",
+      "role": "Technology Lead",
+      "department": "Department of Technology",
+      "image_url": "https://digitex.zone.id/images/ragi.jpg",
+      "bio": "Hiii, I’m Raahi. I’m a creative and ambitious tech enthusiast, passionate about coding, AI, robotics, and web development. I love building innovative projects, from neural networks to interactive websites. Artistic and detail-oriented, I combine technical skills with creativity, constantly exploring, learning, and pushing boundaries to make ideas come alive."
+    },
+    {
+      "name": "Duaa Sherief",
+      "role": "Technology Lead",
+      "department": "Department of Technology",
+      "image_url": "https://digitex.zone.id/images/Dua.jpg",
+      "bio": "Hi! I'm a writer focused on artificial intelligence, merging my love for machine learning, programming, and computer science with storytelling. A Marvel fan and sports enthusiast, I love bringing creativity and curiosity into everything I write. Whether it's coding or writing, I aim to make complex ideas engaging, accessible and fun."
+    },
+    {
+      "name": "Gayatri Pandkar",
+      "role": "Technology Lead",
+      "department": "Department of Technology",
+      "image_url": "https://digitex.zone.id/images/panda.jpg",
+      "bio": "Hello! I'm Gayatri, a physics enthusiast who's fascinated by developments in technology, specifically in robotics, generative AI, blockchains & cybersecurity. Outside of academics, I'm an artist who's curious about game design & mechanics and loves to break down some of the most interesting concepts into simpler bits to get down to the fundamentals."
+    },
+    {
+      "name": "Nameh Singh Gulati",
+      "role": "Medicine Lead",
+      "department": "Department of Medicine",
+      "image_url": "https://digitex.zone.id/images/namz.jpg",
+      "bio": "Hi, I’m Nameh, an aspiring doctor with immense passion for medicine, particularly in the field of internal medicine. When I’m not buried in textbooks, you’ll probably find me overanalyzing medical dramas and wondering if coffee should officially be listed as a vital sign. I’m on a journey to blend science with compassion and maybe sneak in a little humor along the way!"
+    },
+    {
+      "name": "Maanya Ramesh",
+      "role": "Medicine Lead",
+      "department": "Department of Medicine",
+      "image_url": "https://digitex.zone.id/images/mans.jpg",
+      "bio": "Hi! I’m Maanya, a hard core medical lover at heart, with a keen interest in the fields of cardiology and pathology. You can easily find me scrolling through reels and reading books related to medicine, losing track of time as I immerse myself into a new realm of thoughts. I’m curious and excited to discover technology’s impact on today’s medical industry, and its possible influence on the future of medicine."
+    },
+    {
+      "name": "Disha Rout",
+      "role": "Medicine Lead",
+      "department": "Department of Medicine",
+      "image_url": "https://digitex.zone.id/images/mrdisha.jpg",
+      "bio": "Hey! I’m Disha, a medicine enthusiast, interested keenly in neuroscience, genetics and all body functions, and am super excited to explore the effects and discoveries of technology in these fields. I love understanding why we are who we are, which is hopefully defence enough for the millions of brain research paper tabs open on my device!"
+    },
+    {
+      "name": "Maahi Singh",
+      "role": "Medicine Lead",
+      "department": "Department of Medicine",
+      "image_url": "https://digitex.zone.id/images/maggi.jpg",
+      "bio": "Maahi is a design enthusiast with a passion for medicine and biotech. She loves exploring the intersection of creativity and science, always curious about new discoveries and ideas."
+    },
+    {
+      "name": "Purvaa Prakash",
+      "role": "Commerce Lead",
+      "department": "Department of Commerce",
+      "image_url": "https://digitex.zone.id/images/purvz.jpg",
+      "bio": "With Purvaa’s dreams of an entrepreneurial future and her fascination with business, she’s excited to create articles and use DigiteX as a medium to dive into all things business and tech related!"
+    },
+    {
+      "name": "Madhav Sikri",
+      "role": "Commerce Lead",
+      "department": "Department of Commerce",
+      "image_url": "https://digitex.zone.id/images/mads.jpg",
+      "bio": "Having been interested in Business and Economics for multiple years, Madhav is interested in exploring how their worlds collide with recent developments in AI and Tech."
+    },
+    {
+      "name": "Akshit Dash",
+      "role": "Commerce Lead",
+      "department": "Department of Commerce",
+      "image_url": "https://digitex.zone.id/images/dash.jpg",
+      "bio": "Hi! I’m Akshit, a commerce enthusiast with a keen interest in the intersection of business and technology. I love exploring how emerging technologies are reshaping the business landscape and am excited to share my insights through articles and discussions."
+    }
+  ],
+  "posts": [
+    {
+      "title": "How AI Chatbots Actually Work: A Simple Guide",
+      "category": "TECHNOLOGY",
+      "date": "1/2/2026",
+      "author": "Raahi Chheda",
+      "excerpt": "AI Chatbots are seen everywhere today, found in most apps, websites, and possibly even on your phone. But, how do they actually work? Whats happening behind the screen when you type a message and the ...",
+      "image": "https://sfclibbqckdkksfk.public.blob.vercel-storage.com/1767367865263-688881251.png",
+      "link": "https://digitex.zone.id/article/41"
+    },
+    {
+      "title": "From Filters to Fashion: How Virtual Try-Ons Became the Future of Retail",
+      "category": "COMMERCE",
+      "date": "1/2/2026",
+      "author": "Purvaa Prakash",
+      "excerpt": "In the last few years, AI has become one of the most powerful forces in reshaping the fashion industry, and one of the most renowned creations was the rise of virtual try-ons, a technology that blends...",
+      "image": "https://sfclibbqckdkksfk.public.blob.vercel-storage.com/1767350083470-615733888.png",
+      "link": "https://digitex.zone.id/article/40"
+    },
+    {
+      "title": "Oncolytic Viruses: Exploiting Viral Power in Cancer Immunotherapy",
+      "category": "MEDICINE",
+      "date": "1/1/2026",
+      "author": "Maanya Ramesh",
+      "excerpt": "As soon as you hear the word ‘virus’, the picture of a harmful, small, round creature probably engulfs your mind, as you probably think of ways to safeguard yourself from it. But what if I told you th...",
+      "image": "https://sfclibbqckdkksfk.public.blob.vercel-storage.com/1767263945919-464572030.png",
+      "link": "https://digitex.zone.id/article/39"
+    },
+    {
+      "title": "Google Shoots the Internet Into Orbit",
+      "category": "TECHNOLOGY",
+      "date": "12/10/2025",
+      "author": "Duaa Sherief",
+      "excerpt": "Most of us have gotten used to saying, “our data is saved in the cloud” without thinking about it. But what if the ‘cloud’ wasn’t a warehouse full of servers in Singapore or California, but rather a s...",
+      "image": "https://sfclibbqckdkksfk.public.blob.vercel-storage.com/1765351023323-599328041.webp",
+      "link": "https://digitex.zone.id/article/38"
+    },
+    {
+      "title": "The Crappy Cure for Your Rogue Immune System",
+      "category": "MEDICINE",
+      "date": "12/10/2025",
+      "author": "Maahi Singh",
+      "excerpt": "If I told you that your body's immune decision-making was outsourced to trillions of bacteria living in your gut, you’d probably raise an eyebrow. But it’s true: roughly 70% of your immune system is i...",
+      "image": "https://sfclibbqckdkksfk.public.blob.vercel-storage.com/1765339480704-819242482.png",
+      "link": "https://digitex.zone.id/article/37"
+    },
+    {
+      "title": "Fighting Fraud with Firepower - How AI Is Outsmarting Criminals",
+      "category": "COMMERCE",
+      "date": "12/10/2025",
+      "author": "Akshit Dash",
+      "excerpt": "As the use of Artificial Intelligence is growing at an exponential rate, real life applications of such services have also been discovered and one of the most revolutionary discoveries has been the di...",
+      "image": "https://sfclibbqckdkksfk.public.blob.vercel-storage.com/1765342639573-449079741.png",
+      "link": "https://digitex.zone.id/article/36"
+    },
+    {
+      "title": "What in the Crypto?",
+      "category": "TECHNOLOGY",
+      "date": "11/20/2025",
+      "author": "Gayatri Pandkar",
+      "excerpt": "Ever heard of dogecoin, solana, ethereum in some high end conversation? While you most likely have heard of dogecoin which you also might still know as a ‘coin’ based on a Shiba Inu meme … it really...",
+      "image": "https://digitex.zone.id/resources/logo.png",
+      "link": "https://digitex.zone.id/article/31"
+    },
+    {
+      "title": "How AI Quietly Revolutionised Credit Scoring",
+      "category": "COMMERCE",
+      "date": "11/20/2025",
+      "author": "Madhav Sikri",
+      "excerpt": "AI is constantly evolving, and as cliché that sounds, it’s no lie it has slowly seeped its way into every part of our lives, every sector, from medicine, to football, and even made its way into financ...",
+      "image": "https://digitex.zone.id/resources/logo.png",
+      "link": "https://digitex.zone.id/article/30"
+    },
+    {
+      "title": "Real Pain, Unreal Places: The Tech That Silences Phantom Limbs",
+      "category": "MEDICINE",
+      "date": "10/5/2025",
+      "author": "Disha Rout",
+      "excerpt": "Ever heard of phantoms? Ghosts, spirits, translucent floating souls - basically something we feel, but a presence we can’t prove. In medicine, they are objects or sensations that simulate real propert...",
+      "image": "https://digitex.zone.id/resources/logo.png",
+      "link": "https://digitex.zone.id/article/29"
+    },
+    {
+      "title": "Welcome to the DigiteX Blog",
+      "category": "GENERAL",
+      "date": "9/23/2025",
+      "author": "DigiteX Team",
+      "excerpt": "Welcome to DigiteX ﻿This is our independently run blog, where we will be posting about changing tech trends and how they impact different industries worldwide. Our departments...",
+      "image": "https://digitex.zone.id/resources/logo.png",
+      "link": "https://digitex.zone.id/article/8"
+    }
+  ]
+}

@@ -4,9 +4,12 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Search, ArrowRight } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { getBlogPosts } from "@/lib/sanity"
+import { format } from "date-fns"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
-const CATEGORIES = ["All", "News", "Technology", "Startups", "Opinion"]
+const CATEGORIES = ["All", "TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 
 export default function BlogPage() {
   const [activeCategory, setActiveCategory] = useState("All")
@@ -14,16 +17,17 @@ export default function BlogPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/blog/posts')
-      .then(res => res.json())
-      .then(data => {
+    async function loadPosts() {
+      try {
+        const data = await getBlogPosts()
         setPosts(data)
+      } catch (error) {
+        console.error("Failed to fetch posts:", error)
+      } finally {
         setLoading(false)
-      })
-      .catch((err) => {
-        console.error(err)
-        setLoading(false)
-      })
+      }
+    }
+    loadPosts()
   }, [])
 
   return (
@@ -51,7 +55,7 @@ export default function BlogPage() {
                   : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
               }`}
             >
-              {cat}
+              {cat === "All" ? "All" : cat.charAt(0) + cat.slice(1).toLowerCase()}
             </button>
           ))}
         </div>
@@ -74,17 +78,20 @@ export default function BlogPage() {
             .filter(p => activeCategory === "All" || p.category === activeCategory)
             .map((post) => (
             <motion.div 
-            key={post.id}
+            key={post._id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="group cursor-pointer"
           >
             {/* Image Card */}
             <div className="aspect-[4/3] bg-[#0A0A0A] rounded-2xl overflow-hidden mb-6 border border-white/5 group-hover:border-[#28829E]/50 transition-colors relative">
-               <div className="absolute inset-0 flex items-center justify-center text-gray-700 bg-grid-pattern opacity-20">
-                 {/* Placeholder for real image */}
-                 [Image Placeholder]
-               </div>
+               {post.imageUrl ? (
+                 <Image src={post.imageUrl} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+               ) : (
+                 <div className="absolute inset-0 flex items-center justify-center text-gray-700 bg-grid-pattern opacity-20">
+                   DigiteX
+                 </div>
+               )}
                
                {/* Category Tag */}
                <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg text-xs font-bold text-[#28829E] border border-white/10">
@@ -94,7 +101,7 @@ export default function BlogPage() {
 
             {/* Content */}
             <div className="pr-4">
-              <div className="text-sm text-gray-500 mb-2">{post.date}</div>
+              <div className="text-sm text-gray-500 mb-2">{format(new Date(post.publishedAt), 'MMM dd, yyyy')} • {post.authorName}</div>
               <h3 className="text-2xl font-bold mb-3 group-hover:text-[#28829E] transition-colors leading-tight">
                 {post.title}
               </h3>
@@ -112,3 +119,4 @@ export default function BlogPage() {
     </main>
   )
 }
+

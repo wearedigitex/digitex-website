@@ -1,0 +1,49 @@
+const { createClient } = require('@sanity/client')
+const fs = require('fs')
+const path = require('path')
+
+// Configuration
+const projectId = '6rn1uybc'
+const dataset = 'production'
+const token = process.env.SANITY_API_TOKEN // User needs to provide this or run interactively
+
+// Initialize Client (needs a token with write access)
+const client = createClient({
+  projectId,
+  dataset,
+  apiVersion: '2024-01-01',
+  token: process.env.SANITY_TOKEN, // We might need to ask user for a token to migrate
+  useCdn: false,
+})
+
+async function migrate() {
+  const dataPath = path.join(__dirname, 'scraped_data.json')
+  const rawData = fs.readFileSync(dataPath, 'utf-8')
+  const data = JSON.parse(rawData)
+
+  console.log(`Found ${data.team.length} team members and ${data.posts.length} posts to migrate.`)
+
+  // Migrate Team Members
+  for (const member of data.team) {
+    const doc = {
+      _type: 'author',
+      name: member.name,
+      role: member.role,
+      department: member.department,
+      bio: member.bio,
+      slug: { _type: 'slug', current: member.name.toLowerCase().replace(/\s+/g, '-') }
+      // Image upload would require fetching the URL and uploading to Sanity Asset pipeline
+      // For now we will skip image upload in this simple script or we can implement it if needed
+    }
+
+    try {
+      const res = await client.createOrReplace({_id: `author-${doc.slug.current}`, ...doc})
+      console.log(`Migrated: ${member.name}`)
+    } catch (err) {
+      console.error(`Failed to migrate ${member.name}:`, err.message)
+    }
+  }
+}
+
+// NOTE: Since I cannot get the user's WRITE token easily without them generating it,
+// I will create a script they can run locally that uses the 'sanity' CLI which is already authenticated!

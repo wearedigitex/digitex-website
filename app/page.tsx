@@ -4,15 +4,16 @@ import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Link from "next/link"
-import { ArrowRight, Cpu, Layers, Globe, Terminal, Users, Zap, Mail, MessageSquare } from "lucide-react"
+import Image from "next/image"
+import { ArrowRight, Users, Zap, Globe, MessageSquare } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
 import { MagneticButton } from "@/components/magnetic-button"
 import { HeroScene } from "@/components/canvas/hero-scene"
 import { Orb } from "@/components/ui/orb"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
+import { getTeamMembers } from "@/lib/sanity"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -24,6 +25,20 @@ export default function HomePage() {
   const [formState, setFormState] = useState({ name: "", email: "", message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+  
+  const [teamMembers, setTeamMembers] = useState<any[]>([])
+
+  useEffect(() => {
+    async function loadTeam() {
+      try {
+        const data = await getTeamMembers()
+        setTeamMembers(data)
+      } catch (error) {
+        console.error("Failed to load team:", error)
+      }
+    }
+    loadTeam()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -76,6 +91,47 @@ export default function HomePage() {
     
     return () => ctx.revert()
   }, [])
+
+  // Group members by department for organized display
+  const leardership = teamMembers.filter(m => m.department === "Leadership")
+  const techTeam = teamMembers.filter(m => m.department === "Department of Technology")
+  const medTeam = teamMembers.filter(m => m.department === "Department of Medicine")
+  const commTeam = teamMembers.filter(m => m.department === "Department of Commerce")
+
+  const renderTeamGrid = (members: any[], title: string) => (
+    <div className="mb-16 last:mb-0">
+      <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">{title}</h3>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {members.map((member) => (
+           <div key={member._id} className="group relative overflow-hidden rounded-3xl bg-[#0A0A0A] border border-white/5 aspect-[4/5] hover:shadow-[0_0_30px_rgba(40,130,158,0.2)] transition-shadow">
+             {member.imageUrl ? (
+               <Image 
+                 src={member.imageUrl} 
+                 alt={member.name} 
+                 fill 
+                 className="object-cover group-hover:scale-105 transition-transform duration-700"
+               />
+             ) : (
+                <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
+                   <div className="text-center">
+                      <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-teal-500 to-purple-600 mb-4 mx-auto opacity-80 blur-xl group-hover:blur-md transition-all"></div>
+                      <span className="text-gray-500 font-mono text-sm tracking-widest uppercase">{member.name}</span>
+                   </div>
+                </div>
+             )}
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90"></div>
+              
+              <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
+                <p className="text-[#28829E] font-medium tracking-wide text-sm mb-2">{member.role}</p>
+                {/* Optional Bio on hover or click could go here */}
+              </div>
+           </div>
+        ))}
+      </div>
+    </div>
+  )
 
   return (
     <main className="bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-teal-500/30">
@@ -137,7 +193,7 @@ export default function HomePage() {
       </section>
 
       {/* Our Foundation Section */}
-      <section id="foundation" className="relative z-10 py-32 bg-black border-t border-white/5 overflow-hidden">
+      <section id="foundation" className="relative z-10 py-32 bg-black/90 border-t border-white/5 overflow-hidden backdrop-blur-sm">
         {/* Background Orbs */}
         <Orb color="bg-teal-600" className="-left-40 top-20 opacity-30" />
         <Orb color="bg-purple-600" className="-right-40 bottom-20 opacity-20" />
@@ -192,39 +248,16 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-4xl md:text-5xl font-bold mb-16">Meet the Team</h2>
           
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Anuraag */}
-            <div className="group relative overflow-hidden rounded-3xl bg-[#0A0A0A] border border-white/5 aspect-[16/9] md:aspect-auto md:h-96 hover:shadow-[0_0_30px_rgba(40,130,158,0.2)] transition-shadow">
-               <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
-                 {/* Placeholder for Anuraag's Image */}
-                 <div className="text-center">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-teal-500 to-purple-600 mb-4 mx-auto opacity-80 blur-xl group-hover:blur-md transition-all"></div>
-                    <span className="text-gray-500 font-mono text-sm tracking-widest uppercase">Anuraag Vombatkere</span>
-                 </div>
-               </div>
-               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
-               <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                 <h3 className="text-3xl font-bold text-white mb-1">Anuraag Vombatkere</h3>
-                 <p className="text-[#28829E] font-medium tracking-wide">President & Editor-in-Chief</p>
-               </div>
+          {teamMembers.length > 0 ? (
+            <div className="space-y-16">
+              {renderTeamGrid(leardership, "Leadership")}
+              {renderTeamGrid(techTeam, "Technology")}
+              {renderTeamGrid(medTeam, "Medicine")}
+              {renderTeamGrid(commTeam, "Commerce")}
             </div>
-
-             {/* Eshan */}
-            <div className="group relative overflow-hidden rounded-3xl bg-[#0A0A0A] border border-white/5 aspect-[16/9] md:aspect-auto md:h-96 hover:shadow-[0_0_30px_rgba(14,165,233,0.2)] transition-shadow">
-               <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
-                 {/* Placeholder for Eshan's Image */}
-                 <div className="text-center">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 mb-4 mx-auto opacity-80 blur-xl group-hover:blur-md transition-all"></div>
-                    <span className="text-gray-500 font-mono text-sm tracking-widest uppercase">Vasipalli Eshan Aditya</span>
-                 </div>
-               </div>
-               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
-               <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                 <h3 className="text-3xl font-bold text-white mb-1">Vasipalli Eshan Aditya</h3>
-                 <p className="text-[#0EA5E9] font-medium tracking-wide">Vice President & Tech Lead</p>
-               </div>
-            </div>
-          </div>
+          ) : (
+            <div className="text-center text-gray-500 py-10">Loading Team...</div>
+          )}
         </div>
       </section>
 
