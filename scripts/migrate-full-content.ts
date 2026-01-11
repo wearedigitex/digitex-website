@@ -59,7 +59,7 @@ async function migrateContent() {
         .commit()
       
       console.log(`  - Successfully updated bodyHtml.`)
-    } catch (err) {
+    } catch (err: any) {
       console.error(`  - Failed to update post: ${err.message}`)
     }
   }
