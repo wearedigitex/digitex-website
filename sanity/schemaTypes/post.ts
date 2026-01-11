@@ -60,5 +60,19 @@ export const post = defineType({
       type: 'array',
       of: [{ type: 'block' }],
     }),
+    defineField({
+      name: 'viewCount',
+      title: 'View Count',
+      type: 'number',
+      initialValue: 0,
+      readOnly: true,
+    }),
+    defineField({
+      name: 'commentCount',
+      title: 'Comment Count',
+      type: 'number',
+      initialValue: 0,
+      readOnly: true,
+    }),
   ],
 })

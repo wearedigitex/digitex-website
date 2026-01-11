@@ -43,7 +43,38 @@ export async function getBlogPosts() {
       publishedAt,
       excerpt,
       "authorName": author->name,
-      "imageUrl": mainImage.asset->url
+      "imageUrl": mainImage.asset->url,
+      viewCount,
+      commentCount
     }`
   )
+}
+
+// Function to fetch a single post by slug
+export async function getPostBySlug(slug: string) {
+  return client.fetch(
+    `*[_type == "post" && slug.current == $slug][0] {
+      _id,
+      title,
+      "slug": slug.current,
+      category,
+      publishedAt,
+      excerpt,
+      body,
+      "author": author->{name, role, "imageUrl": image.asset->url},
+      "imageUrl": mainImage.asset->url,
+      viewCount,
+      commentCount
+    }`,
+    { slug }
+  )
+}
+
+// Function to increment view count
+export async function incrementViewCount(postId: string) {
+  return client
+    .patch(postId)
+    .setIfMissing({ viewCount: 0 })
+    .inc({ viewCount: 1 })
+    .commit()
 }
