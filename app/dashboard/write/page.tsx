@@ -60,7 +60,9 @@ function WritePageContent() {
         .then(res => res.json())
         .then(data => {
           setTitle(data.title)
-          setSlug(data.slug.current)
+          // Handle both structured slug and legacy/corrupted string slug
+          const slugValue = typeof data.slug === "string" ? data.slug : data.slug?.current || ""
+          setSlug(slugValue)
           setCategory(data.category)
           setExcerpt(data.excerpt || "")
           if (data.mainImage) {
@@ -162,7 +164,7 @@ function WritePageContent() {
       
       const payload = {
         title,
-        slug,
+        slug: { _type: "slug", current: slug },
         category,
         excerpt,
         bodyHtml,
