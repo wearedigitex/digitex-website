@@ -10,6 +10,8 @@ import { HeroScene } from "@/components/canvas/hero-scene"
 
 export default function LoginPage() {
   const router = useRouter()
+  const [mode, setMode] = useState<"login" | "signup">("login")
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -67,15 +69,36 @@ export default function LoginPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-[#28829E] to-[#0EA5E9] rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20 transform rotate-45">
                <Hexagon className="w-8 h-8 text-white transform -rotate-45" fill="currentColor" />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-white">Welcome Back</h1>
-            <p className="text-gray-400 mt-2 text-sm">Access your Digitex account</p>
+            <h1 className="text-3xl font-bold tracking-tight text-white">
+              {mode === "login" ? "Welcome Back" : "Join Digitex"}
+            </h1>
+            <p className="text-gray-400 mt-2 text-sm">
+              {mode === "login" ? "Access your Digitex account" : "Create your contributor account"}
+            </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={mode === "login" ? handleLogin : handleSignup} className="space-y-6">
             {error && (
               <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 flex items-center gap-2 text-red-500 text-sm">
                 <AlertCircle className="w-4 h-4" />
                 {error}
+              </div>
+            )}
+
+            {mode === "signup" && (
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Full Name</label>
+                <div className="relative group">
+                  <User className="absolute left-3 top-3 w-5 h-5 text-gray-500 group-focus-within:text-[#0EA5E9] transition-colors" />
+                  <input 
+                    type="text" 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="w-full bg-[#111] border border-white/10 rounded-lg h-11 pl-10 text-white focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] transition-all placeholder:text-gray-700"
+                    placeholder="Enter your full name"
+                  />
+                </div>
               </div>
             )}
 
@@ -104,7 +127,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full bg-[#111] border border-white/10 rounded-lg h-11 pl-10 text-white focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] transition-all placeholder:text-gray-700"
-                  placeholder="Enter password"
+                  placeholder={mode === "signup" ? "Create a password" : "Enter password"}
                 />
               </div>
             </div>
@@ -114,14 +137,24 @@ export default function LoginPage() {
               disabled={loading} 
               className="w-full bg-[#0EA5E9] hover:bg-[#0284c7] text-white font-bold h-12 rounded-lg mt-6 shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] transition-all"
             >
-              {loading ? "AUTHENTICATING..." : "LOGIN"}
+              {loading ? "PROCESSING..." : (mode === "login" ? "LOGIN" : "CREATE ACCOUNT")}
             </Button>
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-xs text-gray-500">
-              First time logging in? Change your password in dashboard settings.
-            </p>
+            <button
+              onClick={() => {
+                setMode(mode === "login" ? "signup" : "login")
+                setError("")
+              }}
+              className="text-sm text-gray-400 hover:text-[#0EA5E9] transition-colors"
+            >
+              {mode === "login" ? (
+                <>Don't have an account? <span className="font-bold">Sign up</span></>
+              ) : (
+                <>Already have an account? <span className="font-bold">Log in</span></>
+              )}
+            </button>
           </div>
         </div>
       </div>
