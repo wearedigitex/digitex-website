@@ -5,7 +5,7 @@ import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Users, User, Zap, Globe, MessageSquare } from "lucide-react"
+import { ArrowRight, Zap, Globe, MessageSquare, Users } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,6 +14,7 @@ import { HeroScene } from "@/components/canvas/hero-scene"
 import { Orb } from "@/components/ui/orb"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { getTeamMembers } from "@/lib/sanity"
+import { TeamCard } from "@/components/team-card"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -102,54 +103,9 @@ export default function HomePage() {
     <div className="mb-16 last:mb-0">
       <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">{title}</h3>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {members.map((member) => (
-          <div key={member._id} className="group h-[480px] [perspective:1000px] relative mt-16">
-            <div className="relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-              
-              {/* Front Side */}
-              <div className="absolute inset-0 h-full w-full [backface-visibility:hidden]">
-                {/* Card Body */}
-                <div className="absolute inset-0 h-full w-full rounded-3xl bg-white border border-white/20 p-6 flex flex-col items-center justify-center text-center shadow-xl">
-                  {/* Image Circle */}
-                  <div className="w-32 h-32 rounded-full border-4 border-[#28829E] bg-[#0A0A0A] overflow-hidden shadow-[0_0_20px_rgba(40,130,158,0.3)] mb-6 relative">
-                    {member.imageUrl ? (
-                      <Image 
-                        src={member.imageUrl} 
-                        alt={member.name} 
-                        fill 
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full">
-                         <User className="w-12 h-12 text-gray-700" />
-                      </div>
-                    )}
-                  </div>
-
-                  <h3 className="text-2xl font-bold text-black mb-2">{member.name}</h3>
-                  <p className="text-[#28829E] font-bold text-sm uppercase tracking-[0.2em]">{member.role}</p>
-                  
-                  {/* Subtle Grid Pattern Overlay */}
-                  <div className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-3xl" 
-                       style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '20px 20px' }} />
-                </div>
-              </div>
-
-              {/* Back Side (Bio) */}
-              <div className="absolute inset-0 h-full w-full rounded-3xl bg-[#0A0A0A] border border-[#28829E]/30 p-8 text-center [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center shadow-[0_0_40px_rgba(40,130,158,0.1)]">
-                <div className="w-16 h-16 rounded-full bg-[#28829E]/10 flex items-center justify-center mb-6 border border-[#28829E]/20">
-                   <Users className="w-8 h-8 text-[#28829E]" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">{member.name}</h3>
-                <div className="w-12 h-0.5 bg-[#28829E] rounded-full mb-6" />
-                <p className="text-gray-400 text-sm leading-relaxed overflow-y-auto pr-2 scrollbar-hide">
-                  {member.bio || "No bio available."}
-                </p>
-              </div>
-              
-            </div>
-          </div>
-        ))}
+          {members.map((member) => (
+            <TeamCard key={member._id} member={member} />
+          ))}
       </div>
     </div>
   )
