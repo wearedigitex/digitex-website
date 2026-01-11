@@ -61,7 +61,7 @@ export function InviteUserForm() {
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md max-w-md">
+    <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto my-8">
       <h2 className="text-2xl font-bold mb-6 text-gray-900">Invite Team Member</h2>
       
       <form onSubmit={handleInvite} className="space-y-4">
