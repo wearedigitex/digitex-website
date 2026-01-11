@@ -141,7 +141,7 @@ export default function ArticlePage() {
         {/* Article Body */}
         <div className="prose prose-invert prose-lg max-w-none mb-16">
           {post.bodyHtml ? (
-            <div dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />
+            <div className="article-content" dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />
           ) : post.body ? (
             <PortableText
               value={post.body}

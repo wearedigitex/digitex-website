@@ -214,3 +214,12 @@ html, body, #__next, div, section, main, nav, a, button, input, textarea, select
   border-radius: 0.5rem;
   margin: 2rem 0;
 }
+
+/* Styles for rendered HTML content */
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin: 2.5rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

@@ -102,13 +102,18 @@ function WritePageContent() {
     }
   }
 
-  const addBodyImage = async () => {
+  const addBodyImage = () => {
     const input = document.createElement("input")
     input.type = "file"
     input.accept = "image/*"
     input.onchange = async (e: any) => {
       const file = e.target.files?.[0]
       if (!file) return
+
+      // Show temporary loading indicator
+      if (editor) {
+        editor.chain().focus().insertContent("<p><i>Uploading image...</i></p>").run()
+      }
 
       const formData = new FormData()
       formData.append("file", file)
@@ -119,11 +124,17 @@ function WritePageContent() {
           body: formData,
         })
         const data = await res.json()
+        
         if (data.success && editor) {
+          // Remove loading message (basic way: find and replace or just append)
+          // For simplicity, we'll just insert the image at current focus
           editor.chain().focus().setImage({ src: data.url }).run()
+        } else {
+          alert("Failed to upload image")
         }
       } catch (err) {
         console.error("Body image upload error:", err)
+        alert("Error uploading image")
       }
     }
     input.click()
