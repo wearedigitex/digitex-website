@@ -10,7 +10,8 @@ export async function sendInvitationEmail(email: string, password: string) {
       return { success: false, error: 'API key missing' }
     }
     const { data, error } = await resend.emails.send({
-      from: 'Digitex <onboarding@resend.dev>', // Change this to your verified domain
+      from: 'Digitex <onboarding@resend.dev>',
+      replyTo: 'wearedigitex@gmail.com',
       to: email,
       subject: 'Welcome to Digitex - Your Account Details',
       html: `
@@ -57,6 +58,7 @@ export async function sendApprovalEmail(email: string, articleTitle: string, app
     }
     const { data, error } = await resend.emails.send({
       from: 'Digitex <onboarding@resend.dev>',
+      replyTo: 'wearedigitex@gmail.com',
       to: email,
       subject: approved 
         ? `Your article "${articleTitle}" has been approved!`
