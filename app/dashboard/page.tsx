@@ -2,17 +2,18 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { signOut } from "next-auth/react"
-import { auth } from "@/lib/auth"
+import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { PenSquare, FileText, LogOut, Settings, Eye, MessageSquare } from "lucide-react"
+import { PenSquare, FileText, LogOut, Settings, Eye, LayoutDashboard, Database } from "lucide-react"
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const { data: session } = useSession()
   const [submissions, setSubmissions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  const isAdmin = (session?.user as any)?.role === "admin"
 
   useEffect(() => {
     async function loadData() {
@@ -90,6 +91,16 @@ export default function DashboardPage() {
               <p className="text-gray-400">Start creating your next piece</p>
             </div>
           </Link>
+
+          {isAdmin && (
+            <Link href="/studio">
+              <div className="group p-8 bg-gradient-to-br from-purple-500/20 to-[#28829E]/10 border border-purple-500/30 rounded-2xl hover:border-purple-500/60 transition-all cursor-pointer">
+                <Database className="w-12 h-12 text-purple-400 mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="text-2xl font-bold mb-2">Admin Studio</h3>
+                <p className="text-gray-400">Manage all content and users</p>
+              </div>
+            </Link>
+          )}
 
           <div className="p-8 bg-white/5 border border-white/10 rounded-2xl">
             <FileText className="w-12 h-12 text-blue-400 mb-4" />

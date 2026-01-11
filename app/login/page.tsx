@@ -31,7 +31,9 @@ export default function LoginPage() {
         setError("Invalid email or password")
         setLoading(false)
       } else {
-        // Successful login - redirect based on role will be handled by middleware
+        // Redirection logic: Admins to Studio, Contributors to Dashboard
+        // We push to dashboard first, then dashboard can auto-redirect if we want
+        // But the best UX is just having the link there if they want to manage submissions too.
         router.push("/dashboard")
         router.refresh()
       }
