@@ -50,8 +50,8 @@ export function Navigation() {
              </div>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Desktop Nav Links - Centered Absolutely */}
+          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => {
               const isBlog = link.label === "Blog"
               
