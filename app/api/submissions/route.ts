@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
-import { client } from "@/lib/sanity"
+import { adminClient } from "@/lib/sanity"
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch user's submissions
-    const submissions = await client.fetch(
+    const submissions = await adminClient.fetch(
       `*[_type == "submission" && submittedBy->email == $email] | order(_createdAt desc) {
         _id,
         _createdAt,
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
 
     // Get user document
-    const user = await client.fetch(
+    const user = await adminClient.fetch(
       `*[_type == "user" && email == $email][0] { _id, author }`,
       { email: session.user.email }
     )
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create submission
-    const submission = await client.create({
+    const submission = await adminClient.create({
       _type: "submission",
       title: data.title,
       slug: { current: data.slug },
@@ -86,7 +86,7 @@ export async function PATCH(request: NextRequest) {
     const { id, ...data } = await request.json()
 
     // Update submission
-    const updated = await client
+    const updated = await adminClient
       .patch(id)
       .set({
         ...data,
