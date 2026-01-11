@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { client } from "@/lib/sanity"
+import { adminClient } from "@/lib/sanity"
 import { sendInvitationEmail } from "@/lib/email"
+import { auth } from "@/lib/auth"
 
 function generatePassword(length = 12) {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%"
@@ -14,30 +15,39 @@ function generatePassword(length = 12) {
 
 export async function POST(request: NextRequest) {
   try {
+    // 1. Check session
+    const session = await auth()
+    if (!session || (session.user as any)?.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const { email, authorId } = await request.json()
 
     if (!email || !authorId) {
       return NextResponse.json({ error: "Email and author ID required" }, { status: 400 })
     }
 
-    // Check if user already exists
-    const existingUser = await client.fetch(
+    const normalizedEmail = email.toLowerCase().trim()
+
+    // 2. Check if user already exists
+    const existingUser = await adminClient.fetch(
       `*[_type == "user" && email == $email][0]`,
-      { email }
+      { email: normalizedEmail }
     )
 
     if (existingUser) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 })
     }
 
-    // Generate password
+    // 3. Generate password
     const password = generatePassword()
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Create user in Sanity
-    const newUser = await client.create({
+    // 4. Create user in Sanity
+    console.log("Inviting user:", normalizedEmail)
+    const newUser = await adminClient.create({
       _type: "user",
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       role: "contributor",
       status: "active",
@@ -48,8 +58,20 @@ export async function POST(request: NextRequest) {
       invitedAt: new Date().toISOString(),
     })
 
-    // Send invitation email
-    await sendInvitationEmail(email, password)
+    // 5. Send invitation email
+    console.log("Sending invitation email to:", normalizedEmail)
+    try {
+      await sendInvitationEmail(normalizedEmail, password)
+    } catch (emailError) {
+      console.error("Failed to send email, but user was created:", emailError)
+      // We don't fail the whole request if the email fails, but we might want to tell the user
+      return NextResponse.json({ 
+        success: true, 
+        message: "User created, but email failed to send. Please share credentials manually.",
+        tempPassword: password,
+        userId: newUser._id 
+      })
+    }
 
     return NextResponse.json({ 
       success: true, 
@@ -58,6 +80,9 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Error inviting user:", error)
-    return NextResponse.json({ error: "Failed to invite user" }, { status: 500 })
+    return NextResponse.json({ 
+      error: "Failed to invite user",
+      details: error instanceof Error ? error.message : "Unknown error"
+    }, { status: 500 })
   }
 }

@@ -41,12 +41,16 @@ export function InviteUserForm() {
 
       if (response.ok) {
         setStatus("success")
-        setMessage(`Invitation sent to ${email}!`)
+        setMessage(data.message || `Invitation sent to ${email}!`)
+        if (data.tempPassword) {
+          (window as any)._tempPass = data.tempPassword;
+        }
         setEmail("")
         setSelectedAuthor("")
       } else {
         setStatus("error")
-        setMessage(data.error || "Failed to send invitation")
+        const errorDetail = data.details ? ` (${data.details})` : "";
+        setMessage((data.error || "Failed to send invitation") + errorDetail)
       }
     } catch (error) {
       setStatus("error")
@@ -114,17 +118,29 @@ export function InviteUserForm() {
       </form>
 
       {status !== "idle" && (
-        <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
+        <div className={`mt-4 p-4 rounded-lg flex flex-col gap-2 ${
           status === "success" 
             ? "bg-green-50 text-green-800 border border-green-200" 
             : "bg-red-50 text-red-800 border border-red-200"
         }`}>
-          {status === "success" ? (
-            <CheckCircle className="w-5 h-5" />
-          ) : (
-            <XCircle className="w-5 h-5" />
+          <div className="flex items-center gap-2">
+            {status === "success" ? (
+              <CheckCircle className="w-5 h-5" />
+            ) : (
+              <XCircle className="w-5 h-5" />
+            )}
+            <span className="text-sm font-semibold">{message}</span>
+          </div>
+          
+          {/* Show temp password if email failed but user was created */}
+          {status === "success" && (message.includes("failed") || message.includes("manually")) && (
+            <div className="mt-2 p-3 bg-white/50 rounded border border-green-300">
+              <p className="text-xs text-green-700 mb-1 font-bold italic">Manual Credentials:</p>
+              <code className="text-xs bg-black/10 px-2 py-1 rounded block select-all">
+                Password: {(window as any)._tempPass || "Check logs"}
+              </code>
+            </div>
           )}
-          <span className="text-sm">{message}</span>
         </div>
       )}
 
