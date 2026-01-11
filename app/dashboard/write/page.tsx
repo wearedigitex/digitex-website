@@ -133,7 +133,7 @@ function WritePageContent() {
           // Find the temporary loading text and replace it
           const content = editor.getHTML()
           const newContent = content.replace("<p id=\"temp-loading\"><i>Uploading image...</i></p>", `<img src="${data.url}" />`)
-          editor.commands.setContent(newContent, false) // false to not emit update event immediately if not needed
+          editor.commands.setContent(newContent)
           editor.commands.focus()
         } else {
           alert("Failed to upload image")
