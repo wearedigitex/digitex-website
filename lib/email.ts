@@ -5,6 +5,10 @@ const resend = resendKey ? new Resend(resendKey) : null
 
 export async function sendInvitationEmail(email: string, password: string) {
   try {
+    if (!resend) {
+      console.warn('Resend API key missing. Email not sent.')
+      return { success: false, error: 'API key missing' }
+    }
     await resend.emails.send({
       from: 'Digitex <onboarding@resend.dev>', // Change this to your verified domain
       to: email,
@@ -42,6 +46,10 @@ export async function sendInvitationEmail(email: string, password: string) {
 
 export async function sendApprovalEmail(email: string, articleTitle: string, approved: boolean) {
   try {
+    if (!resend) {
+      console.warn('Resend API key missing. Email not sent.')
+      return { success: false, error: 'API key missing' }
+    }
     await resend.emails.send({
       from: 'Digitex <onboarding@resend.dev>',
       to: email,

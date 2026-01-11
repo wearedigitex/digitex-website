@@ -15,7 +15,9 @@ import {
 
 const CATEGORIES = ["TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 
-export default function WritePage() {
+import { Suspense } from "react"
+
+function WritePageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const submissionId = searchParams.get("id")
@@ -252,5 +254,13 @@ export default function WritePage() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function WritePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black text-white pt-24 flex items-center justify-center">Loading editor...</div>}>
+      <WritePageContent />
+    </Suspense>
   )
 }
