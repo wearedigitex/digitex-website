@@ -235,9 +235,32 @@
 
 /* Styles for rendered HTML content */
 .article-content img {
-  max-width: 100%;
-  height: auto;
+  max-width: 100%;\n  height: auto;
   border-radius: 1rem;
   margin: 2.5rem 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Floated images need extra margins for text spacing */
+.article-content img[style*="float: left"],
+.article-content img.note-float-left {
+  margin-right: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.article-content img[style*="float: right"],
+.article-content img.note-float-right {
+  margin-left: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Also apply to ProseMirror editor for WYSIWYG */
+.ProseMirror img[style*="float: left"] {
+  margin-right: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.ProseMirror img[style*="float: right"] {
+  margin-left: 2rem;
+  margin-bottom: 1.5rem;
 }
