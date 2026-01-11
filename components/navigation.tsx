@@ -51,8 +51,25 @@ export function Navigation() {
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
-              // Simple check for active state on main pages
-              const isActive = pathname === link.href
+              const isBlog = link.label === "Blog"
+              
+              if (isBlog) {
+                return (
+                   <Link 
+                    key={link.href} 
+                    href={link.href}
+                    className="relative group px-4 py-2 rounded-full overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-[#28829E]/10 group-hover:bg-[#28829E]/20 transition-colors duration-500" />
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transform transition-transform duration-1000" />
+                    <span className="relative z-10 text-sm font-bold text-[#28829E] group-hover:text-white transition-colors">
+                      {link.label}
+                    </span>
+                    <div className="absolute inset-0 rounded-full ring-1 ring-[#28829E]/30 group-hover:ring-[#28829E]/60 transition-all" />
+                  </Link>
+                )
+              }
+
               return (
                 <Link 
                   key={link.href} 

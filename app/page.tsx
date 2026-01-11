@@ -206,9 +206,11 @@ export default function HomePage() {
                   </Button>
                 </Link>
              </MagneticButton>
-             <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/20 hover:bg-white/5 text-white bg-white/5 backdrop-blur-md">
-               About Us
-             </Button>
+             <Link href="/#foundation">
+               <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/20 hover:bg-white/5 text-white bg-white/5 backdrop-blur-md">
+                 About Us
+               </Button>
+             </Link>
            </div>
          </div>
       </section>
