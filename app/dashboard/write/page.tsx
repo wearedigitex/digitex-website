@@ -41,6 +41,17 @@ function WritePageContent() {
     },
   })
 
+  // Auto-generate slug from title
+  useEffect(() => {
+    if (title && !submissionId) {
+      const generatedSlug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+      setSlug(generatedSlug)
+    }
+  }, [title, submissionId])
+
   // Load existing submission if editing
   useEffect(() => {
     if (submissionId) {
