@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
-import { client } from "./sanity"
+import { adminClient } from "./sanity"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -16,46 +16,59 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        // Fetch user from Sanity
-        const user = await client.fetch(
-          `*[_type == "user" && email == $email][0] {
-            _id,
-            email,
-            password,
-            role,
-            status,
-            "authorName": author->name,
-            "authorId": author->_id
-          }`,
-          { email: credentials.email }
-        )
+        try {
+          // Fetch user from Sanity using the correct email
+          const user = await adminClient.fetch(
+            `*[_type == "user" && email == $email][0] {
+              _id,
+              email,
+              password,
+              role,
+              status,
+              "authorName": author->name,
+              "authorId": author->_id
+            }`,
+            { email: (credentials.email as string).toLowerCase().trim() }
+          )
 
-        if (!user || user.status !== "active") {
+          if (!user) {
+            console.log("Auth: User not found:", credentials.email)
+            return null
+          }
+
+          if (user.status !== "active") {
+            console.log("Auth: User not active:", credentials.email)
+            return null
+          }
+
+          // Verify password
+          const isValid = await bcrypt.compare(
+            credentials.password as string,
+            user.password
+          )
+
+          if (!isValid) {
+            console.log("Auth: Password mismatch for:", credentials.email)
+            return null
+          }
+
+          // Update last login (fire and forget)
+          adminClient
+            .patch(user._id)
+            .set({ lastLogin: new Date().toISOString() })
+            .commit()
+            .catch(err => console.error("Failed to update last login:", err))
+
+          return {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+            authorName: user.authorName,
+            authorId: user.authorId,
+          }
+        } catch (error) {
+          console.error("Auth error:", error)
           return null
-        }
-
-        // Verify password
-        const isValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        )
-
-        if (!isValid) {
-          return null
-        }
-
-        // Update last login
-        await client
-          .patch(user._id)
-          .set({ lastLogin: new Date().toISOString() })
-          .commit()
-
-        return {
-          id: user._id,
-          email: user.email,
-          role: user.role,
-          authorName: user.authorName,
-          authorId: user.authorId,
         }
       },
     }),

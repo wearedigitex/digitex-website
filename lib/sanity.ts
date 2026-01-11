@@ -5,11 +5,21 @@ export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "6rn1uybc"
 export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
 export const apiVersion = "2024-01-01"
 
+// Standard client for public data
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false, // Set to false to get freshest data
+  useCdn: false,
+})
+
+// Admin client for server-side operations (with token)
+export const adminClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false,
+  token: process.env.SANITY_API_TOKEN || "skBIvMTHZd90LOZV2RMeZMLT8jFQAmIAVTjiF1O4741FQovx4a4b6BG0TD61HOu5KvyJohRsXJEZsHJtJCRnUqqf0Wvj5RWy4drUl5m0yDAxqfvWCopxIHptvVBpfLPJpYRXeOcEoXKJNedxrsDPQYkDo0y15EajyR9e5hFfa4chLksIy3RH",
 })
 
 const builder = imageUrlBuilder(client)
