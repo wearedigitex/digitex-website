@@ -21,10 +21,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { email, authorId } = await request.json()
+    const { email, authorId, isGuest, name } = await request.json()
 
-    if (!email || !authorId) {
-      return NextResponse.json({ error: "Email and author ID required" }, { status: 400 })
+    if (!email || (!authorId && !isGuest)) {
+      return NextResponse.json({ error: "Email and either author ID or Guest details required" }, { status: 400 })
     }
 
     const normalizedEmail = email.toLowerCase().trim()
@@ -43,6 +43,26 @@ export async function POST(request: NextRequest) {
     const password = generatePassword()
     const hashedPassword = await bcrypt.hash(password, 10)
 
+    let finalAuthorId = authorId
+
+    // Handle Guest creation
+    if (isGuest) {
+        if (!name) {
+            return NextResponse.json({ error: "Name is required for guest contributors" }, { status: 400 })
+        }
+        
+        console.log("Creating guest author:", name)
+        const newAuthor = await adminClient.create({
+            _type: "author",
+            name,
+            slug: { _type: 'slug', current: name.toLowerCase().replace(/\s+/g, '-').slice(0, 96) },
+            isGuest: true,
+            role: "Guest Contributor",
+            image: undefined // Guests can upload later
+        })
+        finalAuthorId = newAuthor._id
+    }
+
     // 4. Create user in Sanity
     console.log("Inviting user:", normalizedEmail)
     const newUser = await adminClient.create({
@@ -53,7 +73,7 @@ export async function POST(request: NextRequest) {
       status: "active",
       author: {
         _type: "reference",
-        _ref: authorId,
+        _ref: finalAuthorId,
       },
       invitedAt: new Date().toISOString(),
     })

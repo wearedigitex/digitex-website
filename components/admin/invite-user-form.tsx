@@ -13,6 +13,10 @@ export function InviteUserForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
   const [message, setMessage] = useState("")
 
+  // Guest State
+  const [isGuest, setIsGuest] = useState(false)
+  const [name, setName] = useState("")
+
   useEffect(() => {
     // Fetch authors from Sanity
     fetch("/api/authors")
@@ -33,7 +37,9 @@ export function InviteUserForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
-          authorId: selectedAuthor,
+          authorId: isGuest ? undefined : selectedAuthor,
+          isGuest,
+          name: isGuest ? name : undefined,
         }),
       })
 
@@ -47,6 +53,8 @@ export function InviteUserForm() {
         }
         setEmail("")
         setSelectedAuthor("")
+        setIsGuest(false)
+        setName("")
       } else {
         setStatus("error")
         const errorDetail = data.details ? ` (${data.details})` : "";
@@ -82,24 +90,57 @@ export function InviteUserForm() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Link to Author Profile
-          </label>
-          <select
-            value={selectedAuthor}
-            onChange={(e) => setSelectedAuthor(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#28829E]"
-          >
-            <option value="">Select an author...</option>
-            {authors.map((author) => (
-              <option key={author._id} value={author._id}>
-                {author.name} - {author.role}
-              </option>
-            ))}
-          </select>
+        {/* Guest Contributor Toggle */}
+        <div className="flex items-center gap-2 pb-2">
+            <input 
+                type="checkbox" 
+                id="isGuest" 
+                checked={isGuest} 
+                onChange={(e) => setIsGuest(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-[#28829E] focus:ring-[#28829E]"
+            />
+            <label htmlFor="isGuest" className="text-sm font-medium text-gray-700">
+                Invite as Guest Contributor
+            </label>
         </div>
+
+        {isGuest ? (
+            <div className="animate-in fade-in slide-in-from-top-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Guest Name
+              </label>
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Guest Author Name"
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                  A basic profile will be created. They can upload their photo and bio later. 
+                  They will <strong>not</strong> appear on the "Meet the Team" page.
+              </p>
+            </div>
+        ) : (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Link to Author Profile
+              </label>
+              <select
+                value={selectedAuthor}
+                onChange={(e) => setSelectedAuthor(e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#28829E]"
+              >
+                <option value="">Select an author...</option>
+                {authors.map((author) => (
+                  <option key={author._id} value={author._id}>
+                    {author.name} - {author.role}
+                  </option>
+                ))}
+              </select>
+            </div>
+        )}
 
         <Button
           type="submit"

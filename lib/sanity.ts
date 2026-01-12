@@ -31,7 +31,7 @@ export function urlFor(source: any) {
 // Function to fetch all team members
 export async function getTeamMembers() {
   return client.fetch(
-    `*[_type == "author"] | order(order asc, name asc) {
+    `*[_type == "author" && (isGuest == false || !defined(isGuest))] | order(order asc, name asc) {
       _id,
       name,
       role,

@@ -60,5 +60,12 @@ export const author = defineType({
       type: 'url',
       description: 'Full URL to LinkedIn profile',
     }),
+    defineField({
+      name: 'isGuest',
+      title: 'Is Guest Contributor',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If true, this author will NOT appear on the Meet the Team page.',
+    }),
   ],
 })
