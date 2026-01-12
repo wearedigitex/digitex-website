@@ -356,7 +356,6 @@ function WritePageContent() {
                 </>
             )}
           </div>
-          </div>
         </div>
 
         {/* Article Form */}
