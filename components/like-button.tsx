@@ -23,17 +23,18 @@ export function LikeButton({ postId, initialLikes, className }: LikeButtonProps)
   
   // Load initial state from localStorage and ensure synchronization with server prop
   useEffect(() => {
-    // 1. Sync state with prop if it changes
-    setLikes(Math.max(0, initialLikes))
-
-    // 2. Check localStorage for user interaction history
+    // Check localStorage for user interaction history
     const storageKey = `digitex_blog_liked_${postId}`
-    const storedLike = localStorage.getItem(storageKey)
+    const storedLike = localStorage.getItem(storageKey) === "true"
     
-    if (storedLike === "true") {
-      setHasLiked(true)
+    setHasLiked(storedLike)
+
+    // If local says liked, but server says 0, assume server is stale/lagging and we are the first like.
+    // This fixes the navigation sync issue for fresh likes.
+    if (storedLike && initialLikes === 0) {
+      setLikes(1)
     } else {
-      setHasLiked(false)
+      setLikes(Math.max(0, initialLikes))
     }
   }, [postId, initialLikes])
 
