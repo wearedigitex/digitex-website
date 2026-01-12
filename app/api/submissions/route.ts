@@ -5,25 +5,42 @@ import { adminClient } from "@/lib/sanity"
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
-    
-    if (!session?.user) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Fetch user's submissions
+    const userEmail = session.user.email
+    const isAdmin = (session.user as any)?.role === "admin"
+
+    // Admins see all submissions, contributors see only their own
+    const query = isAdmin 
+      ? `*[_type == "submission"] | order(_createdAt desc) {
+          _id,
+          title,
+          slug,
+          category,
+          excerpt,
+          status,
+          submittedAt,
+          _createdAt,
+          reviewNotes,
+          "author": author->name
+        }`
+      : `*[_type == "submission" && author->email == $userEmail] | order(_createdAt desc) {
+          _id,
+          title,
+          slug,
+          category,
+          excerpt,
+          status,
+          submittedAt,
+          _createdAt,
+          reviewNotes
+        }`
+
     const submissions = await adminClient.fetch(
-      `*[_type == "submission" && submittedBy->email == $email] | order(_createdAt desc) {
-        _id,
-        _createdAt,
-        title,
-        slug,
-        category,
-        excerpt,
-        status,
-        submittedAt,
-        reviewNotes
-      }`,
-      { email: session.user.email }
+      query,
+      isAdmin ? {} : { userEmail }
     )
 
     return NextResponse.json(submissions)

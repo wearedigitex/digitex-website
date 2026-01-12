@@ -153,6 +153,12 @@ export default function DashboardPage() {
                         <span>Category: {submission.category}</span>
                         <span>•</span>
                         <span>Submitted: {new Date(submission.submittedAt || submission._createdAt).toLocaleDateString()}</span>
+                        {isAdmin && submission.author && (
+                          <>
+                            <span>•</span>
+                            <span>By: {submission.author}</span>
+                          </>
+                        )}
                       </div>
                       {submission.reviewNotes && (
                         <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
