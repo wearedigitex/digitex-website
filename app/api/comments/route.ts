@@ -210,8 +210,8 @@ export async function DELETE(request: NextRequest) {
         message: "Comment thread deleted successfully",
         deletedCount: idsToDelete.length 
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting comment:", error)
-      return NextResponse.json({ error: "Error deleting comment" }, { status: 500 })
+      return NextResponse.json({ error: `Error deleting comment: ${error.message}` }, { status: 500 })
     }
   }
