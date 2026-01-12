@@ -191,7 +191,10 @@ export async function DELETE(request: NextRequest) {
   
       // Decrement comment count on post by the number of APPROVED deleted comments
       if (comment.post?._ref && approvedToDeleteCount > 0) {
-        transaction.patch(comment.post._ref, p => p.dec({ commentCount: approvedToDeleteCount }))
+        transaction.patch(comment.post._ref, p => 
+          p.setIfMissing({ commentCount: 0 })
+           .dec({ commentCount: approvedToDeleteCount })
+        )
       }
   
       await transaction.commit()
