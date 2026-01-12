@@ -10,8 +10,6 @@ import { HeroScene } from "@/components/canvas/hero-scene"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [mode, setMode] = useState<"login" | "signup">("login")
-  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -31,49 +29,6 @@ export default function LoginPage() {
 
       if (result?.error) {
         setError("Invalid email or password")
-        setLoading(false)
-      } else {
-        // Redirection logic: Admins to Studio, Contributors to Dashboard
-        // We push to dashboard first, then dashboard can auto-redirect if we want
-        // But the best UX is just having the link there if they want to manage submissions too.
-        router.push("/dashboard")
-        router.refresh()
-      }
-    } catch (error) {
-      setError("An error occurred. Please try again.")
-      setLoading(false)
-    }
-  }
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error || "Registration failed")
-        setLoading(false)
-        return
-      }
-
-      // Auto-login after successful registration
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        setError("Account created but login failed. Please try logging in manually.")
         setLoading(false)
       } else {
         router.push("/dashboard")
@@ -110,35 +65,18 @@ export default function LoginPage() {
                <Hexagon className="w-8 h-8 text-white transform -rotate-45" fill="currentColor" />
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white">
-              {mode === "login" ? "Welcome Back" : "Join Digitex"}
+              Welcome Back
             </h1>
             <p className="text-gray-400 mt-2 text-sm">
-              {mode === "login" ? "Access your Digitex account" : "Create your contributor account"}
+              Access your Digitex account
             </p>
           </div>
 
-          <form onSubmit={mode === "login" ? handleLogin : handleSignup} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
             {error && (
               <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 flex items-center gap-2 text-red-500 text-sm">
                 <AlertCircle className="w-4 h-4" />
                 {error}
-              </div>
-            )}
-
-            {mode === "signup" && (
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Full Name</label>
-                <div className="relative group">
-                  <User className="absolute left-3 top-3 w-5 h-5 text-gray-500 group-focus-within:text-[#0EA5E9] transition-colors" />
-                  <input 
-                    type="text" 
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="w-full bg-[#111] border border-white/10 rounded-lg h-11 pl-10 text-white focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] transition-all placeholder:text-gray-700"
-                    placeholder="Enter your full name"
-                  />
-                </div>
               </div>
             )}
 
@@ -167,7 +105,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full bg-[#111] border border-white/10 rounded-lg h-11 pl-10 text-white focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] transition-all placeholder:text-gray-700"
-                  placeholder={mode === "signup" ? "Create a password" : "Enter password"}
+                  placeholder="Enter password"
                 />
               </div>
             </div>
@@ -177,24 +115,14 @@ export default function LoginPage() {
               disabled={loading} 
               className="w-full bg-[#0EA5E9] hover:bg-[#0284c7] text-white font-bold h-12 rounded-lg mt-6 shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] transition-all"
             >
-              {loading ? "PROCESSING..." : (mode === "login" ? "LOGIN" : "CREATE ACCOUNT")}
+              {loading ? "PROCESSING..." : "LOGIN"}
             </Button>
           </form>
 
           <div className="mt-8 text-center">
-            <button
-              onClick={() => {
-                setMode(mode === "login" ? "signup" : "login")
-                setError("")
-              }}
-              className="text-sm text-gray-400 hover:text-[#0EA5E9] transition-colors"
-            >
-              {mode === "login" ? (
-                <>Don't have an account? <span className="font-bold">Sign up</span></>
-              ) : (
-                <>Already have an account? <span className="font-bold">Log in</span></>
-              )}
-            </button>
+            <p className="text-sm text-gray-500">
+              New contributor? Ask an admin for an invitation.
+            </p>
           </div>
         </div>
       </div>
