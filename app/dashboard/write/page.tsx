@@ -11,8 +11,11 @@ import { Input } from "@/components/ui/input"
 import { 
   Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
   ArrowLeft, Save, Send, Image as ImageIcon,
-  AlignLeft, AlignCenter, AlignRight, Maximize, Minimize
+  AlignLeft, AlignCenter, AlignRight, Maximize, Minimize, Eye, CheckCircle, XCircle
 } from "lucide-react"
+
+import { useSession } from "next-auth/react"
+import { ArticlePreviewModal } from "@/components/article-preview-modal"
 
 const CATEGORIES = ["TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 
@@ -54,6 +57,9 @@ function WritePageContent() {
   const searchParams = useSearchParams()
   const submissionId = searchParams.get("id")
 
+  const { data: session } = useSession()
+  const isAdmin = (session?.user as any)?.role === "admin"
+
   const [title, setTitle] = useState("")
   const [slug, setSlug] = useState("")
   const [category, setCategory] = useState("TECHNOLOGY")
@@ -63,6 +69,7 @@ function WritePageContent() {
   const [mainImageHotspot, setMainImageHotspot] = useState({ x: 0.5, y: 0.5 })
   const [saving, setSaving] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
 
   const [, setUpdate] = useState(0)
   const editor = useEditor({
@@ -200,7 +207,7 @@ function WritePageContent() {
     input.click()
   }
 
-  const handleSave = async (status: "draft" | "submitted") => {
+  const handleSave = async (status: "draft" | "submitted" | "published" | "rejected") => {
     if (!title || !slug || !category) {
       alert("Please fill in title, slug, and category")
       return
@@ -242,7 +249,13 @@ function WritePageContent() {
       })
 
       if (response.ok) {
-        alert(status === "draft" ? "Draft saved!" : "Article submitted for review!")
+        let msg = "Saved!"
+        if (status === "draft") msg = "Draft saved!"
+        if (status === "submitted") msg = "Submitted for review!"
+        if (status === "published") msg = "Article Published!"
+        if (status === "rejected") msg = "Article Rejected."
+        
+        alert(msg)
         router.push("/dashboard")
       } else {
         const err = await response.json()
@@ -294,22 +307,55 @@ function WritePageContent() {
                 </Button>
             )}
             <Button
-              onClick={() => handleSave("draft")}
-              disabled={saving || submitting}
-              variant="outline"
-              className="border-white/20 hover:bg-white/10"
+              onClick={() => setPreviewOpen(true)}
+              variant="secondary"
+              className="bg-white/10 hover:bg-white/20 text-white"
             >
-              <Save className="w-4 h-4 mr-2" />
-              {saving ? "Saving..." : "Save Draft"}
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
             </Button>
-            <Button
-              onClick={() => handleSave("submitted")}
-              disabled={saving || submitting}
-              className="bg-[#28829E] hover:bg-teal-700"
-            >
-              <Send className="w-4 h-4 mr-2" />
-              {submitting ? "Submitting..." : "Submit for Review"}
-            </Button>
+
+            {isAdmin && submissionId ? (
+                <>
+                    <Button
+                        onClick={() => handleSave("rejected")}
+                        className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50"
+                        disabled={saving || submitting}
+                    >
+                        <XCircle className="w-4 h-4 mr-2" />
+                        Reject
+                    </Button>
+                    <Button
+                        onClick={() => handleSave("published")}
+                        className="bg-green-500 hover:bg-green-600 text-white"
+                        disabled={saving || submitting}
+                    >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Approve & Publish
+                    </Button>
+                </>
+            ) : (
+                <>
+                    <Button
+                    onClick={() => handleSave("draft")}
+                    disabled={saving || submitting}
+                    variant="outline"
+                    className="border-white/20 hover:bg-white/10"
+                    >
+                    <Save className="w-4 h-4 mr-2" />
+                    {saving ? "Saving..." : "Save Draft"}
+                    </Button>
+                    <Button
+                    onClick={() => handleSave("submitted")}
+                    disabled={saving || submitting}
+                    className="bg-[#28829E] hover:bg-teal-700"
+                    >
+                    <Send className="w-4 h-4 mr-2" />
+                    {submitting ? "Submitting..." : "Submit for Review"}
+                    </Button>
+                </>
+            )}
+          </div>
           </div>
         </div>
 
@@ -530,6 +576,21 @@ function WritePageContent() {
           <EditorContent editor={editor} />
         </div>
       </div>
+
+      <ArticlePreviewModal 
+        isOpen={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        data={{
+            title,
+            category,
+            excerpt,
+            bodyHtml: editor?.getHTML() || "",
+            mainImagePreview,
+            mainImageHotspot,
+            authorName: session?.user?.name || "You",
+            date: new Date()
+        }}
+      />
     </main>
   )
 }
