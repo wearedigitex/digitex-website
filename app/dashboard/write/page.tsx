@@ -271,6 +271,28 @@ function WritePageContent() {
             Back to Dashboard
           </Link>
           <div className="flex items-center gap-3">
+            {submissionId && (
+                <Button
+                    onClick={async () => {
+                        if (!confirm("Are you sure you want to delete this draft? This cannot be undone.")) return
+                        
+                        try {
+                            const res = await fetch(`/api/submissions/${submissionId}`, { method: "DELETE" })
+                            if (res.ok) {
+                                router.push("/dashboard")
+                            } else {
+                                alert("Failed to delete draft")
+                            }
+                        } catch (e) {
+                            alert("Error deleting draft")
+                        }
+                    }}
+                    variant="ghost"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-950/30"
+                >
+                    Delete Draft
+                </Button>
+            )}
             <Button
               onClick={() => handleSave("draft")}
               disabled={saving || submitting}
