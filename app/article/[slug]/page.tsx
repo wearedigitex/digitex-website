@@ -10,6 +10,7 @@ import { PortableText } from "@portabletext/react"
 import { getPostBySlug, getRecentPosts, urlFor } from "@/lib/sanity"
 import { Button } from "@/components/ui/button"
 import { CommentsSection } from "@/components/comments-section"
+import { getObjectPosition } from "@/lib/utils"
 
 export default function ArticlePage() {
   const params = useParams()
@@ -133,13 +134,14 @@ export default function ArticlePage() {
         </div>
 
         {/* Featured Image */}
-        {post.imageUrl && (
+        {post.mainImage && (
           <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-12 border border-white/10">
             <Image
-              src={post.imageUrl}
+              src={urlFor(post.mainImage).url()}
               alt={post.title}
               fill
               className="object-cover"
+              style={{ objectPosition: getObjectPosition(post.mainImage.hotspot) }}
             />
           </div>
         )}

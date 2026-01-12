@@ -5,10 +5,11 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { Search, ArrowRight, Eye, MessageSquare, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { getBlogPosts } from "@/lib/sanity"
+import { getBlogPosts, urlFor } from "@/lib/sanity"
 import { format } from "date-fns"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { getObjectPosition } from "@/lib/utils"
 
 const CATEGORIES = ["All", "TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 const SORT_OPTIONS = [
@@ -220,8 +221,14 @@ export default function BlogPage() {
               >
                 {/* Image Card */}
                 <div className="aspect-[4/3] bg-[#0A0A0A] rounded-2xl overflow-hidden mb-6 border border-white/5 group-hover:border-[#28829E]/50 transition-colors relative">
-                  {post.imageUrl ? (
-                    <Image src={post.imageUrl} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                  {post.mainImage ? (
+                    <Image 
+                      src={urlFor(post.mainImage).url()} 
+                      alt={post.title} 
+                      fill 
+                      className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                      style={{ objectPosition: getObjectPosition(post.mainImage.hotspot) }}
+                    />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-700 bg-grid-pattern opacity-20">
                       DigiteX

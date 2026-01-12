@@ -10,13 +10,44 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { 
   Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
-  ArrowLeft, Save, Send, Image as ImageIcon
+  ArrowLeft, Save, Send, Image as ImageIcon,
+  AlignLeft, AlignCenter, AlignRight, Maximize, Minimize
 } from "lucide-react"
 
 const CATEGORIES = ["TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 
 import { urlFor } from "@/lib/sanity"
 import { Suspense } from "react"
+
+const CustomImage = Image.extend({
+  name: 'image',
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: '100%',
+        renderHTML: attributes => ({
+          width: attributes.width,
+          style: `width: ${attributes.width}; max-width: 100%; height: auto;`,
+        }),
+      },
+      align: {
+        default: 'center',
+        renderHTML: attributes => {
+          const styles: Record<string, string> = {
+            left: 'float: left; margin-right: 2rem; margin-bottom: 1.5rem; max-width: 50%;',
+            right: 'float: right; margin-left: 2rem; margin-bottom: 1.5rem; max-width: 50%;',
+            center: 'display: block; margin: 2.5rem auto; width: 100%;',
+          }
+          return {
+            'data-align': attributes.align,
+            style: styles[attributes.align] || styles.center,
+          }
+        },
+      },
+    }
+  },
+})
 
 function WritePageContent() {
   const router = useRouter()
@@ -29,15 +60,22 @@ function WritePageContent() {
   const [excerpt, setExcerpt] = useState("")
   const [mainImage, setMainImage] = useState<string | null>(null)
   const [mainImagePreview, setMainImagePreview] = useState<string | null>(null)
+  const [mainImageHotspot, setMainImageHotspot] = useState({ x: 0.5, y: 0.5 })
   const [saving, setSaving] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
+  const [, setUpdate] = useState(0)
   const editor = useEditor({
-    extensions: [StarterKit, Image],
+    extensions: [StarterKit, CustomImage],
     content: "<p>Start writing your article...</p>",
+    immediatelyRender: false,
+    onTransaction: () => {
+      // Force re-render on any editor state change
+      setUpdate(s => s + 1)
+    },
     editorProps: {
       attributes: {
-        class: "prose prose-invert max-w-none focus:outline-none min-h-[400px] p-6",
+        class: "prose prose-invert max-w-none focus:outline-none min-h-[400px] p-6 article-content",
       },
     },
   })
@@ -66,9 +104,11 @@ function WritePageContent() {
           setCategory(data.category)
           setExcerpt(data.excerpt || "")
           if (data.mainImage) {
-            // Reconstruct the image URL or just keep the ref
             setMainImage(data.mainImage.asset._ref)
             setMainImagePreview(urlFor(data.mainImage).url())
+            if (data.mainImage.hotspot) {
+              setMainImageHotspot(data.mainImage.hotspot)
+            }
           }
           if (editor) {
             if (data.bodyHtml) {
@@ -118,10 +158,10 @@ function WritePageContent() {
       const file = e.target.files?.[0]
       if (!file) return
 
-      // Insert placeholder with unique ID
-      const loadingId = `loading-${Date.now()}`
+      // Insert loading placeholder text
+      const loadingText = `[UPLOADING_IMAGE_${Date.now()}]`
       if (editor) {
-        editor.chain().focus().insertContent(`<p id="${loadingId}"><i>Uploading image...</i></p>`).run()
+        editor.chain().focus().insertContent(loadingText).run()
       }
 
       const formData = new FormData()
@@ -135,29 +175,25 @@ function WritePageContent() {
         const data = await res.json()
         
         if (data.success && editor) {
-          // Find the temporary loading text and replace it
           const content = editor.getHTML()
-          const newContent = content.replace(`<p id="${loadingId}"><i>Uploading image...</i></p>`, `<img src="${data.url}" />`)
+          const newContent = content.replace(loadingText, `<img src="${data.url}" />`)
           editor.commands.setContent(newContent)
           editor.commands.focus()
         } else {
-          // Remove loading placeholder on error
+          // Remove placeholder on error
           if (editor) {
             const content = editor.getHTML()
-            const newContent = content.replace(`<p id="${loadingId}"><i>Uploading image...</i></p>`, "")
+            const newContent = content.replace(loadingText, "")
             editor.commands.setContent(newContent)
           }
-          console.error("Upload failed:", data)
           alert(`Failed to upload image: ${data.error || "Unknown error"}`)
         }
       } catch (err) {
-        // Remove loading placeholder on error
         if (editor) {
           const content = editor.getHTML()
-          const newContent = content.replace(`<p id="${loadingId}"><i>Uploading image...</i></p>`, "")
+          const newContent = content.replace(loadingText, "")
           editor.commands.setContent(newContent)
         }
-        console.error("Body image upload error:", err)
         alert("Error uploading image. Please try again.")
       }
     }
@@ -187,6 +223,13 @@ function WritePageContent() {
           asset: {
             _type: "reference",
             _ref: mainImage
+          },
+          hotspot: {
+            _type: "sanity.imageHotspot",
+            x: mainImageHotspot.x,
+            y: mainImageHotspot.y,
+            height: 1,
+            width: 1
           }
         } : undefined,
         status,
@@ -277,25 +320,51 @@ function WritePageContent() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">Main Headline Image</label>
-                <div 
-                  onClick={() => document.getElementById("main-image-input")?.click()}
-                  className="aspect-video bg-black/50 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#28829E]/50 transition-colors group overflow-hidden relative"
-                >
-                  {mainImagePreview ? (
-                    <img src={mainImagePreview} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <>
-                      <ImageIcon className="w-10 h-10 text-gray-600 mb-2 group-hover:text-[#28829E] transition-colors" />
-                      <p className="text-sm text-gray-500">Click to upload headline image</p>
-                    </>
+                <div className="flex gap-4">
+                  <div 
+                    onClick={() => document.getElementById("main-image-input")?.click()}
+                    className="flex-1 aspect-video bg-black/50 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#28829E]/50 transition-colors group overflow-hidden relative"
+                  >
+                    {mainImagePreview ? (
+                      <img 
+                        src={mainImagePreview} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover" 
+                        style={{ objectPosition: `50% ${mainImageHotspot.y * 100}%` }}
+                      />
+                    ) : (
+                      <>
+                        <ImageIcon className="w-10 h-10 text-gray-600 mb-2 group-hover:text-[#28829E] transition-colors" />
+                        <p className="text-sm text-gray-500">Click to upload headline image</p>
+                      </>
+                    )}
+                    <input 
+                      id="main-image-input"
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleMainImageUpload}
+                      className="hidden" 
+                    />
+                  </div>
+
+                  {/* Positioning Slider */}
+                  {mainImagePreview && (
+                    <div className="flex flex-col items-center gap-2">
+                       <label className="text-[10px] uppercase font-bold text-gray-500 vertical-text">Position</label>
+                       <div className="relative h-full w-8 bg-black/50 border border-white/10 rounded-lg flex flex-col justify-between py-2 items-center">
+                         <input 
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.01"
+                          value={mainImageHotspot.y}
+                          onChange={(e) => setMainImageHotspot(prev => ({ ...prev, y: parseFloat(e.target.value) }))}
+                          className="h-full w-1 accent-[#28829E] appearance-none bg-white/10 rounded-full cursor-ns-resize"
+                          style={{ writingMode: 'bt-lr', appearance: 'slider-vertical' } as any}
+                         />
+                       </div>
+                    </div>
                   )}
-                  <input 
-                    id="main-image-input"
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handleMainImageUpload}
-                    className="hidden" 
-                  />
                 </div>
               </div>
 
@@ -378,6 +447,60 @@ function WritePageContent() {
           >
             <ImageIcon className="w-5 h-5" />
           </button>
+
+          {/* Image Alignment & Size (Visible when image selected) */}
+          {editor.isActive('image') && (
+             <>
+              <div className="w-px h-8 bg-white/10 mx-1" />
+              <button
+                type="button"
+                onClick={() => editor.chain().focus().updateAttributes('image', { align: 'left' }).run()}
+                className={`p-2 rounded hover:bg-white/10 ${editor.getAttributes('image').align === 'left' ? "text-[#28829E]" : ""}`}
+                title="Align Left"
+              >
+                <AlignLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => editor.chain().focus().updateAttributes('image', { align: 'center' }).run()}
+                className={`p-2 rounded hover:bg-white/10 ${editor.getAttributes('image').align === 'center' || !editor.getAttributes('image').align ? "text-[#28829E]" : ""}`}
+                title="Align Center"
+              >
+                <AlignCenter className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => editor.chain().focus().updateAttributes('image', { align: 'right' }).run()}
+                className={`p-2 rounded hover:bg-white/10 ${editor.getAttributes('image').align === 'right' ? "text-[#28829E]" : ""}`}
+                title="Align Right"
+              >
+                <AlignRight className="w-5 h-5" />
+              </button>
+              
+              <div className="w-px h-8 bg-white/10 mx-1" />
+              <button
+                type="button"
+                onClick={() => editor.chain().focus().updateAttributes('image', { width: '25%' }).run()}
+                className={`p-1 text-[10px] font-bold rounded hover:bg-white/10 ${editor.getAttributes('image').width === '25%' ? "text-[#28829E]" : ""}`}
+              >
+                25%
+              </button>
+              <button
+                type="button"
+                onClick={() => editor.chain().focus().updateAttributes('image', { width: '50%' }).run()}
+                className={`p-1 text-[10px] font-bold rounded hover:bg-white/10 ${editor.getAttributes('image').width === '50%' ? "text-[#28829E]" : ""}`}
+              >
+                50%
+              </button>
+              <button
+                type="button"
+                onClick={() => editor.chain().focus().updateAttributes('image', { width: '100%' }).run()}
+                className={`p-1 text-[10px] font-bold rounded hover:bg-white/10 ${editor.getAttributes('image').width === '100%' || !editor.getAttributes('image').width ? "text-[#28829E]" : ""}`}
+              >
+                100%
+              </button>
+             </>
+          )}
         </div>
 
         {/* Editor Content */}

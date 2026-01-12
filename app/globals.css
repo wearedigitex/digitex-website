@@ -234,34 +234,58 @@
 }
 
 /* Styles for rendered HTML content */
+.article-content {
+  position: relative;
+}
+
+.article-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 .article-content img {
   max-width: 100%;
   height: auto;
   border-radius: 1rem;
   margin: 2.5rem 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
 /* Floated images need extra margins for text spacing */
-.article-content img[style*="float: left"],
-.article-content img.note-float-left {
+.article-content img[data-align="left"],
+.ProseMirror img[data-align="left"] {
+  float: left;
   margin-right: 2rem;
   margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
 }
 
-.article-content img[style*="float: right"],
-.article-content img.note-float-right {
+.article-content img[data-align="right"],
+.ProseMirror img[data-align="right"] {
+  float: right;
   margin-left: 2rem;
   margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
 }
 
-/* Also apply to ProseMirror editor for WYSIWYG */
-.ProseMirror img[style*="float: left"] {
-  margin-right: 2rem;
-  margin-bottom: 1.5rem;
+.article-content img[data-align="center"],
+.ProseMirror img[data-align="center"] {
+  display: block;
+  margin: 2.5rem auto;
+  float: none;
 }
 
-.ProseMirror img[style*="float: right"] {
-  margin-left: 2rem;
-  margin-bottom: 1.5rem;
+/* Specific overrides for mobile */
+@media (max-width: 768px) {
+  .article-content img[data-align="left"],
+  .article-content img[data-align="right"],
+  .ProseMirror img[data-align="left"],
+  .ProseMirror img[data-align="right"] {
+    float: none;
+    margin: 2rem auto;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
 }

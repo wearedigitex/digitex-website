@@ -54,7 +54,7 @@ export async function getBlogPosts() {
       publishedAt,
       excerpt,
       "authorName": author->name,
-      "imageUrl": mainImage.asset->url,
+      mainImage,
       viewCount,
       commentCount
     }`,
@@ -76,7 +76,7 @@ export async function getPostBySlug(slug: string) {
       body,
       bodyHtml,
       "author": author->{name, role, "imageUrl": image.asset->url},
-      "imageUrl": mainImage.asset->url,
+      mainImage,
       viewCount,
       commentCount
     }`,
