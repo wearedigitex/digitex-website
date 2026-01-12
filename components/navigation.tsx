@@ -56,7 +56,7 @@ export function Navigation() {
                    className="object-contain"
                  />
                </div>
-               <span className="font-bold text-2xl tracking-tight text-white">Digi<span className="text-[#28829E]">teX</span></span>
+               <span className="font-bold text-2xl tracking-tight text-white">Digite<span className="text-[#28829E]">X</span></span>
              </div>
           </Link>
 
