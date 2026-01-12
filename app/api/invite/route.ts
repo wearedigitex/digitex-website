@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       _type: "user",
       email: normalizedEmail,
       password: hashedPassword,
-      role: "contributor",
+      role: isGuest ? "guest" : "contributor",
       status: "active",
       author: {
         _type: "reference",

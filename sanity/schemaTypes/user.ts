@@ -27,6 +27,7 @@ export const user = defineType({
         list: [
           { title: 'Admin', value: 'admin' },
           { title: 'Contributor', value: 'contributor' },
+          { title: 'Guest Contributor', value: 'guest' },
         ],
       },
       initialValue: 'contributor',

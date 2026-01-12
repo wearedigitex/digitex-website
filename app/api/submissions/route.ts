@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     const submission = await adminClient.create({
       _type: "submission",
       title: data.title,
-      slug: { current: data.slug },
+      slug: data.slug,
       category: data.category,
       excerpt: data.excerpt,
       body: data.body,
