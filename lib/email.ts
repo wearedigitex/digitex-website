@@ -10,7 +10,7 @@ export async function sendInvitationEmail(email: string, password: string) {
       return { success: false, error: 'API key missing' }
     }
     const { data, error } = await resend.emails.send({
-      from: 'Digitex <onboarding@resend.dev>',
+      from: 'Digitex <team@wearedigitex.org>',
       replyTo: 'wearedigitex@gmail.com',
       to: email,
       subject: 'Welcome to Digitex - Your Account Details',
@@ -57,7 +57,7 @@ export async function sendApprovalEmail(email: string, articleTitle: string, app
       return { success: false, error: 'API key missing' }
     }
     const { data, error } = await resend.emails.send({
-      from: 'Digitex <onboarding@resend.dev>',
+      from: 'Digitex <team@wearedigitex.org>',
       replyTo: 'wearedigitex@gmail.com',
       to: email,
       subject: approved 
@@ -100,7 +100,7 @@ export async function sendContactEmail(name: string, email: string, message: str
       return { success: false, error: 'API key missing' }
     }
     const { data, error } = await resend.emails.send({
-      from: 'Digitex Contact <onboarding@resend.dev>',
+      from: 'Digitex Contact <team@wearedigitex.org>',
       to: 'wearedigitex@gmail.com',
       replyTo: email,
       subject: `New Contact Form Submission from ${name}`,
