@@ -31,10 +31,32 @@ export const comment = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'parentComment',
+      title: 'Parent Comment',
+      type: 'reference',
+      to: [{ type: 'comment' }],
+      description: 'Reference to parent comment for threading/replies',
+    }),
+    defineField({
       name: 'approved',
       title: 'Approved',
       type: 'boolean',
       initialValue: false,
+    }),
+    defineField({
+      name: 'isTeamMember',
+      title: 'Is Team Member',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Whether this comment is from a verify team member',
+    }),
+    defineField({
+      name: 'autoApproved',
+      title: 'Auto-Approved (Counted)',
+      type: 'boolean',
+      initialValue: false,
+      readOnly: true,
+      description: 'Whether this comment was auto-approved and counted. Do not modify manually.',
     }),
     defineField({
       name: 'createdAt',

@@ -42,11 +42,13 @@ export function LikeButton({ postId, initialLikes, className }: LikeButtonProps)
     e.preventDefault() // Prevent navigation if inside a Link
     e.stopPropagation()
 
-    // Optimistic Update
+    // Determine new state
     const newHasLiked = !hasLiked
-    // Safety: Never go below 0
+    // If we are liking, add 1. If unliking, subtract 1 but don't go below 0.
+    // We use the `likes` state as the base.
     const newLikes = newHasLiked ? likes + 1 : Math.max(0, likes - 1)
 
+    // Optimistic Update
     setHasLiked(newHasLiked)
     setLikes(newLikes)
     
@@ -76,9 +78,6 @@ export function LikeButton({ postId, initialLikes, className }: LikeButtonProps)
             })
 
             if (!res.ok) throw new Error("Failed to update likes")
-            
-            // Optional: Sync with server response if needed
-            // const data = await res.json()
         } catch (error) {
             console.error("Like update failed", error)
             // Revert on failure

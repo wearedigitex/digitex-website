@@ -98,7 +98,6 @@ export const post = defineType({
       title: 'Likes',
       type: 'number',
       initialValue: 0,
-      readOnly: true,
     }),
   ],
 })

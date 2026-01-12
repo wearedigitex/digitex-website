@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { MaskedInput } from '../components/MaskedInput'
 
 export const user = defineType({
   name: 'user',
@@ -61,6 +62,15 @@ export const user = defineType({
       name: 'lastLogin',
       title: 'Last Login',
       type: 'datetime',
+    }),
+    defineField({
+      name: 'verificationCode',
+      title: 'Verification Code (Secret)',
+      type: 'string',
+      components: {
+        input: MaskedInput,
+      },
+      description: 'Secret code required to verify as this team member when commenting',
     }),
   ],
   preview: {
