@@ -5,11 +5,15 @@ import Image from "next/image"
 import { User, Users, Info, X, RefreshCw, Linkedin } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+import { urlFor } from "@/lib/sanity"
+import { getObjectPosition } from "@/lib/utils"
+
 interface TeamMember {
   _id: string
   name: string
   role: string
   imageUrl?: string
+  image?: any
   bio?: string
   linkedin?: string
 }
@@ -20,6 +24,8 @@ interface TeamCardProps {
 
 export function TeamCard({ member }: TeamCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
+
+  const displayImageUrl = member.image ? urlFor(member.image).url() : member.imageUrl
 
   return (
     <div className="group/card relative rounded-3xl overflow-hidden bg-[#0a0f2c] border border-white/10 hover:border-[#28829E]/50 transition-colors duration-300">
@@ -41,12 +47,13 @@ export function TeamCard({ member }: TeamCardProps) {
                 
                 {/* Front Side (Image) */}
                 <div className="absolute inset-0 h-full w-full [backface-visibility:hidden] rounded-2xl overflow-hidden shadow-inner bg-[#111]">
-                    {member.imageUrl ? (
+                    {displayImageUrl ? (
                     <Image 
-                        src={member.imageUrl} 
+                        src={displayImageUrl} 
                         alt={member.name} 
                         fill 
                         className="object-cover"
+                        style={{ objectPosition: getObjectPosition(member.image?.hotspot) }}
                     />
                     ) : (
                     <div className="flex items-center justify-center h-full">

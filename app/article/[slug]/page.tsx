@@ -197,7 +197,17 @@ export default function ArticlePage() {
         {post.author && (
           <div className="bg-white/5 rounded-2xl p-8 border border-white/10 mb-16 relative z-10">
             <div className="flex items-start gap-6">
-              {post.author.imageUrl && (
+              {post.author.image ? (
+                <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                  <Image
+                    src={urlFor(post.author.image).url()}
+                    alt={post.author.name}
+                    fill
+                    className="object-cover"
+                    style={{ objectPosition: getObjectPosition(post.author.image?.hotspot) }}
+                  />
+                </div>
+              ) : post.author.imageUrl && (
                 <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
                   <Image
                     src={post.author.imageUrl}
@@ -233,12 +243,13 @@ export default function ArticlePage() {
               {recentPosts.map((rPost) => (
                 <Link key={rPost._id} href={`/article/${rPost.slug}`} className="group block">
                   <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-4 border border-white/10">
-                    {rPost.imageUrl ? (
+                    {rPost.mainImage ? (
                       <Image
-                        src={rPost.imageUrl}
+                        src={urlFor(rPost.mainImage).url()}
                         alt={rPost.title}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        style={{ objectPosition: getObjectPosition(rPost.mainImage?.hotspot) }}
                       />
                     ) : (
                       <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center text-gray-700">No Image</div>

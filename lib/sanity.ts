@@ -36,7 +36,7 @@ export async function getTeamMembers() {
       name,
       role,
       department,
-      "imageUrl": image.asset->url,
+      image,
       bio,
       linkedin
     }`
@@ -75,7 +75,7 @@ export async function getPostBySlug(slug: string) {
       excerpt,
       body,
       bodyHtml,
-      "author": author->{name, role, "imageUrl": image.asset->url},
+      "author": author->{name, role, image, bio},
       mainImage,
       viewCount,
       commentCount
@@ -103,7 +103,7 @@ export async function getRecentPosts(excludeId: string, limit: number = 3) {
       "slug": slug.current,
       category,
       publishedAt,
-      "imageUrl": mainImage.asset->url,
+      mainImage,
       viewCount
     }`,
     { excludeId, limit },
