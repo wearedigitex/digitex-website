@@ -46,21 +46,39 @@ export default function ReviewPage() {
 
         setActionLoading(true)
         try {
-            const res = await fetch(`/api/submissions?id=${params.id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    id: params.id,
-                    status
+            if (status === "published") {
+                // Call publish API to create post document
+                const res = await fetch(`/api/publish`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ submissionId: params.id })
                 })
-            })
 
-            if (res.ok) {
-                alert(`Article ${status === "published" ? "Published" : "Rejected"}!`)
-                router.push("/dashboard")
+                if (res.ok) {
+                    alert("Article Published!")
+                    router.push("/dashboard")
+                } else {
+                    const err = await res.json()
+                    alert(`Failed: ${err.error}`)
+                }
             } else {
-                const err = await res.json()
-                alert(`Failed: ${err.error}`)
+                // Just update status to rejected
+                const res = await fetch(`/api/submissions`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: params.id,
+                        status: "rejected"
+                    })
+                })
+
+                if (res.ok) {
+                    alert("Article Rejected.")
+                    router.push("/dashboard")
+                } else {
+                    const err = await res.json()
+                    alert(`Failed: ${err.error}`)
+                }
             }
         } catch (e) {
             console.error(e)

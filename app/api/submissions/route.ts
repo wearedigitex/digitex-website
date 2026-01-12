@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
           reviewNotes,
           "author": author->name
         }`
-      : `*[_type == "submission" && author->email == $userEmail] | order(_createdAt desc) {
+      : `*[_type == "submission" && submittedBy->email == $userEmail] | order(_createdAt desc) {
           _id,
           title,
           slug,
