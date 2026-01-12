@@ -25,7 +25,7 @@ export async function sendInvitationEmail(email: string, password: string) {
             <p><strong>Temporary Password:</strong> <code style="background: #fff; padding: 4px 8px; border-radius: 4px;">${password}</code></p>
           </div>
           
-          <p>Please log in at <a href="${process.env.NEXTAUTH_URL}/login" style="color: #28829E;">digitex-website.vercel.app/login</a></p>
+          <p>Please log in at <a href="${process.env.NEXTAUTH_URL}/login" style="color: #28829E;">${process.env.NEXTAUTH_URL}/login</a></p>
           
           <p><strong>Important:</strong> For security reasons, please change your password after your first login by visiting your dashboard settings.</p>
           
