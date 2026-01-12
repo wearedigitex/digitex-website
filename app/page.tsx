@@ -185,55 +185,40 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-3 gap-12">
             {/* Who We Are */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="group p-8 bg-white/5 border border-white/10 rounded-2xl hover:border-[#28829E]/50 transition-all duration-300"
-            >
-              <div className="w-16 h-16 bg-[#28829E]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Users className="w-8 h-8 text-[#28829E]" />
+            <SpotlightCard className="foundation-card text-center group p-8 hover:-translate-y-2 relative">
+               <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"/>
+              <div className="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#28829E] group-hover:shadow-[0_0_20px_#28829E] transition-all">
+                <Users className="w-10 h-10 text-[#28829E] group-hover:text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Who We Are</h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
                 A student-led digital publication uniting voices from different fields to explore how technology is reshaping our world.
               </p>
-            </motion.div>
+            </SpotlightCard>
 
             {/* What We Do */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="group p-8 bg-white/5 border border-white/10 rounded-2xl hover:border-[#28829E]/50 transition-all duration-300"
-            >
-              <div className="w-16 h-16 bg-[#28829E]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Target className="w-8 h-8 text-[#28829E]" />
+            <SpotlightCard className="foundation-card text-center group p-8 hover:-translate-y-2 relative" spotlightColor="rgba(14, 165, 233, 0.25)">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"/>
+              <div className="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#0EA5E9] group-hover:shadow-[0_0_20px_#0EA5E9] transition-all">
+                <Zap className="w-10 h-10 text-[#0EA5E9] group-hover:text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">What We Do</h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
                 We publish insights, spotlight innovators, and host creative initiatives that connect students, alumni, and professionals across industries.
               </p>
-            </motion.div>
+            </SpotlightCard>
 
             {/* Vision */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="group p-8 bg-white/5 border border-white/10 rounded-2xl hover:border-[#28829E]/50 transition-all duration-300"
-            >
-              <div className="w-16 h-16 bg-[#28829E]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Lightbulb className="w-8 h-8 text-[#28829E]" />
+            <SpotlightCard className="foundation-card text-center group p-8 hover:-translate-y-2 relative" spotlightColor="rgba(168, 85, 247, 0.25)">
+               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"/>
+               <div className="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-purple-600 group-hover:shadow-[0_0_20px_purple] transition-all">
+                <Globe className="w-10 h-10 text-purple-500 group-hover:text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Vision</h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
                 To build a global hub where curiosity meets innovation, and where the next generation of thinkers collaborates to shape the future.
               </p>
-            </motion.div>
+            </SpotlightCard>
           </div>
         </div>
       </section>
