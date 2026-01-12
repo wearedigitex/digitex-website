@@ -162,11 +162,21 @@ export default function DashboardPage() {
                         </div>
                       )}
                     </div>
-                    <Link href={`/dashboard/write?id=${submission._id}`}>
-                      <Button variant="outline" size="sm" className="border-white/20 hover:bg-white/10">
-                        Edit
-                      </Button>
-                    </Link>
+                      <div className="flex gap-2">
+                        {isAdmin && submission.status === "submitted" && (
+                            <Link href={`/dashboard/review/${submission._id}`}>
+                                <Button variant="secondary" size="sm" className="bg-white/10 hover:bg-white/20 text-white">
+                                    <Eye className="w-4 h-4 mr-2" />
+                                    Review
+                                </Button>
+                            </Link>
+                        )}
+                        <Link href={`/dashboard/write?id=${submission._id}`}>
+                            <Button variant="outline" size="sm" className="border-white/20 hover:bg-white/10">
+                                Edit
+                            </Button>
+                        </Link>
+                      </div>
                   </div>
                 </div>
               ))}

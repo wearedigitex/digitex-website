@@ -315,46 +315,23 @@ function WritePageContent() {
               Preview
             </Button>
 
-            {isAdmin && submissionId ? (
-                <>
-                    <Button
-                        onClick={() => handleSave("rejected")}
-                        className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50"
-                        disabled={saving || submitting}
-                    >
-                        <XCircle className="w-4 h-4 mr-2" />
-                        Reject
-                    </Button>
-                    <Button
-                        onClick={() => handleSave("published")}
-                        className="bg-green-500 hover:bg-green-600 text-white"
-                        disabled={saving || submitting}
-                    >
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Approve & Publish
-                    </Button>
-                </>
-            ) : (
-                <>
-                    <Button
-                    onClick={() => handleSave("draft")}
-                    disabled={saving || submitting}
-                    variant="outline"
-                    className="border-white/20 hover:bg-white/10"
-                    >
-                    <Save className="w-4 h-4 mr-2" />
-                    {saving ? "Saving..." : "Save Draft"}
-                    </Button>
-                    <Button
-                    onClick={() => handleSave("submitted")}
-                    disabled={saving || submitting}
-                    className="bg-[#28829E] hover:bg-teal-700"
-                    >
-                    <Send className="w-4 h-4 mr-2" />
-                    {submitting ? "Submitting..." : "Submit for Review"}
-                    </Button>
-                </>
-            )}
+            <Button
+            onClick={() => handleSave("draft")}
+            disabled={saving || submitting}
+            variant="outline"
+            className="border-white/20 hover:bg-white/10"
+            >
+            <Save className="w-4 h-4 mr-2" />
+            {saving ? "Saving..." : "Save Draft"}
+            </Button>
+            <Button
+            onClick={() => handleSave("submitted")}
+            disabled={saving || submitting}
+            className="bg-[#28829E] hover:bg-teal-700"
+            >
+            <Send className="w-4 h-4 mr-2" />
+            {submitting ? "Submitting..." : "Submit for Review"}
+            </Button>
           </div>
         </div>
 
