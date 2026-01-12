@@ -4,8 +4,9 @@ import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
-import { ArrowLeft, User, Lock, Hexagon, AlertCircle } from "lucide-react"
+import { ArrowLeft, User, Lock, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 import { HeroScene } from "@/components/canvas/hero-scene"
 
 export default function LoginPage() {
@@ -61,8 +62,13 @@ export default function LoginPage() {
           <div className="absolute inset-0 border border-[#0EA5E9]/50 rounded-2xl shadow-[0_0_30px_rgba(14,165,233,0.15)] pointer-events-none"></div>
           
           <div className="flex flex-col items-center mb-10">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#28829E] to-[#0EA5E9] rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20 transform rotate-45">
-               <Hexagon className="w-8 h-8 text-white transform -rotate-45" fill="currentColor" />
+            <div className="relative w-24 h-24 mb-6 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+               <Image 
+                 src="/DigitexLogo.png" 
+                 alt="Digitex Logo" 
+                 fill 
+                 className="object-contain"
+               />
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white">
               Welcome Back

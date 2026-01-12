@@ -10,12 +10,14 @@ import { format } from "date-fns"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { getObjectPosition } from "@/lib/utils"
+import { LikeButton } from "@/components/like-button"
 
 const CATEGORIES = ["All", "TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 const SORT_OPTIONS = [
   { label: "Newest First", value: "newest" },
   { label: "Oldest First", value: "oldest" },
   { label: "Most Viewed", value: "views" },
+  { label: "Most Liked", value: "likes" },
   { label: "Most Commented", value: "comments" },
 ]
 
@@ -80,6 +82,8 @@ export default function BlogPage() {
           return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
         case "views":
           return (b.viewCount || 0) - (a.viewCount || 0)
+        case "likes":
+          return (b.likes || 0) - (a.likes || 0)
         case "comments":
           return (b.commentCount || 0) - (a.commentCount || 0)
         default:
@@ -249,6 +253,13 @@ export default function BlogPage() {
                     <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg">
                       <MessageSquare className="w-3 h-3" />
                       <span>{post.commentCount || 0}</span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg hover:bg-black/80 transition-colors pointer-events-auto">
+                       <LikeButton 
+                         postId={post._id} 
+                         initialLikes={post.likes || 0}
+                         className="p-0 h-auto bg-transparent hover:bg-transparent text-white/80 hover:text-[#28829E] gap-1"
+                       />
                     </div>
                   </div>
                 </div>

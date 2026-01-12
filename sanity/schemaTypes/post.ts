@@ -93,5 +93,12 @@ export const post = defineType({
       initialValue: 0,
       readOnly: true,
     }),
+    defineField({
+      name: 'likes',
+      title: 'Likes',
+      type: 'number',
+      initialValue: 0,
+      readOnly: true,
+    }),
   ],
 })

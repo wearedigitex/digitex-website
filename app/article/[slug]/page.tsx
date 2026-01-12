@@ -11,6 +11,7 @@ import { getPostBySlug, getRecentPosts, urlFor } from "@/lib/sanity"
 import { Button } from "@/components/ui/button"
 import { CommentsSection } from "@/components/comments-section"
 import { getObjectPosition } from "@/lib/utils"
+import { LikeButton } from "@/components/like-button"
 
 export default function ArticlePage() {
   const params = useParams()
@@ -124,6 +125,7 @@ export default function ArticlePage() {
             <MessageSquare className="w-4 h-4" />
             <span className="text-sm">{post.commentCount || 0} comments</span>
           </div>
+          <LikeButton postId={post._id} initialLikes={post.likes || 0} />
           <button
             onClick={handleCopyLink}
             className="ml-auto flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"

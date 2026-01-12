@@ -56,7 +56,8 @@ export async function getBlogPosts() {
       "authorName": author->name,
       mainImage,
       viewCount,
-      commentCount
+      commentCount,
+      likes
     }`,
     {},
     { next: { revalidate: 0 } }
@@ -78,7 +79,8 @@ export async function getPostBySlug(slug: string) {
       "author": author->{name, role, image, bio},
       mainImage,
       viewCount,
-      commentCount
+      commentCount,
+      likes
     }`,
     { slug },
     { next: { revalidate: 0 } }
@@ -92,6 +94,21 @@ export async function incrementViewCount(postId: string) {
     .setIfMissing({ viewCount: 0 })
     .inc({ viewCount: 1 })
     .commit()
+}
+
+// Function to update like count
+export async function updateLikeCount(postId: string, increment: boolean) {
+  const patch = adminClient
+    .patch(postId)
+    .setIfMissing({ likes: 0 })
+
+  if (increment) {
+    patch.inc({ likes: 1 })
+  } else {
+    patch.dec({ likes: 1 })
+  }
+
+  return patch.commit()
 }
 
 // Function to fetch recent posts (excluding current)

@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useSession, signOut } from "next-auth/react"
 
+import Image from "next/image"
+
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -44,8 +46,16 @@ export function Navigation() {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           
           {/* Logo */}
-          <Link href="/" className="group flex items-center gap-2">
-             <div className="flex items-center gap-1">
+          <Link href="/" className="group flex items-center gap-3">
+             <div className="flex items-center gap-3">
+               <div className="relative w-8 h-8 group-hover:scale-110 transition-transform duration-300">
+                 <Image 
+                   src="/DigitexLogo.png" 
+                   alt="Digitex Logo" 
+                   fill 
+                   className="object-contain"
+                 />
+               </div>
                <span className="font-bold text-2xl tracking-tight text-white">Digi<span className="text-[#28829E]">teX</span></span>
              </div>
           </Link>
