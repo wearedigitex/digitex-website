@@ -278,42 +278,43 @@ See section 2.5 above for detailed department management instructions.
 ### 4. Managing Comments
 
 **Comment Moderation:**
-- All comments are stored in Sanity
-- Comments can be approved/rejected in Studio
-- Users can delete their own comments via email confirmation
-- Threaded replies supported
+- All comments are stored in Sanity.
+- **Approval Flow**: New comments appear in `/studio` -> "Pending Comments".
+- **Approve Comment**: Use the custom "Approve Comment" action button instead of the checkbox. This ensures the post's `commentCount` is correctly incremented.
 
-**Resetting Comment Counts:**
+**Secure Comment Deletion:**
+- **Team Members**: Can delete comments instantly by providing their email and secret code in the delete modal.
+- **Visitors**: Can request comment deletion. Requests appear in `/studio` -> "Comment Deletion Requests".
+- **Admin Review**: Admins use custom actions (`Approve & Delete` or `Reject`) to process these requests.
+- **Threaded Deletion**: Deleting a parent comment recursively deletes all its replies and synchronizes the post's `commentCount`.
+
+### 5. Data Integrity & Syncing
+
+If data appears incorrect in previews or headers (e.g., wrong comment counts or likes), run these recovery scripts:
+
+**Syncing Comment Counts:**
+Audits all posts and aligns their counts with actual approved comments in Sanity.
 ```bash
-npx tsx scripts/reset-comment-counts.ts
+npx tsx scripts/sync-comment-counts.ts
 ```
 
-### 5. Initializing Missing Likes Fields
-
-If old articles don't have the `likes` field initialized:
-
+**Initializing/Resetting Likes:**
+Initializes missing `likes` fields or resets them.
 ```bash
 npx tsx scripts/initialize-likes.ts
-```
-
-This script checks all posts and sets `likes: 0` for any posts missing the field.
-
-### 6. Resetting Likes
-
-To reset all likes to 0:
-
-```bash
+# or
 npx tsx scripts/reset-likes.ts
 ```
 
-### 7. Cleaning Article Formatting
-
-To clean up HTML formatting in articles:
-
+**Cleaning Article Formatting:**
+Cleans up HTML formatting inconsistencies in articles.
 ```bash
 npx tsx scripts/clean-article-formatting.ts
 ```
 
+### 6. Initializing Missing Likes Fields
+
+If old articles don't have the `likes` field initialized:
 ## API Routes
 
 ### Public Routes
