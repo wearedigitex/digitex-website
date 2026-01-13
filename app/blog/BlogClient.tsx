@@ -243,7 +243,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
           animate="show"
           className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {filteredPosts.map((post) => (
+          {filteredPosts.map((post, index) => (
             <motion.div
               key={post._id}
               variants={{
@@ -260,6 +260,8 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
                         src={urlFor(post.mainImage).url()} 
                         alt={post.title} 
                         fill 
+                        priority={index < 3}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-110" 
                         style={{ objectPosition: getObjectPosition(post.mainImage.hotspot) }}
                       />

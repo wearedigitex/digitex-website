@@ -192,6 +192,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
               alt={post.title}
               fill
               priority
+              sizes="(max-width: 1024px) 100vw, 896px"
               className="object-cover"
               style={{ objectPosition: getObjectPosition(post.mainImage.hotspot) }}
             />
