@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback } from "react"
 import { MessageSquare, Send, ShieldCheck, Trash2, X, AlertCircle, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CommentItem } from "./comment-item"
+import { cn } from "@/lib/utils"
 
 interface Comment {
   _id: string
   name: string
-  content: string // Map 'comment' from API to this
+  comment: string // Map 'comment' from API to this
   createdAt: string
   isTeamMember?: boolean
   parentCommentId?: string
@@ -31,21 +32,21 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
   // Logic State
   const [showVerification, setShowVerification] = useState(false)
   const [activeReplyId, setActiveReplyId] = useState<string | null>(null)
-  const [deleteId, setDeleteId] = useState<string | null>(null) // For delete modal
+  
+  // Delete State
+  const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleteEmail, setDeleteEmail] = useState("")
+  const [deleteVerificationCode, setDeleteVerificationCode] = useState("")
+  const [deleteReason, setDeleteReason] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isTeamDelete, setIsTeamDelete] = useState(false)
 
   const fetchComments = useCallback(async () => {
     try {
       const res = await fetch(`/api/comments?postId=${postId}`)
       if (res.ok) {
         const data = await res.json()
-        // Map 'comment' to 'content' for consistency if needed, but API returns 'comment'
-        const mappedData = data.map((c: any) => ({
-            ...c,
-            content: c.comment 
-        }))
-        setComments(mappedData)
+        setComments(data)
       }
     } catch (error) {
       console.error("Failed to fetch comments:", error)
@@ -76,6 +77,22 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       }
     } catch (e) {
       console.error("Failed to check team status", e)
+    }
+  }
+
+  // Logic to check if deletion requester is a team member
+  const checkDeleteTeamStatus = async (email: string) => {
+    if (!email || !email.includes("@")) return
+    try {
+        const res = await fetch("/api/check-team-member", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        })
+        const data = await res.json()
+        setIsTeamDelete(data.isTeamMember)
+    } catch (e) {
+        console.error("Failed to check team status for delete", e)
     }
   }
 
@@ -130,21 +147,37 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
         const res = await fetch("/api/comments", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ commentId: deleteId, email: deleteEmail })
+            body: JSON.stringify({ 
+              commentId: deleteId, 
+              email: deleteEmail,
+              verificationCode: deleteVerificationCode,
+              reason: deleteReason
+            })
         })
 
         const data = await res.json()
 
         if (res.ok) {
-            setDeleteId(null)
-            setDeleteEmail("")
-            fetchComments()
+            if (data.instantlyDeleted) {
+              setDeleteId(null)
+              setDeleteEmail("")
+              setDeleteVerificationCode("")
+              setDeleteReason("")
+              fetchComments()
+            } else {
+              // Deletion request sent
+              alert(data.message)
+              setDeleteId(null)
+              setDeleteEmail("")
+              setDeleteVerificationCode("")
+              setDeleteReason("")
+            }
         } else {
-            alert(data.error || "Failed to delete comment")
+            alert(data.error || "Failed to process deletion")
         }
     } catch (error) {
         console.error("Delete failed", error)
-        alert("Failed to delete comment")
+        alert("Failed to process deletion")
     } finally {
         setIsDeleting(false)
     }
@@ -252,7 +285,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
     </div>
   )
 
-  const rootComments = comments.filter(c => !c.parentCommentId)
+  const rootComments = (comments || []).filter(c => !c.parentCommentId)
 
   return (
     <section className="mt-16 border-t border-white/10 pt-16 relative">
@@ -262,7 +295,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
         </div>
         <h2 className="text-3xl font-bold">Comments</h2>
         <span className="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-400 border border-white/10">
-          {comments.length}
+          {comments?.length || 0}
         </span>
       </div>
 
@@ -273,7 +306,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       <div className="space-y-8">
         {loading ? (
           <div className="text-center py-10 text-gray-500">Loading comments...</div>
-        ) : comments.length === 0 ? (
+        ) : !comments || comments.length === 0 ? (
           <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
             <p className="text-gray-400">No comments yet. Be the first to join the conversation!</p>
           </div>
@@ -281,11 +314,13 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
           rootComments.map((comment) => (
             <CommentItem 
                 key={comment._id}
-                comment={comment}
-                allComments={comments}
+                comment={{...comment, content: comment.comment}}
+                allComments={comments.map(c => ({...c, content: c.comment}))}
                 postId={postId}
                 onReply={setActiveReplyId}
-                onDelete={setDeleteId}
+                onDelete={(id) => {
+                    setDeleteId(id)
+                }}
                 activeReplyId={activeReplyId}
                 replyForm={renderForm(true)}
             />
@@ -297,35 +332,82 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       {deleteId && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
               <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in-95">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-red-400">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-[#28829E]">
                       <Trash2 className="w-5 h-5" />
-                      Delete Thread?
+                      Delete Comment
                   </h3>
-                  <p className="text-gray-400 mb-6 text-sm">
-                      This will permanently delete this comment and all its replies. 
-                      Please enter the email address used to post this comment to verify ownership.
-                  </p>
                   
-                  <input
-                    type="email"
-                    placeholder="Enter email address"
-                    value={deleteEmail}
-                    onChange={(e) => setDeleteEmail(e.target.value)}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl h-12 px-4 text-white focus:outline-none focus:border-red-500 transition-all mb-6"
-                   />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">Your Email</label>
+                        <input
+                            type="email"
+                            placeholder="Email used for the comment"
+                            value={deleteEmail}
+                            onChange={(e) => {
+                                setDeleteEmail(e.target.value)
+                                checkDeleteTeamStatus(e.target.value)
+                            }}
+                            className="w-full bg-black/50 border border-white/10 rounded-xl h-12 px-4 text-white focus:outline-none focus:border-[#28829E] transition-all"
+                        />
+                    </div>
 
-                   <div className="flex justify-end gap-3">
-                       <Button variant="ghost" onClick={() => { setDeleteId(null); setDeleteEmail(""); }}>
-                           Cancel
-                       </Button>
-                       <Button 
-                        onClick={handleDelete}
-                        disabled={isDeleting || !deleteEmail}
-                        className="bg-red-500 hover:bg-red-600 text-white"
-                       >
-                           {isDeleting ? "Deleting..." : "Delete Permanently"}
-                       </Button>
-                   </div>
+                    {isTeamDelete && (
+                        <div className="space-y-2 p-4 bg-[#28829E]/5 border border-[#28829E]/30 rounded-xl animate-in slide-in-from-top-2">
+                            <label className="text-xs font-bold text-[#28829E] uppercase tracking-wider flex items-center gap-2">
+                                <ShieldCheck className="w-4 h-4" />
+                                Team Secret Code
+                            </label>
+                            <input
+                                type="password"
+                                placeholder="Enter secret code"
+                                value={deleteVerificationCode}
+                                onChange={(e) => setDeleteVerificationCode(e.target.value)}
+                                className="w-full bg-black/50 border border-white/10 rounded-xl h-11 px-4 text-white focus:outline-none focus:border-[#28829E] transition-all"
+                            />
+                            <p className="text-[10px] text-gray-400 mt-2">
+                                Verified team members can delete comments instantly.
+                            </p>
+                        </div>
+                    )}
+
+                    {!isTeamDelete && deleteEmail && deleteEmail.includes('@') && (
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">Reason for Deletion</label>
+                            <textarea
+                                placeholder="Why do you want to delete this?"
+                                value={deleteReason}
+                                onChange={(e) => setDeleteReason(e.target.value)}
+                                className="w-full bg-black/50 border border-white/10 rounded-xl h-24 p-4 text-white focus:outline-none focus:border-[#28829E] transition-all resize-none text-sm"
+                            />
+                            <p className="text-[10px] text-yellow-500/80 italic">
+                                Note: Visitor deletion requests are sent to administrators for approval.
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="flex justify-end gap-3 pt-4">
+                        <Button variant="ghost" onClick={() => { 
+                            setDeleteId(null); 
+                            setDeleteEmail(""); 
+                            setDeleteVerificationCode("");
+                            setDeleteReason("");
+                            setIsTeamDelete(false);
+                        }}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={handleDelete}
+                            disabled={isDeleting || !deleteEmail || (isTeamDelete && !deleteVerificationCode)}
+                            className={cn(
+                                "h-11 px-6 font-bold rounded-xl",
+                                isTeamDelete ? "bg-[#28829E] hover:bg-teal-700" : "bg-white/10 hover:bg-white/20"
+                            )}
+                        >
+                            {isDeleting ? "Processing..." : isTeamDelete ? "Delete Instantly" : "Send Request"}
+                        </Button>
+                    </div>
+                  </div>
               </div>
           </div>
       )}

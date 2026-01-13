@@ -14,6 +14,8 @@ import {schema} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
 import {ApproveSubmissionAction} from './sanity/actions/approveSubmission'
 import {RejectSubmissionAction} from './sanity/actions/rejectSubmission'
+import {ApproveDeletionAction} from './sanity/actions/approveDeletion'
+import {RejectDeletionAction} from './sanity/actions/rejectDeletion'
 import {InviteUserForm} from './components/admin/invite-user-form'
 
 export default defineConfig({
@@ -44,6 +46,12 @@ export default defineConfig({
       if (context.schemaType === 'submission') {
         return [ApproveSubmissionAction, RejectSubmissionAction, ...prev]
       }
+      
+      // Add deletion approval/rejection actions to "deleteRequest" documents
+      if (context.schemaType === 'deleteRequest') {
+        return [ApproveDeletionAction, RejectDeletionAction, ...prev]
+      }
+      
       return prev
     },
   },

@@ -15,8 +15,18 @@ export const structure: StructureResolver = (S) =>
         ),
       // Divider
       S.divider(),
+      // Comment Deletion Requests
+      S.listItem()
+        .title('Comment Deletion Requests')
+        .child(
+          S.documentTypeList('deleteRequest')
+            .title('Deletion Requests')
+            .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
+        ),
+      // Divider
+      S.divider(),
       // All other content types
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() !== 'department'
+        (item) => !['department', 'deleteRequest'].includes(item.getId() || '')
       ),
     ])

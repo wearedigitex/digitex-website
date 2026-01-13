@@ -94,16 +94,14 @@ export function CommentItem({
               Reply
             </button>
 
-            {/* Delete button only for Team Members (verified via modal later) */}
-            {comment.isTeamMember && (
-              <button 
-                onClick={() => onDelete(comment._id)}
-                className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-red-400 transition-colors ml-auto"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                Delete Thread
-              </button>
-            )}
+            {/* Delete button for everyone (either instant for team or request for visitors) */}
+            <button 
+              onClick={() => onDelete(comment._id)}
+              className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-red-400 transition-colors ml-auto"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Delete {comment.isTeamMember ? "Thread" : ""}
+            </button>
           </div>
         </div>
       </div>

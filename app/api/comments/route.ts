@@ -143,14 +143,23 @@ export async function GET(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     try {
-      const { commentId, email } = await request.json()
+      const { commentId, email, verificationCode, reason } = await request.json()
   
       if (!commentId || !email) {
         return NextResponse.json({ error: "Comment ID and email are required" }, { status: 400 })
       }
   
-      // Fetch comment to verify email
-      const comment = await adminClient.fetch(`*[_type == "comment" && _id == $commentId][0]`, { commentId })
+      // Fetch comment and post details
+      const comment = await adminClient.fetch(
+        `*[_type == "comment" && _id == $commentId][0] {
+          _id,
+          email,
+          comment,
+          isTeamMember,
+          post { _ref }
+        }`, 
+        { commentId }
+      )
   
       if (!comment) {
         return NextResponse.json({ error: "Comment not found" }, { status: 404 })
@@ -161,60 +170,91 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: "Unauthorized: Email does not match comment author" }, { status: 403 })
       }
 
-      // Check if user is actually a team member (extra security)
-      // This ensures only the team member who made the comment can delete it, or potentially we could allow admins to delete any.
-      // For now, we stick to the user verification of email.
-  
-      // Fetch all comments for this post to find descendants
-      const allComments = await adminClient.fetch(`*[_type == "comment" && post._ref == $postId]`, { 
-        postId: comment.post?._ref 
-      })
-  
-      // Find all descendant IDs recursively
-      const getDescendants = (parentId: string): string[] => {
-        const children = allComments.filter((c: any) => c.parentComment?._ref === parentId)
-        return children.reduce((acc: string[], child: any) => {
-          return [...acc, child._id, ...getDescendants(child._id)]
-        }, [])
-      }
-  
-      const idsToDelete = [commentId, ...getDescendants(commentId)]
-  
-      // Delete all comments in the thread
-      const transaction = adminClient.transaction()
-      idsToDelete.forEach(id => transaction.delete(id))
+      // Check if user is a team member for instant deletion
+      const userMatch = await adminClient.fetch(
+        `*[_type == "user" && email == $email][0] { _id, verificationCode }`,
+        { email }
+      )
+
+      // INSTANT DELETION FOR TEAM MEMBERS
+      if (userMatch && userMatch.verificationCode) {
+        if (verificationCode && verificationCode === userMatch.verificationCode) {
+          // Verified team member! Delete immediately.
+          
+          // Fetch all comments for this post to find descendants
+          const allComments = await adminClient.fetch(`*[_type == "comment" && post._ref == $postId]`, { 
+            postId: comment.post?._ref 
+          })
       
-      // Count all approved comments to delete (to decrement count correctly)
-      const approvedToDeleteCount = allComments
-        .filter((c: any) => idsToDelete.includes(c._id) && c.approved === true)
-        .length
-  
-      // Decrement comment count on post by the number of APPROVED deleted comments
-      if (comment.post?._ref && approvedToDeleteCount > 0) {
-        transaction.patch(comment.post._ref, p => 
-          p.setIfMissing({ commentCount: 0 })
-           .dec({ commentCount: approvedToDeleteCount })
-        )
-      }
-  
-      await transaction.commit()
-      
-      // Revalidation
-      if (comment.post?._ref) {
-         revalidatePath("/blog")
-          const post = await client.fetch(`*[_id == $postId][0] { "slug": slug.current }`, { postId: comment.post._ref })
-          if (post?.slug) {
-            revalidatePath(`/blog/${post.slug}`)
+          const getDescendants = (parentId: string): string[] => {
+            const children = allComments.filter((c: any) => c.parentComment?._ref === parentId)
+            return children.reduce((acc: string[], child: any) => {
+              return [...acc, child._id, ...getDescendants(child._id)]
+            }, [])
           }
+      
+          const idsToDelete = [commentId, ...getDescendants(commentId)]
+      
+          const transaction = adminClient.transaction()
+          idsToDelete.forEach(id => transaction.delete(id))
+          
+          const approvedToDeleteCount = allComments
+            .filter((c: any) => idsToDelete.includes(c._id) && c.approved === true)
+            .length
+      
+          if (comment.post?._ref && approvedToDeleteCount > 0) {
+            transaction.patch(comment.post._ref, p => 
+              p.setIfMissing({ commentCount: 0 })
+               .dec({ commentCount: approvedToDeleteCount })
+            )
+          }
+      
+          await transaction.commit()
+          
+          if (comment.post?._ref) {
+            revalidatePath("/blog")
+            const post = await client.fetch(`*[_id == $postId][0] { "slug": slug.current }`, { postId: comment.post._ref })
+            if (post?.slug) {
+              revalidatePath(`/blog/${post.slug}`)
+            }
+          }
+      
+          return NextResponse.json({ 
+            success: true,
+            instantlyDeleted: true,
+            message: "Comment thread deleted successfully",
+          })
+        } else {
+          return NextResponse.json(
+            { error: "Incorrect Team Secret Code. Please try again." },
+            { status: 403 }
+          )
+        }
       }
-  
+
+      // VISITOR DELETION REQUEST FLOW
+      // Create a deletion request in Sanity
+      await adminClient.create({
+        _type: 'deleteRequest',
+        comment: {
+          _type: 'reference',
+          _ref: commentId,
+        },
+        commentContent: comment.comment,
+        requesterEmail: email,
+        reason: reason || 'Requested by author',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      })
+
       return NextResponse.json({ 
         success: true,
-        message: "Comment thread deleted successfully",
-        deletedCount: idsToDelete.length 
+        instantlyDeleted: false,
+        message: "Your deletion request has been sent to our moderators for approval. The comment will be removed once approved." 
       })
+
     } catch (error: any) {
-      console.error("Error deleting comment:", error)
-      return NextResponse.json({ error: `Error deleting comment: ${error.message}` }, { status: 500 })
+      console.error("Error handling deletion:", error)
+      return NextResponse.json({ error: `Error processing deletion: ${error.message}` }, { status: 500 })
     }
   }

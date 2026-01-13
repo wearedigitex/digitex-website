@@ -5,7 +5,8 @@ import { comment } from './comment'
 import { user } from './user'
 import { submission } from './submission'
 import { department } from './department'
+import { deleteRequest } from './deleteRequest'
 
 export const schema = {
-  types: [author, post, comment, user, submission, department],
+  types: [author, post, comment, user, submission, department, deleteRequest],
 }
