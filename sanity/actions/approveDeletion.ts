@@ -69,12 +69,12 @@ export const ApproveDeletionAction: DocumentActionComponent = (props: DocumentAc
         )
       }
 
-      // 7. Update the deletion request status
+      // 7. Update the deletion request status and unset the weak reference
       transaction.patch(props.id, p => 
         p.set({ 
           status: 'approved',
           reviewedAt: new Date().toISOString()
-        })
+        }).unset(['comment'])
       )
 
       await transaction.commit()

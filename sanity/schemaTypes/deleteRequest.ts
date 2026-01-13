@@ -12,7 +12,7 @@ export const deleteRequest = defineType({
       title: 'Comment to Delete',
       type: 'reference',
       to: [{ type: 'comment' }],
-      validation: (rule) => rule.required(),
+      weak: true,
       readOnly: true,
     }),
     defineField({
