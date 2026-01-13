@@ -39,10 +39,10 @@ async function syncCommentCounts() {
       }
 
       // 4. Ensure all approved comments have autoApproved: true (for future deletions)
-      const missingAutoApproved = approvedComments.filter(c => !c.autoApproved)
+      const missingAutoApproved = approvedComments.filter((c: any) => !c.autoApproved)
       if (missingAutoApproved.length > 0) {
         const transaction = adminClient.transaction()
-        missingAutoApproved.forEach(c => {
+        missingAutoApproved.forEach((c: any) => {
           transaction.patch(c._id, p => p.set({ autoApproved: true }))
         })
         await transaction.commit()

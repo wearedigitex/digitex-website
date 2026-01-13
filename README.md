@@ -323,6 +323,7 @@ npx tsx scripts/clean-article-formatting.ts
 - `POST /api/contact` - Submit contact form
 - `POST /api/views` - Track article view (session-based)
 - `PATCH /api/likes` - Like/unlike an article
+- `POST /api/check-team-member` - Check if an email belongs to a team member
 
 ### Protected Routes (Require Authentication)
 
@@ -331,8 +332,8 @@ npx tsx scripts/clean-article-formatting.ts
 - `PATCH /api/submissions/[id]` - Update submission
 - `POST /api/invite` - Invite new user (admin only)
 - `POST /api/publish` - Publish article (admin only)
-- `POST /api/comments` - Create comment
-- `DELETE /api/comments` - Delete comment
+- `POST /api/comments` - Create/Post comment (handles team verification)
+- `DELETE /api/comments` - Delete comment (handles instant deletion and requests)
 
 ## Troubleshooting
 
@@ -409,10 +410,11 @@ Make sure all environment variables from `.env.local` are set in Vercel:
 | `app/api/likes/route.ts` | Like count API endpoint |
 | `sanity/schemaTypes/post.ts` | Blog post schema definition |
 | `sanity/schemaTypes/department.ts` | Department schema definition |
-| `scripts/initialize-likes.ts` | Initialize missing likes fields |
+| `scripts/sync-comment-counts.ts` | Re-sync all comment counts |
 | `scripts/setup-departments.ts` | Create initial departments |
 | `scripts/migrate-authors-to-departments.ts` | Migrate authors to departments |
-| `DEPARTMENT_FEATURE.md` | Department management documentation |
+| `sanity/actions/approveComment.ts` | Custom action for comment approval & count sync |
+| `sanity/actions/approveDeletion.ts` | Custom action for processing deletion requests |
 
 ## Support
 
@@ -428,7 +430,9 @@ For technical issues or questions:
 **Last Updated**: January 2026
 
 **Recent Updates**:
-- ✅ Dynamic department management (no code changes needed to add departments)
-- ✅ Heart counter fix for old articles
+- ✅ **Secure Comment Deletion**: Two-tiered deletion system for team members and visitors.
+- ✅ **Comment Count Sync**: Automated synchronization of post comment counts via custom Sanity actions.
+- ✅ **Dynamic Departments**: "Leadership" department prioritized and managed via CMS.
+- ✅ **Data Recovery**: Re-sync scripts for likes and comment counts.
 
 **Website**: [wearedigitex.org](https://wearedigitex.org)
