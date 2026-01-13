@@ -98,14 +98,33 @@ export async function incrementViewCount(postId: string) {
 
 // Function to update like count
 export async function updateLikeCount(postId: string, increment: boolean) {
-  const patch = adminClient
-    .patch(postId)
-    .setIfMissing({ likes: 0 })
+  // First, fetch the current post to check if likes field exists and is a valid number
+  const currentPost = await adminClient.fetch(
+    `*[_id == $postId][0] { likes }`,
+    { postId }
+  )
+
+  // If likes is null, undefined, or not a number, we need to initialize it
+  const currentLikes = typeof currentPost?.likes === 'number' && !isNaN(currentPost.likes) 
+    ? currentPost.likes 
+    : null
+  
+  const patch = adminClient.patch(postId)
+
+  if (currentLikes === null) {
+    // Field is missing, null, or invalid - initialize it to 0 first
+    patch.set({ likes: 0 })
+  }
 
   if (increment) {
     patch.inc({ likes: 1 })
   } else {
-    patch.dec({ likes: 1 })
+    // For decrement, use dec but ensure we don't go below 0
+    // If current likes is 0 or null, don't decrement
+    if (currentLikes !== null && currentLikes > 0) {
+      patch.dec({ likes: 1 })
+    }
+    // If currentLikes is null or 0, the set({ likes: 0 }) above already handles it
   }
 
   return patch.commit()

@@ -8,13 +8,16 @@ import { Button } from "@/components/ui/button"
 
 interface LikeButtonProps {
   postId: string
-  initialLikes: number
+  initialLikes?: number | null
   className?: string
 }
 
 export function LikeButton({ postId, initialLikes, className }: LikeButtonProps) {
+  // Ensure initialLikes is a valid number, defaulting to 0 if null/undefined/NaN
+  const safeInitialLikes = typeof initialLikes === 'number' && !isNaN(initialLikes) ? initialLikes : 0
+  
   // State
-  const [likes, setLikes] = useState(Math.max(0, initialLikes))
+  const [likes, setLikes] = useState(Math.max(0, safeInitialLikes))
   const [hasLiked, setHasLiked] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   
@@ -31,10 +34,11 @@ export function LikeButton({ postId, initialLikes, className }: LikeButtonProps)
 
     // If local says liked, but server says 0, assume server is stale/lagging and we are the first like.
     // This fixes the navigation sync issue for fresh likes.
-    if (storedLike && initialLikes === 0) {
+    const safeLikes = typeof initialLikes === 'number' && !isNaN(initialLikes) ? initialLikes : 0
+    if (storedLike && safeLikes === 0) {
       setLikes(1)
     } else {
-      setLikes(Math.max(0, initialLikes))
+      setLikes(Math.max(0, safeLikes))
     }
   }, [postId, initialLikes])
 
