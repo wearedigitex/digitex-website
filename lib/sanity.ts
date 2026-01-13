@@ -28,6 +28,20 @@ export function urlFor(source: any) {
   return builder.image(source)
 }
 
+// Function to fetch all departments
+export async function getDepartments() {
+  return client.fetch(
+    `*[_type == "department" && isActive == true] | order(order asc, name asc) {
+      _id,
+      name,
+      fullName,
+      slug,
+      description,
+      order
+    }`
+  )
+}
+
 // Function to fetch all team members
 export async function getTeamMembers() {
   return client.fetch(
@@ -35,7 +49,13 @@ export async function getTeamMembers() {
       _id,
       name,
       role,
-      department,
+      "department": department->{
+        _id,
+        name,
+        fullName,
+        slug,
+        order
+      },
       image,
       bio,
       linkedin

@@ -27,15 +27,9 @@ export const author = defineType({
     defineField({
       name: 'department',
       title: 'Department',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Leadership', value: 'Leadership' },
-          { title: 'Technology', value: 'Department of Technology' },
-          { title: 'Medicine', value: 'Department of Medicine' },
-          { title: 'Commerce', value: 'Department of Commerce' },
-        ],
-      },
+      type: 'reference',
+      to: [{ type: 'department' }],
+      description: 'Select the department this team member belongs to',
     }),
     defineField({
       name: 'image',

@@ -4,4 +4,19 @@ import type {StructureResolver} from 'sanity/structure'
 export const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
-    .items(S.documentTypeListItems())
+    .items([
+      // Departments section (for easy management)
+      S.listItem()
+        .title('Departments')
+        .child(
+          S.documentTypeList('department')
+            .title('Departments')
+            .defaultOrdering([{ field: 'order', direction: 'asc' }])
+        ),
+      // Divider
+      S.divider(),
+      // All other content types
+      ...S.documentTypeListItems().filter(
+        (item) => item.getId() !== 'department'
+      ),
+    ])
