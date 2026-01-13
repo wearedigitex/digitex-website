@@ -226,16 +226,65 @@
   margin-bottom: 0.5rem;
 }
 
-.ProseMirror img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.5rem;
-  margin: 2rem 0;
-}
-
-/* Styles for rendered HTML content */
 .article-content {
   position: relative;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #d1d5db;
+}
+
+.article-content h1, .article-content h2, .article-content h3 {
+  color: white;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.article-content h1 { font-size: 2.5rem; }
+.article-content h2 { font-size: 2rem; }
+.article-content h3 { font-size: 1.5rem; }
+
+.article-content p {
+  margin-bottom: 1.5rem;
+}
+
+.article-content b, .article-content strong {
+  color: white;
+  font-weight: 700;
+}
+
+.article-content i, .article-content em {
+  font-style: italic;
+  color: #9ca3af;
+}
+
+.article-content hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 3rem 0;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin: 2rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.note-float-right {
+  float: right;
+  margin-left: 2rem !important;
+  margin-bottom: 1.5rem !important;
+  max-width: 40%;
+}
+
+.note-float-left {
+  float: left;
+  margin-right: 2rem !important;
+  margin-bottom: 1.5rem !important;
+  max-width: 40%;
 }
 
 .article-content::after {

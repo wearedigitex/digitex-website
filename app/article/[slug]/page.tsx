@@ -1,286 +1,44 @@
-"use client"
+import ArticleClient from "./ArticleClient"
+import { getPostBySlug, getRecentPosts } from "@/lib/sanity"
+import { Metadata } from "next"
 
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import Image from "next/image"
-import Link from "next/link"
-import { format } from "date-fns"
-import { ArrowLeft, Calendar, User, Eye, MessageSquare, Share2, Check } from "lucide-react"
-import { PortableText } from "@portabletext/react"
-import { getPostBySlug, getRecentPosts, urlFor } from "@/lib/sanity"
-import { Button } from "@/components/ui/button"
-import { CommentsSection } from "@/components/comments-section"
-import { getObjectPosition } from "@/lib/utils"
-import { LikeButton } from "@/components/like-button"
+type Props = {
+  params: Promise<{ slug: string }>
+}
 
-export default function ArticlePage() {
-  const params = useParams()
-  const slug = params.slug as string
-  
-  const [post, setPost] = useState<any>(null)
-  const [recentPosts, setRecentPosts] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [copied, setCopied] = useState(false)
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getPostBySlug(slug)
-        setPost(data)
-        
-        if (data?._id) {
-          // Increment view count
-          fetch("/api/views", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ postId: data._id }),
-          })
-
-          // Fetch recent posts
-          const recent = await getRecentPosts(data._id)
-          setRecentPosts(recent)
-        }
-      } catch (error) {
-        console.error("Failed to load article data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadData()
-  }, [slug])
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-black text-white pt-24 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center py-20">
-          <div className="text-gray-500 animate-pulse">Loading article...</div>
-        </div>
-      </main>
-    )
-  }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
 
   if (!post) {
-    return (
-      <main className="min-h-screen bg-black text-white pt-24 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center py-20">
-          <h1 className="text-4xl font-bold mb-4">Article Not Found</h1>
-          <Link href="/blog">
-            <Button className="bg-[#28829E] hover:bg-teal-700">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Blog
-            </Button>
-          </Link>
-        </div>
-      </main>
-    )
+    return {
+      title: "Article Not Found | Digitex",
+    }
   }
 
-  return (
-    <main className="min-h-screen bg-black text-white pt-24 pb-20">
-      {/* Back Button */}
-      <div className="max-w-4xl mx-auto px-6 mb-8">
-        <Link href="/blog" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Blog
-        </Link>
-      </div>
+  return {
+    title: `${post.title} | Digitex`,
+    description: post.excerpt || `Read ${post.title} on Digitex.`,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      publishedTime: post.publishedAt,
+      authors: [post.author?.name || "Digitex Team"],
+      images: post.mainImage ? [{ url: post.mainImage.asset._ref }] : [], // Simplification, urlFor would be better but requires more setup here
+    },
+  }
+}
 
-      {/* Article Header */}
-      <article className="max-w-4xl mx-auto px-6">
-        {/* Category Badge */}
-        <div className="mb-4">
-          <span className="inline-block px-4 py-1 bg-[#28829E]/20 text-[#28829E] rounded-full text-sm font-bold border border-[#28829E]/30">
-            {post.category}
-          </span>
-        </div>
+export default async function ArticlePage({ params }: Props) {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
 
-        {/* Title */}
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          {post.title}
-        </h1>
+  if (!post) {
+    return <div>Article not found</div>
+  }
 
-        {/* Meta Info */}
-        <div className="flex flex-wrap items-center gap-6 text-gray-400 mb-8 pb-8 border-b border-white/10">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            <span className="text-sm">{format(new Date(post.publishedAt), 'MMM dd, yyyy')}</span>
-          </div>
-          {post.author && (
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              <span className="text-sm">{post.author.name}</span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <Eye className="w-4 h-4" />
-            <span className="text-sm">{post.viewCount || 0} views</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <MessageSquare className="w-4 h-4" />
-            <span className="text-sm">{post.commentCount || 0} comments</span>
-          </div>
-          <LikeButton postId={post._id} initialLikes={post.likes || 0} />
-          <button
-            onClick={handleCopyLink}
-            className="ml-auto flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            {copied ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4" />}
-            <span className="text-sm">{copied ? "Copied!" : "Copy Link"}</span>
-          </button>
-        </div>
+  const recentPosts = await getRecentPosts(post._id)
 
-        {/* Featured Image */}
-        {post.mainImage && (
-          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-12 border border-white/10">
-            <Image
-              src={urlFor(post.mainImage).url()}
-              alt={post.title}
-              fill
-              className="object-cover"
-              style={{ objectPosition: getObjectPosition(post.mainImage.hotspot) }}
-            />
-          </div>
-        )}
-
-        {/* Article Body */}
-        <div className="prose prose-invert prose-lg max-w-none mb-16">
-          {post.bodyHtml ? (
-            <div className="article-content" dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />
-          ) : post.body ? (
-            <PortableText
-              value={post.body}
-              components={{
-                block: {
-                  normal: ({ children }) => <p className="text-gray-300 leading-relaxed mb-6">{children}</p>,
-                  h1: ({ children }) => <h1 className="text-4xl font-bold mb-6 mt-12">{children}</h1>,
-                  h2: ({ children }) => <h2 className="text-3xl font-bold mb-4 mt-10">{children}</h2>,
-                  h3: ({ children }) => <h3 className="text-2xl font-bold mb-3 mt-8">{children}</h3>,
-                },
-                  marks: {
-                    strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
-                    em: ({ children }) => <em className="italic">{children}</em>,
-                    link: ({ value, children }) => (
-                      <a href={value.href} className="text-[#28829E] hover:underline" target="_blank" rel="noopener noreferrer">
-                        {children}
-                      </a>
-                    ),
-                  },
-                  types: {
-                    image: ({ value }) => {
-                      if (!value?.asset?._ref) {
-                        return null
-                      }
-                      return (
-                        <div className="my-8 relative w-full h-[400px] rounded-xl overflow-hidden border border-white/10">
-                          <Image
-                            src={urlFor(value).url()}
-                            alt={value.alt || "Article Image"}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      )
-                    },
-                  },
-              }}
-            />
-          ) : (
-            <p className="text-gray-500 italic">No content available for this article.</p>
-          )}
-        </div>
-
-        {/* Author Bio */}
-        {post.author && (
-          <div className="bg-white/5 rounded-2xl p-8 border border-white/10 mb-16 relative z-10">
-            <div className="flex items-start gap-6">
-              {post.author.image ? (
-                <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
-                  <Image
-                    src={urlFor(post.author.image).url()}
-                    alt={post.author.name}
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: getObjectPosition(post.author.image?.hotspot) }}
-                  />
-                </div>
-              ) : post.author.imageUrl && (
-                <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
-                  <Image
-                    src={post.author.imageUrl}
-                    alt={post.author.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              <div>
-                <h3 className="text-xl font-bold mb-1">About {post.author.name}</h3>
-                <p className="text-[#28829E] text-sm mb-3">{post.author.role}</p>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {post.author.bio || `${post.author.name} is a contributor to Digitex.`}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Comments Section */}
-        <div className="mb-32">
-          <CommentsSection postId={post._id} />
-        </div>
-
-
-
-        {/* Recent Articles */}
-        {recentPosts.length > 0 && (
-          <div className="pt-16 border-t border-white/10">
-            <h2 className="text-2xl font-bold mb-8">Recent Articles</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {recentPosts.map((rPost) => (
-                <Link key={rPost._id} href={`/article/${rPost.slug}`} className="group block">
-                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-4 border border-white/10">
-                    {rPost.mainImage ? (
-                      <Image
-                        src={urlFor(rPost.mainImage).url()}
-                        alt={rPost.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        style={{ objectPosition: getObjectPosition(rPost.mainImage?.hotspot) }}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center text-gray-700">No Image</div>
-                    )}
-                    <div className="absolute top-3 left-3">
-                      <span className="px-2 py-1 bg-black/60 backdrop-blur-sm text-[10px] font-bold text-[#28829E] rounded uppercase tracking-wider border border-[#28829E]/30">
-                        {rPost.category}
-                      </span>
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-bold leading-tight group-hover:text-[#28829E] transition-colors line-clamp-2">
-                    {rPost.title}
-                  </h3>
-                  <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {format(new Date(rPost.publishedAt), 'MMM dd')}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      {rPost.viewCount || 0}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </article>
-    </main>
-  )
+  return <ArticleClient initialPost={post} initialRecentPosts={recentPosts} />
 }
