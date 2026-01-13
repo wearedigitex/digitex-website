@@ -17,13 +17,13 @@ const client = createClient({
 
 async function checkAuthors() {
   const authors = await client.fetch(`*[_type == "author"] { name, department }`)
-  const departments = new Set(authors.map(a => typeof a.department === 'string' ? a.department : JSON.stringify(a.department)))
+  const departments = new Set(authors.map((a: any) => typeof a.department === 'string' ? a.department : JSON.stringify(a.department)))
   
   console.log('Unique department values in authors:')
-  departments.forEach(d => console.log(`- ${d}`))
+  departments.forEach((d) => console.log(`- ${d}`))
   
   console.log('\nAuthor details:')
-  authors.forEach(a => console.log(`- ${a.name}: ${JSON.stringify(a.department)}`))
+  authors.forEach((a: any) => console.log(`- ${a.name}: ${JSON.stringify(a.department)}`))
 }
 
 checkAuthors().catch(console.error)
