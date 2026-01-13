@@ -125,6 +125,7 @@ digitex-website/
 │   ├── schemaTypes/             # Content schemas
 │   │   ├── author.ts            # Author schema
 │   │   ├── comment.ts           # Comment schema
+│   │   ├── department.ts        # Department schema (dynamic management)
 │   │   ├── post.ts              # Blog post schema
 │   │   ├── submission.ts        # Article submission schema
 │   │   └── user.ts              # User schema
@@ -133,9 +134,11 @@ digitex-website/
 ├── scripts/                      # Maintenance scripts
 │   ├── clean-article-formatting.ts
 │   ├── initialize-likes.ts      # Initialize missing likes fields
+│   ├── migrate-authors-to-departments.ts  # Migrate authors to department references
 │   ├── migrate-full-content.ts
 │   ├── reset-comment-counts.ts
-│   └── reset-likes.ts
+│   ├── reset-likes.ts
+│   └── setup-departments.ts     # Create initial departments
 └── public/                       # Static assets
 ```
 
@@ -146,7 +149,7 @@ digitex-website/
 - **Sanity Studio**: Embedded CMS accessible at `/studio` (admin only)
 - **Article Writing**: Rich text editor (TipTap) for creating articles
 - **Image Management**: Hotspot cropping and optimization
-- **Content Types**: Posts, Authors, Comments, Submissions, Users
+- **Content Types**: Posts, Authors, Comments, Submissions, Users, Departments
 
 ### 2. User Authentication & Roles
 
@@ -216,12 +219,63 @@ The blog is fully dynamic and managed via Sanity CMS.
 5. User can now log in and access dashboard
 
 **Creating an Author profile:**
-1. Admin goes to `/studio` → "Author"
+1. Admin goes to `/studio` → "Team Member (Author)"
 2. Create new author document
-3. Link to user account if needed
-4. Author can now be assigned to articles
+3. Assign to a department (see Department Management below)
+4. Link to user account if needed
+5. Author can now be assigned to articles
 
-### 3. Managing Comments
+### 2.5. Managing Departments
+
+**Dynamic Department Management**: Departments can now be created and managed entirely through Sanity Studio without code changes!
+
+**Initial Setup** (First time only):
+1. Run the setup script to create default departments:
+   ```bash
+   npx tsx scripts/setup-departments.ts
+   ```
+2. Migrate existing authors to use department references:
+   ```bash
+   npx tsx scripts/migrate-authors-to-departments.ts
+   ```
+
+**Adding a New Department:**
+1. Go to `/studio` → "Departments" (appears at top of sidebar)
+2. Click "Create new document"
+3. Fill in:
+   - **Name**: Short name (e.g., "Design")
+   - **Full Name**: Display name (e.g., "Department of Design")
+   - **Order**: Display order (lower numbers appear first)
+   - **Description**: Brief description
+   - **Active**: Toggle ON
+4. Click "Publish"
+5. Assign team members to the new department
+
+**Assigning Authors to Departments:**
+1. Go to `/studio` → "Team Member (Author)"
+2. Open an author document
+3. Select a department from the "Department" dropdown
+4. Click "Publish"
+
+The team page will automatically update to show the new department and assigned members.
+
+**Reordering Departments:**
+1. Edit each department's "Display Order" field
+2. Lower numbers appear first (e.g., 0 = first, 1 = second)
+3. Publish changes
+
+**Hiding a Department:**
+1. Edit the department
+2. Toggle "Active" to OFF
+3. Publish
+
+See `DEPARTMENT_FEATURE.md` for detailed documentation.
+
+### 3. Managing Departments
+
+See section 2.5 above for detailed department management instructions.
+
+### 4. Managing Comments
 
 **Comment Moderation:**
 - All comments are stored in Sanity
@@ -234,7 +288,7 @@ The blog is fully dynamic and managed via Sanity CMS.
 npx tsx scripts/reset-comment-counts.ts
 ```
 
-### 4. Initializing Missing Likes Fields
+### 5. Initializing Missing Likes Fields
 
 If old articles don't have the `likes` field initialized:
 
@@ -244,7 +298,7 @@ npx tsx scripts/initialize-likes.ts
 
 This script checks all posts and sets `likes: 0` for any posts missing the field.
 
-### 5. Resetting Likes
+### 6. Resetting Likes
 
 To reset all likes to 0:
 
@@ -252,7 +306,7 @@ To reset all likes to 0:
 npx tsx scripts/reset-likes.ts
 ```
 
-### 6. Cleaning Article Formatting
+### 7. Cleaning Article Formatting
 
 To clean up HTML formatting in articles:
 
@@ -351,9 +405,14 @@ Make sure all environment variables from `.env.local` are set in Vercel:
 | `components/like-button.tsx` | Like/unlike functionality |
 | `components/comments-section.tsx` | Threaded comments system |
 | `app/dashboard/write/page.tsx` | Article writing interface |
+| `app/HomeClient.tsx` | Homepage with dynamic team sections |
 | `app/api/likes/route.ts` | Like count API endpoint |
 | `sanity/schemaTypes/post.ts` | Blog post schema definition |
+| `sanity/schemaTypes/department.ts` | Department schema definition |
 | `scripts/initialize-likes.ts` | Initialize missing likes fields |
+| `scripts/setup-departments.ts` | Create initial departments |
+| `scripts/migrate-authors-to-departments.ts` | Migrate authors to departments |
+| `DEPARTMENT_FEATURE.md` | Department management documentation |
 
 ## Support
 
@@ -367,5 +426,9 @@ For technical issues or questions:
 ---
 
 **Last Updated**: January 2026
+
+**Recent Updates**:
+- ✅ Dynamic department management (no code changes needed to add departments)
+- ✅ Heart counter fix for old articles
 
 **Website**: [wearedigitex.org](https://wearedigitex.org)
