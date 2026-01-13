@@ -260,7 +260,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
                         src={urlFor(post.mainImage).url()} 
                         alt={post.title} 
                         fill 
-                        priority={index < 3}
+                        priority={index < 2}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-110" 
                         style={{ objectPosition: getObjectPosition(post.mainImage.hotspot) }}

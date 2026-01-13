@@ -74,15 +74,6 @@ export default function HomePage() {
   
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero Text Stagger
-      gsap.from(".hero-text-item", {
-        y: 100,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.1,
-        ease: "power4.out"
-      })
-
       // Section Animations
       gsap.from(".foundation-card", {
         scrollTrigger: {
@@ -144,26 +135,46 @@ export default function HomePage() {
         className="relative z-10 min-h-screen flex flex-col justify-center px-6 pt-24 pb-20 max-w-7xl mx-auto"
       >
          <div className="max-w-4xl">
-           <div className="hero-text-item inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-400 text-sm font-mono mb-8 backdrop-blur-md">
+           <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.5 }}
+             className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-400 text-sm font-mono mb-8 backdrop-blur-md"
+           >
              <span className="relative flex h-2 w-2">
                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
              </span>
              LIVE: TECH NEWS FEED
-           </div>
+           </motion.div>
            
-           <h1 className="hero-text-item text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-[0.9]">
+           <motion.h1 
+             initial={{ opacity: 0, y: 30 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+             className="text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-[0.9]"
+           >
              The Future <br/>
              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
                Decoded.
              </span>
-           </h1>
+           </motion.h1>
            
-           <p className="hero-text-item text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed font-light">
+           <motion.p 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+             className="text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed font-light"
+           >
              Digitex is a student-led publication exploring the intersection of technology, innovation, and society.
-           </p>
+           </motion.p>
            
-           <div className="hero-text-item flex flex-wrap gap-4">
+           <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+             className="flex flex-wrap gap-4"
+           >
              <MagneticButton strength={0.3}>
                 <Link href="/blog">
                   <Button size="lg" className="h-14 px-8 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-bold text-lg shadow-[0_0_20px_rgba(40,130,158,0.5)] border border-teal-400/20">
@@ -176,9 +187,9 @@ export default function HomePage() {
                  About Us
                </Button>
              </Link>
-           </div>
+           </motion.div>
          </div>
-      </section>
+       </section>
 
       {/* Our Foundation Section */}
       <section id="foundation" className="relative z-10 py-32 bg-black/90 border-t border-white/5 overflow-hidden backdrop-blur-sm">
