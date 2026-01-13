@@ -11,6 +11,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { getObjectPosition } from "@/lib/utils"
 import { LikeButton } from "@/components/like-button"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const CATEGORIES = ["All", "TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 const SORT_OPTIONS = [
@@ -220,7 +221,18 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
 
       {/* Blog Grid */}
       {loading ? (
-        <div className="text-center text-gray-500 py-20">Loading articles...</div>
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="space-y-6">
+              <Skeleton className="aspect-[4/3] rounded-2xl" />
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : filteredPosts.length === 0 ? (
         <div className="text-center text-gray-500 py-20">
           <p className="text-xl mb-4">No articles found</p>

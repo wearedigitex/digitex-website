@@ -16,6 +16,7 @@ import { Orb } from "@/components/ui/orb"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { getTeamMembers, getDepartments } from "@/lib/sanity"
 import { TeamCard } from "@/components/team-card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -149,10 +150,10 @@ export default function HomePage() {
            </motion.div>
            
            <motion.h1 
-             initial={{ opacity: 0, y: 30 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-             className="text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-[0.9]"
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             transition={{ duration: 0.6, delay: 0.05, ease: "linear" }}
+             className="text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-[0.9] will-change-[opacity]"
            >
              The Future <br/>
              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
@@ -270,7 +271,18 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center text-gray-500 py-10">Loading Team...</div>
+                <div className="space-y-16">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="mb-16 last:mb-0">
+                      <Skeleton className="h-8 w-48 mb-8 ml-4" />
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3].map((j) => (
+                          <div key={j} className="h-[400px] bg-white/5 rounded-3xl animate-pulse" />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </section>
