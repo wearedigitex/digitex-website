@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteLayoutClient } from "@/components/site-layout-client";
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -36,6 +38,8 @@ export default function RootLayout({
         <SiteLayoutClient>
           {children}
         </SiteLayoutClient>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
