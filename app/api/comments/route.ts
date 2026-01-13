@@ -67,29 +67,26 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const doc: any = {
+    const commentDoc = {
       _type: 'comment',
+      name,
+      email,
+      comment,
       post: {
         _type: 'reference',
         _ref: postId,
       },
-      name,
-      email,
-      comment,
-      approved: isApproved, 
-      autoApproved: isApproved,
+      parentComment: parentCommentId ? {
+        _type: 'reference',
+        _ref: parentCommentId,
+      } : undefined,
+      approved: isApproved,
       isTeamMember,
+      autoApproved: isApproved, // Mark as counted if auto-approved
       createdAt: new Date().toISOString(),
     }
 
-    if (parentCommentId) {
-        doc.parentComment = {
-            _type: 'reference',
-            _ref: parentCommentId
-        }
-    }
-
-    const createdComment = await adminClient.create(doc)
+    const createdComment = await adminClient.create(commentDoc)
 
     // Increment comment count on post ONLY if approved
     if (isApproved) {
@@ -108,9 +105,9 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, message: "Comment submitted", approved: isApproved, isTeamMember, comment: createdComment })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error submitting comment:", error)
-    return NextResponse.json({ error: "Failed to submit comment" }, { status: 500 })
+    return NextResponse.json({ error: `Failed to submit comment: ${error.message}` }, { status: 500 })
   }
 }
 
@@ -199,7 +196,7 @@ export async function DELETE(request: NextRequest) {
           idsToDelete.forEach(id => transaction.delete(id))
           
           const approvedToDeleteCount = allComments
-            .filter((c: any) => idsToDelete.includes(c._id) && c.approved === true)
+            .filter((c: any) => idsToDelete.includes(c._id) && c.autoApproved === true)
             .length
       
           if (comment.post?._ref && approvedToDeleteCount > 0) {

@@ -56,9 +56,9 @@ export const ApproveDeletionAction: DocumentActionComponent = (props: DocumentAc
       // Delete the comments
       idsToDelete.forEach(id => transaction.delete(id))
 
-      // 5. Count approved comments to decrement
+      // 5. Count auto-approved comments to decrement
       const approvedToDeleteCount = allComments
-        .filter((c: any) => idsToDelete.includes(c._id) && c.approved === true)
+        .filter((c: any) => idsToDelete.includes(c._id) && c.autoApproved === true)
         .length
 
       // 6. Update post comment count
