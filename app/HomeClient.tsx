@@ -24,11 +24,11 @@ if (typeof window !== "undefined") {
 
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null)
-
+  
   const [formState, setFormState] = useState({ name: "", email: "", message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
-
+  
   const [teamMembers, setTeamMembers] = useState<any[]>([])
   const [departments, setDepartments] = useState<any[]>([])
 
@@ -72,7 +72,7 @@ export default function HomePage() {
       setIsSubmitting(false)
     }
   }
-
+  
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Section Animations
@@ -87,7 +87,7 @@ export default function HomePage() {
         duration: 1
       })
     }, heroRef)
-
+    
     return () => ctx.revert()
   }, [])
 
@@ -103,26 +103,24 @@ export default function HomePage() {
   const renderTeamGrid = (members: any[], title: string) => (
     <div className="mb-16 last:mb-0">
       <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">{title}</h3>
-      <div className="flex flex-wrap justify-center gap-8">
-        {members.map((member) => (
-          <div key={member._id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm">
-            <TeamCard member={member} />
-          </div>
-        ))}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {members.map((member) => (
+            <TeamCard key={member._id} member={member} />
+          ))}
       </div>
     </div>
   )
 
   return (
     <main className="bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-teal-500/30">
-
+      
       {/* 3D Background */}
       <div className="fixed inset-0 z-0">
         <HeroScene />
         <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
       </div>
 
-      {/* Background Grid & Lines */}
+       {/* Background Grid & Lines */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
         {/* Vertical Glowing Lines */}
@@ -132,67 +130,67 @@ export default function HomePage() {
       </div>
 
       {/* Hero Section */}
-      <section
+      <section 
         id="home"
         ref={heroRef}
         className="relative z-10 min-h-screen flex flex-col justify-center px-6 pt-24 pb-20 max-w-7xl mx-auto"
       >
-        <div className="max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-400 text-sm font-mono mb-8 backdrop-blur-md"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
-            </span>
-            LIVE: TECH NEWS FEED
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.05, ease: "linear" }}
-            className="text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-[0.9] will-change-[opacity]"
-          >
-            The Future <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
-              Decoded.
-            </span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed font-light"
-          >
-            Digitex is a student-led publication exploring the intersection of technology, innovation, and society.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="flex flex-wrap gap-4"
-          >
-            <MagneticButton strength={0.3}>
-              <Link href="/blog">
-                <Button size="lg" className="h-14 px-8 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-bold text-lg shadow-[0_0_20px_rgba(40,130,158,0.5)] border border-teal-400/20">
-                  Read the Blog <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-            </MagneticButton>
-            <Link href="/#foundation">
-              <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/20 hover:bg-white/5 text-white bg-white/5 backdrop-blur-md">
-                About Us
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+         <div className="max-w-4xl">
+           <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.5 }}
+             className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-400 text-sm font-mono mb-8 backdrop-blur-md"
+           >
+             <span className="relative flex h-2 w-2">
+               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+               <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+             </span>
+             LIVE: TECH NEWS FEED
+           </motion.div>
+           
+           <motion.h1 
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             transition={{ duration: 0.6, delay: 0.05, ease: "linear" }}
+             className="text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-[0.9] will-change-[opacity]"
+           >
+             The Future <br/>
+             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
+               Decoded.
+             </span>
+           </motion.h1>
+           
+           <motion.p 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+             className="text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed font-light"
+           >
+             Digitex is a student-led publication exploring the intersection of technology, innovation, and society.
+           </motion.p>
+           
+           <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+             className="flex flex-wrap gap-4"
+           >
+             <MagneticButton strength={0.3}>
+                <Link href="/blog">
+                  <Button size="lg" className="h-14 px-8 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-bold text-lg shadow-[0_0_20px_rgba(40,130,158,0.5)] border border-teal-400/20">
+                    Read the Blog <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+             </MagneticButton>
+             <Link href="/#foundation">
+               <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/20 hover:bg-white/5 text-white bg-white/5 backdrop-blur-md">
+                 About Us
+               </Button>
+             </Link>
+           </motion.div>
+         </div>
+       </section>
 
       {/* Our Foundation Section */}
       <section id="foundation" className="relative z-10 py-32 bg-black/90 border-t border-white/5 overflow-hidden backdrop-blur-sm">
@@ -204,11 +202,11 @@ export default function HomePage() {
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-20">
             Our <span className="text-[#28829E]">Foundation</span>
           </h2>
-
+          
           <div className="grid md:grid-cols-3 gap-12">
             {/* Who We Are */}
             <SpotlightCard className="foundation-card text-center group p-8 hover:-translate-y-2 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+               <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"/>
               <div className="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#28829E] group-hover:shadow-[0_0_20px_#28829E] transition-all">
                 <Users className="w-10 h-10 text-[#28829E] group-hover:text-white" />
               </div>
@@ -220,7 +218,7 @@ export default function HomePage() {
 
             {/* What We Do */}
             <SpotlightCard className="foundation-card text-center group p-8 hover:-translate-y-2 relative" spotlightColor="rgba(14, 165, 233, 0.25)">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"/>
               <div className="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#0EA5E9] group-hover:shadow-[0_0_20px_#0EA5E9] transition-all">
                 <Zap className="w-10 h-10 text-[#0EA5E9] group-hover:text-white" />
               </div>
@@ -232,8 +230,8 @@ export default function HomePage() {
 
             {/* Vision */}
             <SpotlightCard className="foundation-card text-center group p-8 hover:-translate-y-2 relative" spotlightColor="rgba(168, 85, 247, 0.25)">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              <div className="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-purple-600 group-hover:shadow-[0_0_20px_purple] transition-all">
+               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"/>
+               <div className="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-purple-600 group-hover:shadow-[0_0_20px_purple] transition-all">
                 <Globe className="w-10 h-10 text-purple-500 group-hover:text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Vision</h3>
@@ -247,120 +245,118 @@ export default function HomePage() {
 
       {/* Shared Wrapper for Seamless Flow */}
       <div className="relative z-10 bg-black overflow-hidden py-20 pb-32">
-        {/* Ambient Orbs Flowing Across Sections */}
-        <Orb color="bg-purple-600" className="-left-64 top-[10%] opacity-10 blur-[100px]" />
-        <Orb color="bg-teal-600" className="-right-64 top-[40%] opacity-10 blur-[100px]" />
-        <Orb color="bg-[#28829E]" className="-right-20 bottom-0 opacity-15 blur-[80px]" />
+          {/* Ambient Orbs Flowing Across Sections */}
+          <Orb color="bg-purple-600" className="-left-64 top-[10%] opacity-10 blur-[100px]" />
+          <Orb color="bg-teal-600" className="-right-64 top-[40%] opacity-10 blur-[100px]" />
+          <Orb color="bg-[#28829E]" className="-right-20 bottom-0 opacity-15 blur-[80px]" />
 
-        {/* Team Section */}
-        <section id="team" className="relative z-10 pt-12 pb-24">
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-16">Meet the Team</h2>
-
-            {teamMembers.length > 0 && departments.length > 0 ? (
-              <div className="space-y-16">
-                {membersByDepartment.map((dept) => (
-                  <div key={dept._id} className="mb-16 last:mb-0">
-                    <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">
-                      {dept.fullName || dept.name}
-                    </h3>
-                    <div className="flex flex-wrap justify-center gap-8">
-                      {dept.members.map((member: any) => (
-                        <div key={member._id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm">
-                          <TeamCard member={member} />
-                        </div>
-                      ))}
+          {/* Team Section */}
+          <section id="team" className="relative z-10 pt-12 pb-24">
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold mb-16">Meet the Team</h2>
+              
+              {teamMembers.length > 0 && departments.length > 0 ? (
+                <div className="space-y-16">
+                  {membersByDepartment.map((dept) => (
+                    <div key={dept._id} className="mb-16 last:mb-0">
+                      <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">
+                        {dept.fullName || dept.name}
+                      </h3>
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {dept.members.map((member: any) => (
+                          <TeamCard key={member._id} member={member} />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-16">
-                {[1, 2].map((i) => (
-                  <div key={i} className="mb-16 last:mb-0">
-                    <Skeleton className="h-8 w-48 mb-8 ml-4" />
-                    <div className="flex flex-wrap justify-center gap-8">
-                      {[1, 2, 3].map((j) => (
-                        <div key={j} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm h-[400px] bg-white/5 rounded-3xl animate-pulse" />
-                      ))}
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-16">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="mb-16 last:mb-0">
+                      <Skeleton className="h-8 w-48 mb-8 ml-4" />
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3].map((j) => (
+                          <div key={j} className="h-[400px] bg-white/5 rounded-3xl animate-pulse" />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-
-
-        {/* Contact Section */}
-        <section id="contact" className="relative z-10">
-          <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
-            <p className="text-gray-400 mb-12 text-lg">
-              Have a story to pitch or want to join the team? Drop us a line.
-            </p>
-
-            <div className="bg-[#0A0A0A]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 text-left shadow-2xl">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-400">Name</label>
-                    <Input
-                      required
-                      value={formState.name}
-                      onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                      placeholder="John Doe"
-                      className="bg-black/50 border-white/10 h-12 rounded-xl focus:border-[#28829E]"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-400">Email</label>
-                    <Input
-                      required
-                      type="email"
-                      value={formState.email}
-                      onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                      placeholder="john@example.com"
-                      className="bg-black/50 border-white/10 h-12 rounded-xl focus:border-[#28829E]"
-                    />
-                  </div>
+                  ))}
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-400">Message</label>
-                  <textarea
-                    required
-                    value={formState.message}
-                    onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                    className="w-full h-32 bg-black/50 border border-white/10 rounded-xl p-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-[#28829E] focus:ring-1 focus:ring-[#28829E] transition-all resize-none"
-                    placeholder="Tell us what's on your mind..."
-                  ></textarea>
-                </div>
-
-                <div className="space-y-4">
-                  <Button
-                    disabled={isSubmitting}
-                    className="w-full h-14 bg-[#28829E] hover:bg-teal-700 text-white font-bold rounded-xl text-lg shadow-[0_0_20px_rgba(40,130,158,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? "Sending..." : "Send Message"}
-                    {!isSubmitting && <MessageSquare className="ml-2 w-5 h-5" />}
-                  </Button>
-
-                  {submitStatus === "success" && (
-                    <p className="text-green-400 text-center font-medium bg-green-400/10 p-4 rounded-xl border border-green-400/20">
-                      Message sent successfully! We'll get back to you soon.
-                    </p>
-                  )}
-                  {submitStatus === "error" && (
-                    <p className="text-red-400 text-center font-medium bg-red-400/10 p-4 rounded-xl border border-red-400/20">
-                      Something went wrong. Please try again.
-                    </p>
-                  )}
-                </div>
-              </form>
+              )}
             </div>
+          </section>
+
+
+          {/* Contact Section */}
+          <section id="contact" className="relative z-10">
+            <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
+              <p className="text-gray-400 mb-12 text-lg">
+                Have a story to pitch or want to join the team? Drop us a line.
+              </p>
+
+          <div className="bg-[#0A0A0A]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 text-left shadow-2xl">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-400">Name</label>
+                  <Input 
+                    required
+                    value={formState.name}
+                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                    placeholder="John Doe" 
+                    className="bg-black/50 border-white/10 h-12 rounded-xl focus:border-[#28829E]" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-400">Email</label>
+                  <Input 
+                    required
+                    type="email"
+                    value={formState.email}
+                    onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                    placeholder="john@example.com" 
+                    className="bg-black/50 border-white/10 h-12 rounded-xl focus:border-[#28829E]" 
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-400">Message</label>
+                <textarea 
+                  required
+                  value={formState.message}
+                  onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                  className="w-full h-32 bg-black/50 border border-white/10 rounded-xl p-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-[#28829E] focus:ring-1 focus:ring-[#28829E] transition-all resize-none"
+                  placeholder="Tell us what's on your mind..."
+                ></textarea>
+              </div>
+
+              <div className="space-y-4">
+                <Button 
+                  disabled={isSubmitting}
+                  className="w-full h-14 bg-[#28829E] hover:bg-teal-700 text-white font-bold rounded-xl text-lg shadow-[0_0_20px_rgba(40,130,158,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"} 
+                  {!isSubmitting && <MessageSquare className="ml-2 w-5 h-5" />}
+                </Button>
+                
+                {submitStatus === "success" && (
+                  <p className="text-green-400 text-center font-medium bg-green-400/10 p-4 rounded-xl border border-green-400/20">
+                    Message sent successfully! We'll get back to you soon.
+                  </p>
+                )}
+                {submitStatus === "error" && (
+                  <p className="text-red-400 text-center font-medium bg-red-400/10 p-4 rounded-xl border border-red-400/20">
+                    Something went wrong. Please try again.
+                  </p>
+                )}
+              </div>
+            </form>
           </div>
-        </section>
+        </div>
+      </section>
       </div>
 
     </main>
