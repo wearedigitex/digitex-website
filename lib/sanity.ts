@@ -63,6 +63,20 @@ export async function getTeamMembers() {
   )
 }
 
+// Function to fetch all categories
+export async function getCategories() {
+  return client.fetch(
+    `*[_type == "category"] | order(order asc) {
+      _id,
+      name,
+      "slug": slug.current,
+      description,
+      color,
+      order
+    }`
+  )
+}
+
 // Function to fetch blog posts
 export async function getBlogPosts() {
   return client.fetch(
@@ -70,7 +84,12 @@ export async function getBlogPosts() {
       _id,
       title,
       "slug": slug.current,
-      category,
+      "category": category->{
+        _id,
+        name,
+        "slug": slug.current,
+        color
+      },
       publishedAt,
       excerpt,
       "authorName": author->name,
@@ -91,7 +110,12 @@ export async function getPostBySlug(slug: string) {
       _id,
       title,
       "slug": slug.current,
-      category,
+      "category": category->{
+        _id,
+        name,
+        "slug": slug.current,
+        color
+      },
       publishedAt,
       excerpt,
       body,
@@ -125,10 +149,10 @@ export async function updateLikeCount(postId: string, increment: boolean) {
   )
 
   // If likes is null, undefined, or not a number, we need to initialize it
-  const currentLikes = typeof currentPost?.likes === 'number' && !isNaN(currentPost.likes) 
-    ? currentPost.likes 
+  const currentLikes = typeof currentPost?.likes === 'number' && !isNaN(currentPost.likes)
+    ? currentPost.likes
     : null
-  
+
   const patch = adminClient.patch(postId)
 
   if (currentLikes === null) {
@@ -157,7 +181,12 @@ export async function getRecentPosts(excludeId: string, limit: number = 3) {
       _id,
       title,
       "slug": slug.current,
-      category,
+      "category": category->{
+        _id,
+        name,
+        "slug": slug.current,
+        color
+      },
       publishedAt,
       mainImage,
       viewCount

@@ -21,15 +21,9 @@ export const post = defineType({
     defineField({
       name: 'category',
       title: 'Category',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Technology', value: 'TECHNOLOGY' },
-          { title: 'Medicine', value: 'MEDICINE' },
-          { title: 'Commerce', value: 'COMMERCE' },
-          { title: 'General', value: 'GENERAL' },
-        ],
-      },
+      type: 'reference',
+      to: [{ type: 'category' }],
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'publishedAt',

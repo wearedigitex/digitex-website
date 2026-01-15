@@ -21,15 +21,8 @@ export const submission = defineType({
     defineField({
       name: 'category',
       title: 'Category',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Technology', value: 'TECHNOLOGY' },
-          { title: 'Medicine', value: 'MEDICINE' },
-          { title: 'Commerce', value: 'COMMERCE' },
-          { title: 'General', value: 'GENERAL' },
-        ],
-      },
+      type: 'reference',
+      to: [{ type: 'category' }],
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -113,7 +106,7 @@ export const submission = defineType({
         rejected: '❌',
         published: '🚀',
       }
-      
+
       return {
         title: `${statusEmoji[status] || '📄'} ${title}`,
         subtitle: `by ${author || 'Unknown'} - ${status}`,

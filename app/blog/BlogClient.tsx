@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { Search, ArrowRight, Eye, MessageSquare, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { getBlogPosts, urlFor } from "@/lib/sanity"
+import { getBlogPosts, urlFor, getCategories } from "@/lib/sanity"
 import { format } from "date-fns"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,6 @@ import { getObjectPosition } from "@/lib/utils"
 import { LikeButton } from "@/components/like-button"
 import { Skeleton } from "@/components/ui/skeleton"
 
-const CATEGORIES = ["All", "TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 const SORT_OPTIONS = [
   { label: "Newest First", value: "newest" },
   { label: "Oldest First", value: "oldest" },
@@ -35,35 +34,34 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
   const [selectedYear, setSelectedYear] = useState("All Years")
   const [sortBy, setSortBy] = useState("newest")
   const [years, setYears] = useState<string[]>([])
+  const [categories, setCategories] = useState<any[]>([])
 
   useEffect(() => {
-    // Only fetch client-side if we don't have initialPosts or if we need to refresh
-    if (initialPosts.length === 0) {
-      async function loadPosts() {
-        try {
-          const data = await getBlogPosts()
-          setPosts(data)
-          
-          // Extract unique years
-          const uniqueYears = (Array.from(
-            new Set(data.map((p: any) => new Date(p.publishedAt).getFullYear().toString()))
-          ) as string[]).sort((a, b) => parseInt(b) - parseInt(a))
-          setYears(uniqueYears)
-        } catch (error) {
-          console.error("Failed to fetch posts:", error)
-        } finally {
-          setLoading(false)
+    // Fetch categories and posts
+    async function loadData() {
+      try {
+        const [categoriesData, postsData] = await Promise.all([
+          getCategories(),
+          initialPosts.length === 0 ? getBlogPosts() : Promise.resolve(initialPosts)
+        ])
+
+        setCategories(categoriesData)
+        if (initialPosts.length === 0) {
+          setPosts(postsData)
         }
+
+        // Extract unique years
+        const uniqueYears = (Array.from(
+          new Set(postsData.map((p: any) => new Date(p.publishedAt).getFullYear().toString()))
+        ) as string[]).sort((a, b) => parseInt(b) - parseInt(a))
+        setYears(uniqueYears)
+      } catch (error) {
+        console.error("Failed to fetch data:", error)
+      } finally {
+        setLoading(false)
       }
-      loadPosts()
-    } else {
-      // Calculate years from initialPosts
-      const uniqueYears = (Array.from(
-        new Set(initialPosts.map((p: any) => new Date(p.publishedAt).getFullYear().toString()))
-      ) as string[]).sort((a, b) => parseInt(b) - parseInt(a))
-      setYears(uniqueYears)
-      setLoading(false)
     }
+    loadData()
   }, [initialPosts])
 
   // Filter and sort posts
@@ -72,7 +70,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
 
     // Category filter
     if (activeCategory !== "All") {
-      result = result.filter(p => p.category === activeCategory)
+      result = result.filter(p => p.category?._id === activeCategory)
     }
 
     // Year filter
@@ -137,17 +135,25 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
       <div className="max-w-7xl mx-auto mb-8 space-y-6">
         {/* Category Filters */}
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-                activeCategory === cat 
-                  ? "bg-[#28829E] text-white" 
-                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+          <button
+            onClick={() => setActiveCategory("All")}
+            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === "All"
+                ? "bg-[#28829E] text-white"
+                : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
               }`}
+          >
+            All Posts
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat._id}
+              onClick={() => setActiveCategory(cat._id)}
+              className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === cat._id
+                  ? "bg-[#28829E] text-white"
+                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                }`}
             >
-              {cat === "All" ? "All Posts" : cat.charAt(0) + cat.slice(1).toLowerCase()}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -156,19 +162,19 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-            <Input 
-              placeholder="Search articles..." 
+            <Input
+              placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-11 bg-[#111] border-white/10 text-white rounded-xl h-12 focus:border-[#28829E]"
             />
           </div>
-          
+
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
             className="w-full md:w-auto min-w-[120px] px-4 h-12 bg-[#111] border border-white/10 text-white rounded-xl focus:border-[#28829E] focus:outline-none cursor-pointer text-sm appearance-none"
-            style={{ 
+            style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1.5rem center',
@@ -186,7 +192,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="w-full md:w-auto min-w-[150px] px-4 h-12 bg-[#111] border border-white/10 text-white rounded-xl focus:border-[#28829E] focus:outline-none cursor-pointer text-sm appearance-none"
-            style={{ 
+            style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1.5rem center',
@@ -241,7 +247,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
           </Button>
         </div>
       ) : (
-        <motion.div 
+        <motion.div
           variants={{
             hidden: { opacity: 0 },
             show: {
@@ -268,13 +274,13 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
                   {/* Image Card */}
                   <div className="aspect-[4/3] bg-[#0A0A0A] rounded-2xl overflow-hidden mb-6 border border-white/5 group-hover:border-[#28829E]/50 transition-colors relative">
                     {post.mainImage ? (
-                      <Image 
-                        src={urlFor(post.mainImage).url()} 
-                        alt={post.title} 
-                        fill 
+                      <Image
+                        src={urlFor(post.mainImage).url()}
+                        alt={post.title}
+                        fill
                         priority={index < 2}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                         style={{ objectPosition: getObjectPosition(post.mainImage.hotspot) }}
                       />
                     ) : (
@@ -282,11 +288,13 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
                         DigiteX
                       </div>
                     )}
-                    
+
                     {/* Category Tag */}
-                    <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg text-xs font-bold text-[#28829E] border border-white/10">
-                      {post.category}
-                    </div>
+                    {post.category && (
+                      <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg text-xs font-bold text-[#28829E] border border-white/10">
+                        {post.category.name}
+                      </div>
+                    )}
 
                     {/* Stats */}
                     <div className="absolute bottom-4 right-4 flex items-center gap-3 text-xs text-white/80">
@@ -299,11 +307,11 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
                         <span>{post.commentCount || 0}</span>
                       </div>
                       <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg hover:bg-black/80 transition-colors pointer-events-auto">
-                         <LikeButton 
-                           postId={post._id} 
-                           initialLikes={post.likes || 0}
-                           className="p-0 h-auto bg-transparent hover:bg-transparent text-white/80 hover:text-[#28829E] gap-1"
-                         />
+                        <LikeButton
+                          postId={post._id}
+                          initialLikes={post.likes || 0}
+                          className="p-0 h-auto bg-transparent hover:bg-transparent text-white/80 hover:text-[#28829E] gap-1"
+                        />
                       </div>
                     </div>
                   </div>
