@@ -370,17 +370,17 @@ export default function HomePage() {
                 <div className="flex flex-col items-center gap-4">
                   {/* Email */}
                   <a
-                    href="mailto:hello@wearedigitex.org"
+                    href="mailto:wearedigitex@gmail.com"
                     className="flex items-center gap-2 text-gray-300 hover:text-[#28829E] transition-colors group"
                   >
                     <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                    <span className="text-sm font-medium">hello@wearedigitex.org</span>
+                    <span className="text-sm font-medium">wearedigitex@gmail.com</span>
                   </a>
 
                   {/* Social Icons */}
                   <div className="flex items-center gap-4">
                     <a
-                      href="https://instagram.com/digitex.sg"
+                      href="https://instagram.com/wearedigitex"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#28829E] border border-white/10 hover:border-[#28829E] flex items-center justify-center transition-all hover:scale-110 group"
@@ -389,7 +389,7 @@ export default function HomePage() {
                       <Instagram className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
                     </a>
                     <a
-                      href="https://linkedin.com/company/digitex-sg"
+                      href="https://www.linkedin.com/company/wearedigitex"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#28829E] border border-white/10 hover:border-[#28829E] flex items-center justify-center transition-all hover:scale-110 group"
