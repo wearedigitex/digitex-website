@@ -58,7 +58,9 @@ export async function getTeamMembers() {
       },
       image,
       bio,
-      linkedin
+      linkedin,
+      instagram,
+      github
     }`
   )
 }

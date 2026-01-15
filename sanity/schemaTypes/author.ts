@@ -55,6 +55,18 @@ export const author = defineType({
       description: 'Full URL to LinkedIn profile',
     }),
     defineField({
+      name: 'instagram',
+      title: 'Instagram URL',
+      type: 'url',
+      description: 'Full URL to Instagram profile',
+    }),
+    defineField({
+      name: 'github',
+      title: 'GitHub URL',
+      type: 'url',
+      description: 'Full URL to GitHub profile',
+    }),
+    defineField({
       name: 'isGuest',
       title: 'Is Guest Contributor',
       type: 'boolean',
