@@ -5,7 +5,7 @@ import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Zap, Globe, MessageSquare, Users, Target, Lightbulb } from "lucide-react"
+import { ArrowRight, Zap, Globe, MessageSquare, Users, Target, Lightbulb, Instagram, Linkedin, Mail } from "lucide-react"
 import { motion } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
@@ -268,8 +268,8 @@ export default function HomePage() {
                       }`}>
                       {dept.members.map((member: any) => (
                         <div key={member._id} className={`w-full ${dept.members.length === 4
-                            ? 'md:w-[calc(50%-1rem)] lg:w-[calc(50%-1rem)]'
-                            : 'md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]'
+                          ? 'md:w-[calc(50%-1rem)] lg:w-[calc(50%-1rem)]'
+                          : 'md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]'
                           } max-w-sm`}>
                           <TeamCard member={member} />
                         </div>
@@ -362,6 +362,44 @@ export default function HomePage() {
                   )}
                 </div>
               </form>
+
+              {/* Social Links & Email */}
+              <div className="mt-8 pt-8 border-t border-white/10">
+                <p className="text-center text-gray-400 text-sm mb-6">Or connect with us on social media</p>
+
+                <div className="flex flex-col items-center gap-4">
+                  {/* Email */}
+                  <a
+                    href="mailto:hello@wearedigitex.org"
+                    className="flex items-center gap-2 text-gray-300 hover:text-[#28829E] transition-colors group"
+                  >
+                    <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium">hello@wearedigitex.org</span>
+                  </a>
+
+                  {/* Social Icons */}
+                  <div className="flex items-center gap-4">
+                    <a
+                      href="https://instagram.com/digitex.sg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#28829E] border border-white/10 hover:border-[#28829E] flex items-center justify-center transition-all hover:scale-110 group"
+                      aria-label="Instagram"
+                    >
+                      <Instagram className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                    </a>
+                    <a
+                      href="https://linkedin.com/company/digitex-sg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#28829E] border border-white/10 hover:border-[#28829E] flex items-center justify-center transition-all hover:scale-110 group"
+                      aria-label="LinkedIn"
+                    >
+                      <Linkedin className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
