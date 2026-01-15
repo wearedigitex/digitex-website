@@ -22,26 +22,28 @@ export function Footer() {
           </div>
 
           {/* Center: Quick Links */}
-          <div>
-            <h4 className="text-white font-bold mb-4">Quick Links</h4>
-            <div className="flex flex-col gap-2">
-              <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm">
-                About Us
-              </Link>
-              <Link href="/#team" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Our Team
-              </Link>
-              <Link href="/blog" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Blog
-              </Link>
-              <Link href="/#contact" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Contact
-              </Link>
+          <div className="md:flex md:flex-col md:items-center">
+            <div>
+              <h4 className="text-white font-bold mb-4">Quick Links</h4>
+              <div className="flex flex-col gap-2">
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm">
+                  About Us
+                </Link>
+                <Link href="/#team" className="text-gray-400 hover:text-white transition-colors text-sm">
+                  Our Team
+                </Link>
+                <Link href="/blog" className="text-gray-400 hover:text-white transition-colors text-sm">
+                  Blog
+                </Link>
+                <Link href="/#contact" className="text-gray-400 hover:text-white transition-colors text-sm">
+                  Contact
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Right: Connect With Us */}
-          <div>
+          <div className="md:pl-12">
             <h4 className="text-white font-bold mb-4">Connect With Us</h4>
             <div className="flex flex-col gap-3">
               {/* Email */}
