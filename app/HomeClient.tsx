@@ -103,11 +103,9 @@ export default function HomePage() {
   const renderTeamGrid = (members: any[], title: string) => (
     <div className="mb-16 last:mb-0">
       <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">{title}</h3>
-      <div className="flex flex-wrap justify-center gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {members.map((member) => (
-          <div key={member._id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm">
-            <TeamCard member={member} />
-          </div>
+          <TeamCard key={member._id} member={member} />
         ))}
       </div>
     </div>
@@ -264,15 +262,9 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">
                       {dept.fullName || dept.name}
                     </h3>
-                    <div className={`flex flex-wrap justify-center gap-8 ${dept.members.length === 4 ? 'max-w-5xl mx-auto' : ''
-                      }`}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                       {dept.members.map((member: any) => (
-                        <div key={member._id} className={`w-full ${dept.members.length === 4
-                          ? 'md:w-[calc(50%-1rem)] lg:w-[calc(50%-1rem)]'
-                          : 'md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]'
-                          } max-w-sm`}>
-                          <TeamCard member={member} />
-                        </div>
+                        <TeamCard key={member._id} member={member} />
                       ))}
                     </div>
                   </div>
@@ -283,9 +275,9 @@ export default function HomePage() {
                 {[1, 2].map((i) => (
                   <div key={i} className="mb-16 last:mb-0">
                     <Skeleton className="h-8 w-48 mb-8 ml-4" />
-                    <div className="flex flex-wrap justify-center gap-8">
-                      {[1, 2, 3].map((j) => (
-                        <div key={j} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm h-[400px] bg-white/5 rounded-3xl animate-pulse" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {[1, 2, 3, 4].map((j) => (
+                        <div key={j} className="w-full h-[400px] bg-white/5 rounded-2xl animate-pulse" />
                       ))}
                     </div>
                   </div>
