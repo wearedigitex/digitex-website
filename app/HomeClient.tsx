@@ -11,7 +11,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MagneticButton } from "@/components/magnetic-button"
-import { HeroScene } from "@/components/canvas/hero-scene"
+import { PlexusScene } from "@/components/canvas/plexus-scene"
 import { Orb } from "@/components/ui/orb"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { getTeamMembers, getDepartments } from "@/lib/sanity"
@@ -118,8 +118,8 @@ export default function HomePage() {
 
       {/* 3D Background */}
       <div className="fixed inset-0 z-0">
-        <HeroScene />
-        <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
+        <PlexusScene />
+        <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
       </div>
 
       {/* Background Grid & Lines */}
@@ -135,9 +135,9 @@ export default function HomePage() {
       <section
         id="home"
         ref={heroRef}
-        className="relative z-10 min-h-screen flex flex-col justify-center px-6 pt-24 pb-20 max-w-7xl mx-auto"
+        className="relative z-10 min-h-screen flex flex-col justify-center items-center px-6 pt-24 pb-20 max-w-7xl mx-auto text-center"
       >
-        <div className="max-w-4xl">
+        <div className="max-w-4xl flex flex-col items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -167,7 +167,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed font-light"
+            className="text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed font-light mx-auto"
           >
             Digitex is a student-led publication exploring the intersection of technology, innovation, and society.
           </motion.p>
@@ -176,7 +176,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="flex flex-wrap gap-4"
+            className="flex flex-wrap justify-center gap-4"
           >
             <MagneticButton strength={0.3}>
               <Link href="/blog">
