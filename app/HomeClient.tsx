@@ -159,7 +159,7 @@ export default function HomePage() {
           >
             The Future <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
-              Decoded
+              Decoded.
             </span>
           </motion.h1>
 
