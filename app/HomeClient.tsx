@@ -264,9 +264,13 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">
                       {dept.fullName || dept.name}
                     </h3>
-                    <div className="flex flex-wrap justify-center gap-8">
+                    <div className={`flex flex-wrap justify-center gap-8 ${dept.members.length === 4 ? 'max-w-5xl mx-auto' : ''
+                      }`}>
                       {dept.members.map((member: any) => (
-                        <div key={member._id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm">
+                        <div key={member._id} className={`w-full ${dept.members.length === 4
+                            ? 'md:w-[calc(50%-1rem)] lg:w-[calc(50%-1rem)]'
+                            : 'md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]'
+                          } max-w-sm`}>
                           <TeamCard member={member} />
                         </div>
                       ))}
