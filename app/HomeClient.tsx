@@ -31,6 +31,7 @@ export default function HomePage() {
 
   const [teamMembers, setTeamMembers] = useState<any[]>([])
   const [departments, setDepartments] = useState<any[]>([])
+  const [yearCount, setYearCount] = useState(2000)
 
   useEffect(() => {
     async function loadTeam() {
@@ -75,6 +76,17 @@ export default function HomePage() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Hero Year Animation
+      const yearObj = { value: 2000 }
+      gsap.to(yearObj, {
+        value: 2025,
+        duration: 2,
+        ease: "power2.out",
+        onUpdate: () => {
+          setYearCount(Math.floor(yearObj.value))
+        }
+      })
+
       // Section Animations
       gsap.from(".foundation-card", {
         scrollTrigger: {
@@ -153,13 +165,24 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.05, ease: "linear" }}
-            className="text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-[0.9] will-change-[opacity]"
+            className="flex flex-col items-center mb-6 will-change-[opacity]"
           >
-            The Future <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
-              Decoded
+            <span className="text-7xl md:text-9xl font-black tracking-tighter text-white">
+              DIGITEX
+            </span>
+            <span className="text-xl md:text-3xl font-bold tracking-[0.3em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
+              The Future Decoded
             </span>
           </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.5 }}
+            className="text-base font-mono text-teal-500/60 mb-8 tracking-[0.3em] uppercase"
+          >
+            est. {yearCount}
+          </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
