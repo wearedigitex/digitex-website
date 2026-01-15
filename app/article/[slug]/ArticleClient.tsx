@@ -22,7 +22,7 @@ interface ArticleClientProps {
 export default function ArticlePage({ initialPost, initialRecentPosts = [] }: ArticleClientProps) {
   const params = useParams()
   const slug = params.slug as string
-  
+
   const [post, setPost] = useState<any>(initialPost)
   const [recentPosts, setRecentPosts] = useState<any[]>(initialRecentPosts)
   const [loading, setLoading] = useState(false)
@@ -62,7 +62,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
       try {
         const data = await getPostBySlug(slug)
         setPost(data)
-        
+
         if (data?._id) {
           const recent = await getRecentPosts(data._id)
           setRecentPosts(recent)
@@ -136,11 +136,13 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           {/* Category Badge */}
-          <div className="mb-4">
-            <span className="inline-block px-4 py-1 bg-[#28829E]/20 text-[#28829E] rounded-full text-sm font-bold border border-[#28829E]/30">
-              {post.category}
-            </span>
-          </div>
+          {post.category && (
+            <div className="mb-4">
+              <span className="inline-block px-4 py-1 bg-[#28829E]/20 text-[#28829E] rounded-full text-sm font-bold border border-[#28829E]/30">
+                {post.category.name}
+              </span>
+            </div>
+          )}
 
           {/* Title */}
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
@@ -168,7 +170,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
               <span className="text-sm">{post.commentCount || 0}</span>
             </div>
             <LikeButton postId={post._id} initialLikes={post.likes || 0} />
-            
+
             <button
               onClick={handleCopyLink}
               className="ml-auto flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/5"
@@ -181,7 +183,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
 
         {/* Featured Image */}
         {post.mainImage && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -200,7 +202,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
         )}
 
         {/* Article Body */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
@@ -218,32 +220,32 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
                   h2: ({ children }) => <h2 className="text-3xl font-bold mb-4 mt-10">{children}</h2>,
                   h3: ({ children }) => <h3 className="text-2xl font-bold mb-3 mt-8">{children}</h3>,
                 },
-                  marks: {
-                    strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
-                    em: ({ children }) => <em className="italic">{children}</em>,
-                    link: ({ value, children }) => (
-                      <a href={value.href} className="text-[#28829E] hover:underline" target="_blank" rel="noopener noreferrer">
-                        {children}
-                      </a>
-                    ),
+                marks: {
+                  strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
+                  em: ({ children }) => <em className="italic">{children}</em>,
+                  link: ({ value, children }) => (
+                    <a href={value.href} className="text-[#28829E] hover:underline" target="_blank" rel="noopener noreferrer">
+                      {children}
+                    </a>
+                  ),
+                },
+                types: {
+                  image: ({ value }) => {
+                    if (!value?.asset?._ref) {
+                      return null
+                    }
+                    return (
+                      <div className="my-10 relative w-full h-[450px] rounded-2xl overflow-hidden border border-white/10 shadow-lg">
+                        <Image
+                          src={urlFor(value).url()}
+                          alt={value.alt || "Article Image"}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )
                   },
-                  types: {
-                    image: ({ value }) => {
-                      if (!value?.asset?._ref) {
-                        return null
-                      }
-                      return (
-                        <div className="my-10 relative w-full h-[450px] rounded-2xl overflow-hidden border border-white/10 shadow-lg">
-                          <Image
-                            src={urlFor(value).url()}
-                            alt={value.alt || "Article Image"}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      )
-                    },
-                  },
+                },
               }}
             />
           ) : (
@@ -253,7 +255,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
 
         {/* Author Bio */}
         {post.author && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -315,11 +317,13 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
                     ) : (
                       <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center text-gray-700 font-mono">DigiteX</div>
                     )}
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] font-bold text-[#28829E] rounded-lg uppercase tracking-wider border border-white/10">
-                        {rPost.category}
-                      </span>
-                    </div>
+                    {rPost.category && (
+                      <div className="absolute top-4 left-4">
+                        <span className="px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] font-bold text-[#28829E] rounded-lg uppercase tracking-wider border border-white/10">
+                          {rPost.category.name}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <h3 className="text-xl font-bold leading-tight group-hover:text-[#28829E] transition-colors line-clamp-2 mb-4">
                     {rPost.title}
