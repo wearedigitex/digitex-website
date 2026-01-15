@@ -95,47 +95,49 @@ export function TeamCard({ member }: TeamCardProps) {
                     </h3>
                     <p className="text-gray-400 text-sm mb-6">{member.role}</p>
 
-                    <div className="flex items-center gap-3 mt-auto">
-                        {/* Social Icons */}
-                        {member.linkedin && (
-                            <a
-                                href={member.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-all shadow-sm"
-                                title="LinkedIn"
-                            >
-                                <Linkedin className="w-4 h-4" />
-                            </a>
-                        )}
+                    <div className="flex items-center justify-between mt-auto w-full">
+                        <div className="flex items-center gap-3">
+                            {/* Social Icons */}
+                            {member.linkedin && (
+                                <a
+                                    href={member.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-all shadow-sm"
+                                    title="LinkedIn"
+                                >
+                                    <Linkedin className="w-4 h-4" />
+                                </a>
+                            )}
 
-                        {member.instagram && (
-                            <a
-                                href={member.instagram}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#E4405F] hover:bg-[#E4405F] hover:text-white transition-all shadow-sm"
-                                title="Instagram"
-                            >
-                                <Instagram className="w-4 h-4" />
-                            </a>
-                        )}
+                            {member.instagram && (
+                                <a
+                                    href={member.instagram}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#E4405F] hover:bg-[#E4405F] hover:text-white transition-all shadow-sm"
+                                    title="Instagram"
+                                >
+                                    <Instagram className="w-4 h-4" />
+                                </a>
+                            )}
 
-                        {member.github && (
-                            <a
-                                href={member.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-white hover:bg-[#333] hover:text-white transition-all shadow-sm"
-                                title="GitHub"
-                            >
-                                <Github className="w-4 h-4" />
-                            </a>
-                        )}
+                            {member.github && (
+                                <a
+                                    href={member.github}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-white hover:bg-[#333] hover:text-white transition-all shadow-sm"
+                                    title="GitHub"
+                                >
+                                    <Github className="w-4 h-4" />
+                                </a>
+                            )}
 
-                        {!member.linkedin && !member.instagram && !member.github && (
-                            <div className="w-8 h-8" /> /* Spacer to keep layout if no social */
-                        )}
+                            {!member.linkedin && !member.instagram && !member.github && (
+                                <div className="w-8 h-8" /> /* Spacer to keep layout if no social */
+                            )}
+                        </div>
 
                         <button
                             onClick={() => setIsFlipped(!isFlipped)}
