@@ -37,15 +37,17 @@ export function Navigation() {
 
     const handleScrollSpy = () => {
       const sections = ['home', 'foundation', 'team', 'contact']
-      const scrollPosition = window.scrollY + 100 // Offset for header
+      const headerOffset = 110 // Height of header + buffer
 
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId)
         if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+          const rect = element.getBoundingClientRect()
+          // If the top of the section is at or above the header offset,
+          // and the bottom is below the header offset, it's the active section
+          if (rect.top <= headerOffset && rect.bottom > headerOffset) {
             setActiveSection(sectionId)
-            break
+            return
           }
         }
       }
