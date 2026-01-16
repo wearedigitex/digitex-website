@@ -167,7 +167,7 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 0.05, ease: "linear" }}
             className="flex flex-col items-center mb-6 will-change-[opacity]"
           >
-            <span className="text-7xl md:text-9xl font-black tracking-tighter text-white">
+            <span className="text-7xl md:text-9xl font-black tracking-tighter animate-gradient-text">
               DIGITEX
             </span>
             <span className="text-xl md:text-3xl font-bold tracking-[0.3em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
@@ -282,7 +282,7 @@ export default function HomePage() {
               <div className="space-y-16">
                 {membersByDepartment.map((dept) => (
                   <div key={dept._id} className="mb-16 last:mb-0">
-                    <h3 className="text-2xl font-bold mb-8 text-[#28829E] border-l-4 border-[#28829E] pl-4">
+                    <h3 className="text-2xl font-bold mb-8 animate-gradient-text border-l-4 border-[#28829E] pl-4">
                       {dept.fullName || dept.name}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
