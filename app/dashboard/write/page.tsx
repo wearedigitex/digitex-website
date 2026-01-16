@@ -8,7 +8,7 @@ import Image from "@tiptap/extension-image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { 
+import {
   Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered,
   ArrowLeft, Save, Send, Image as ImageIcon,
   AlignLeft, AlignCenter, AlignRight, Maximize, Minimize, Eye, CheckCircle, XCircle
@@ -17,7 +17,6 @@ import {
 import { useSession } from "next-auth/react"
 import { ArticlePreviewModal } from "@/components/article-preview-modal"
 
-const CATEGORIES = ["TECHNOLOGY", "MEDICINE", "COMMERCE", "GENERAL"]
 
 import { urlFor } from "@/lib/sanity"
 import { Suspense } from "react"
@@ -62,7 +61,8 @@ function WritePageContent() {
 
   const [title, setTitle] = useState("")
   const [slug, setSlug] = useState("")
-  const [category, setCategory] = useState("TECHNOLOGY")
+  const [category, setCategory] = useState("")
+  const [categories, setCategories] = useState<any[]>([])
   const [excerpt, setExcerpt] = useState("")
   const [mainImage, setMainImage] = useState<string | null>(null)
   const [mainImagePreview, setMainImagePreview] = useState<string | null>(null)
@@ -87,6 +87,18 @@ function WritePageContent() {
     },
   })
 
+  // Fetch categories
+  useEffect(() => {
+    fetch("/api/categories")
+      .then(res => res.json())
+      .then(data => {
+        setCategories(data)
+        if (data.length > 0 && !category) {
+          setCategory(data[0]._id)
+        }
+      })
+  }, [])
+
   // Auto-generate slug from title
   useEffect(() => {
     if (title && !submissionId) {
@@ -108,7 +120,8 @@ function WritePageContent() {
           // Handle both structured slug and legacy/corrupted string slug
           const slugValue = typeof data.slug === "string" ? data.slug : data.slug?.current || ""
           setSlug(slugValue)
-          setCategory(data.category)
+          // Category is a reference in the submission schema
+          setCategory(data.category?._ref || data.category || "")
           setExcerpt(data.excerpt || "")
           if (data.mainImage) {
             setMainImage(data.mainImage.asset._ref)
@@ -180,7 +193,7 @@ function WritePageContent() {
           body: formData,
         })
         const data = await res.json()
-        
+
         if (data.success && editor) {
           const content = editor.getHTML()
           const newContent = content.replace(loadingText, `<img src="${data.url}" />`)
@@ -218,11 +231,11 @@ function WritePageContent() {
 
     try {
       const bodyHtml = editor?.getHTML()
-      
+
       const payload = {
         title,
         slug: { _type: "slug", current: slug },
-        category,
+        category: category ? { _type: "reference", _ref: category } : undefined,
         excerpt,
         bodyHtml,
         mainImage: mainImage ? {
@@ -254,7 +267,7 @@ function WritePageContent() {
         if (status === "submitted") msg = "Submitted for review!"
         if (status === "published") msg = "Article Published!"
         if (status === "rejected") msg = "Article Rejected."
-        
+
         alert(msg)
         router.push("/dashboard")
       } else {
@@ -285,26 +298,26 @@ function WritePageContent() {
           </Link>
           <div className="flex items-center gap-3">
             {submissionId && (
-                <Button
-                    onClick={async () => {
-                        if (!confirm("Are you sure you want to delete this draft? This cannot be undone.")) return
-                        
-                        try {
-                            const res = await fetch(`/api/submissions/${submissionId}`, { method: "DELETE" })
-                            if (res.ok) {
-                                router.push("/dashboard")
-                            } else {
-                                alert("Failed to delete draft")
-                            }
-                        } catch (e) {
-                            alert("Error deleting draft")
-                        }
-                    }}
-                    variant="ghost"
-                    className="text-red-400 hover:text-red-300 hover:bg-red-950/30"
-                >
-                    Delete Draft
-                </Button>
+              <Button
+                onClick={async () => {
+                  if (!confirm("Are you sure you want to delete this draft? This cannot be undone.")) return
+
+                  try {
+                    const res = await fetch(`/api/submissions/${submissionId}`, { method: "DELETE" })
+                    if (res.ok) {
+                      router.push("/dashboard")
+                    } else {
+                      alert("Failed to delete draft")
+                    }
+                  } catch (e) {
+                    alert("Error deleting draft")
+                  }
+                }}
+                variant="ghost"
+                className="text-red-400 hover:text-red-300 hover:bg-red-950/30"
+              >
+                Delete Draft
+              </Button>
             )}
             <Button
               onClick={() => setPreviewOpen(true)}
@@ -316,21 +329,21 @@ function WritePageContent() {
             </Button>
 
             <Button
-            onClick={() => handleSave("draft")}
-            disabled={saving || submitting}
-            variant="outline"
-            className="border-white/20 hover:bg-white/10"
+              onClick={() => handleSave("draft")}
+              disabled={saving || submitting}
+              variant="outline"
+              className="border-white/20 hover:bg-white/10"
             >
-            <Save className="w-4 h-4 mr-2" />
-            {saving ? "Saving..." : "Save Draft"}
+              <Save className="w-4 h-4 mr-2" />
+              {saving ? "Saving..." : "Save Draft"}
             </Button>
             <Button
-            onClick={() => handleSave("submitted")}
-            disabled={saving || submitting}
-            className="bg-[#28829E] hover:bg-teal-700"
+              onClick={() => handleSave("submitted")}
+              disabled={saving || submitting}
+              className="bg-[#28829E] hover:bg-teal-700"
             >
-            <Send className="w-4 h-4 mr-2" />
-            {submitting ? "Submitting..." : "Submit for Review"}
+              <Send className="w-4 h-4 mr-2" />
+              {submitting ? "Submitting..." : "Submit for Review"}
             </Button>
           </div>
         </div>
@@ -365,15 +378,15 @@ function WritePageContent() {
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">Main Headline Image</label>
                 <div className="flex gap-4">
-                  <div 
+                  <div
                     onClick={() => document.getElementById("main-image-input")?.click()}
                     className="flex-1 aspect-video bg-black/50 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#28829E]/50 transition-colors group overflow-hidden relative"
                   >
                     {mainImagePreview ? (
-                      <img 
-                        src={mainImagePreview} 
-                        alt="Preview" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={mainImagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
                         style={{ objectPosition: `50% ${mainImageHotspot.y * 100}%` }}
                       />
                     ) : (
@@ -382,21 +395,21 @@ function WritePageContent() {
                         <p className="text-sm text-gray-500">Click to upload headline image</p>
                       </>
                     )}
-                    <input 
+                    <input
                       id="main-image-input"
-                      type="file" 
-                      accept="image/*" 
+                      type="file"
+                      accept="image/*"
                       onChange={handleMainImageUpload}
-                      className="hidden" 
+                      className="hidden"
                     />
                   </div>
 
                   {/* Positioning Slider */}
                   {mainImagePreview && (
                     <div className="flex flex-col items-center gap-2">
-                       <label className="text-[10px] uppercase font-bold text-gray-500 vertical-text">Position</label>
-                       <div className="relative h-full w-8 bg-black/50 border border-white/10 rounded-lg flex flex-col justify-between py-2 items-center">
-                         <input 
+                      <label className="text-[10px] uppercase font-bold text-gray-500 vertical-text">Position</label>
+                      <div className="relative h-full w-8 bg-black/50 border border-white/10 rounded-lg flex flex-col justify-between py-2 items-center">
+                        <input
                           type="range"
                           min="0"
                           max="1"
@@ -405,8 +418,8 @@ function WritePageContent() {
                           onChange={(e) => setMainImageHotspot(prev => ({ ...prev, y: parseFloat(e.target.value) }))}
                           className="h-full w-1 accent-[#28829E] appearance-none bg-white/10 rounded-full cursor-ns-resize"
                           style={{ writingMode: 'bt-lr', appearance: 'slider-vertical' } as any}
-                         />
-                       </div>
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -421,8 +434,9 @@ function WritePageContent() {
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full px-4 py-3 bg-black/50 border border-white/10 text-white rounded-lg focus:border-[#28829E] focus:outline-none h-12"
                   >
-                    {CATEGORIES.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
+                    <option value="" disabled>Select a category</option>
+                    {categories.map(cat => (
+                      <option key={cat._id} value={cat._id}>{cat.name}</option>
                     ))}
                   </select>
                 </div>
@@ -494,7 +508,7 @@ function WritePageContent() {
 
           {/* Image Alignment & Size (Visible when image selected) */}
           {editor.isActive('image') && (
-             <>
+            <>
               <div className="w-px h-8 bg-white/10 mx-1" />
               <button
                 type="button"
@@ -520,7 +534,7 @@ function WritePageContent() {
               >
                 <AlignRight className="w-5 h-5" />
               </button>
-              
+
               <div className="w-px h-8 bg-white/10 mx-1" />
               <button
                 type="button"
@@ -543,7 +557,7 @@ function WritePageContent() {
               >
                 100%
               </button>
-             </>
+            </>
           )}
         </div>
 
@@ -553,18 +567,18 @@ function WritePageContent() {
         </div>
       </div>
 
-      <ArticlePreviewModal 
+      <ArticlePreviewModal
         isOpen={previewOpen}
         onClose={() => setPreviewOpen(false)}
         data={{
-            title,
-            category,
-            excerpt,
-            bodyHtml: editor?.getHTML() || "",
-            mainImagePreview,
-            mainImageHotspot,
-            authorName: session?.user?.name || "You",
-            date: new Date()
+          title,
+          category,
+          excerpt,
+          bodyHtml: editor?.getHTML() || "",
+          mainImagePreview,
+          mainImageHotspot,
+          authorName: session?.user?.name || "You",
+          date: new Date()
         }}
       />
     </main>
