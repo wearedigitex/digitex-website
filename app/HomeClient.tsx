@@ -78,6 +78,19 @@ export default function HomePage() {
   }
 
   useEffect(() => {
+    if (isLoading) {
+      document.body.style.overflow = "hidden"
+      window.scrollTo(0, 0)
+    } else {
+      document.body.style.overflow = "unset"
+    }
+
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isLoading])
+
+  useEffect(() => {
     if (isLoading) return
 
     const ctx = gsap.context(() => {
