@@ -294,8 +294,8 @@ export default function HomePage() {
         {/* Shared Wrapper for Seamless Flow */}
         <div className="relative z-10 bg-black overflow-hidden py-20 pb-32">
           {/* Ambient Orbs Flowing Across Sections */}
-          <Orb color="bg-purple-600" className="-left-64 top-[10%] opacity-10 blur-[100px]" />
-          <Orb color="bg-teal-600" className="-right-64 top-[40%] opacity-10 blur-[100px]" />
+          <Orb color="bg-purple-600" className="-left-64 top-[10%] opacity-10 blur-[80px]" />
+          <Orb color="bg-teal-600" className="-right-64 top-[40%] opacity-10 blur-[80px]" />
           <Orb color="bg-[#28829E]" className="-right-20 bottom-0 opacity-15 blur-[80px]" />
 
           {/* Team Section */}

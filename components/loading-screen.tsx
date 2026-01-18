@@ -19,7 +19,7 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
             setIsExitStarted(true)
             // Small buffer after exit animation starts to let parent know
             setTimeout(onLoadingComplete, 1000)
-        }, letters.length * 100 + 1500)
+        }, 1500)
 
         return () => clearTimeout(timer)
     }, [onLoadingComplete, letters.length])

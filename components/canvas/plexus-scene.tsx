@@ -104,7 +104,7 @@ function ConnectingLines() {
 export function PlexusScene() {
     return (
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
-            <Canvas camera={{ position: [0, 0, 12], fov: 60 }} gl={{ antialias: true, alpha: true }}>
+            <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 12], fov: 60 }} gl={{ antialias: true, alpha: true }}>
                 <Environment preset="city" />
 
                 {/* Balanced Lighting */}
@@ -120,7 +120,7 @@ export function PlexusScene() {
                 </Float>
 
                 {/* Background */}
-                <Stars radius={100} depth={50} count={2500} factor={4} saturation={0.5} fade speed={1.5} />
+                <Stars radius={100} depth={50} count={1500} factor={4} saturation={0.5} fade speed={1.5} />
             </Canvas>
         </div>
     )
