@@ -34,14 +34,37 @@ export default function HomePage() {
   const [teamMembers, setTeamMembers] = useState<any[]>([])
   const [departments, setDepartments] = useState<any[]>([])
   const [yearCount, setYearCount] = useState(2000)
-  const [isLoading, setIsLoading] = useState(true)
+  const [loadingState, setLoadingState] = useState({
+    isLoading: true,
+    isMounted: false,
+    shouldSkip: false
+  })
 
   useEffect(() => {
-    const hasSeenLoader = sessionStorage.getItem("hasSeenLoader")
-    if (hasSeenLoader) {
-      setIsLoading(false)
-    }
+    const hasSeen = !!sessionStorage.getItem("hasSeenLoader")
+    setLoadingState({
+      isLoading: !hasSeen,
+      isMounted: true,
+      shouldSkip: hasSeen
+    })
   }, [])
+
+  // Handle anchor scrolling after loading finishes
+  useEffect(() => {
+    if (loadingState.isMounted && !loadingState.isLoading && typeof window !== 'undefined' && window.location.hash) {
+      const handleHashScroll = () => {
+        const id = window.location.hash.substring(1)
+        const element = document.getElementById(id)
+        if (element) {
+          // Small delay to ensure layout is settled and 3D background active
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth' })
+          }, 100)
+        }
+      }
+      handleHashScroll()
+    }
+  }, [loadingState.isMounted, loadingState.isLoading])
 
   useEffect(() => {
     async function loadTeam() {
@@ -85,7 +108,7 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    if (isLoading) {
+    if (loadingState.isLoading) {
       document.body.style.overflow = "hidden"
       window.scrollTo(0, 0)
     } else {
@@ -95,10 +118,10 @@ export default function HomePage() {
     return () => {
       document.body.style.overflow = "unset"
     }
-  }, [isLoading])
+  }, [loadingState.isLoading])
 
   useEffect(() => {
-    if (isLoading) return
+    if (loadingState.isLoading) return
 
     const ctx = gsap.context(() => {
       // Hero Year Animation
@@ -126,7 +149,7 @@ export default function HomePage() {
     }, heroRef)
 
     return () => ctx.revert()
-  }, [isLoading])
+  }, [loadingState.isLoading])
 
   // Group members by department dynamically
   const membersByDepartment = departments
@@ -151,18 +174,19 @@ export default function HomePage() {
   return (
     <>
       <AnimatePresence mode="wait">
-        {isLoading && (
+        {loadingState.isMounted && loadingState.isLoading && (
           <LoadingScreen
             key="loading"
             onLoadingComplete={() => {
               sessionStorage.setItem("hasSeenLoader", "true")
-              setIsLoading(false)
+              setLoadingState(prev => ({ ...prev, isLoading: false }))
             }}
           />
         )}
       </AnimatePresence>
 
-      <main className={`bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-teal-500/30 transition-opacity duration-1000 ${isLoading ? "opacity-0" : "opacity-100"}`}>
+      <main className={`bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-teal-500/30 ${loadingState.shouldSkip ? "" : "transition-opacity duration-1000"} ${loadingState.isLoading ? "opacity-0" : "opacity-100"}`}>
+        {!loadingState.isMounted && <div className="fixed inset-0 bg-black z-[100]" />}
 
         {/* 3D Background */}
         <div className="fixed inset-0 z-0">
