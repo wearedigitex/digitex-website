@@ -37,6 +37,13 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    const hasSeenLoader = sessionStorage.getItem("hasSeenLoader")
+    if (hasSeenLoader) {
+      setIsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
     async function loadTeam() {
       try {
         const [membersData, departmentsData] = await Promise.all([
@@ -145,7 +152,13 @@ export default function HomePage() {
     <>
       <AnimatePresence mode="wait">
         {isLoading && (
-          <LoadingScreen key="loading" onLoadingComplete={() => setIsLoading(false)} />
+          <LoadingScreen
+            key="loading"
+            onLoadingComplete={() => {
+              sessionStorage.setItem("hasSeenLoader", "true")
+              setIsLoading(false)
+            }}
+          />
         )}
       </AnimatePresence>
 
