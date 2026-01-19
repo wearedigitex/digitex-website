@@ -16,7 +16,9 @@ export const metadata: Metadata = {
   title: "Digitex | Independent Tech News",
   description: "A student-led digital publication uniting voices from different fields to explore how technology is reshaping our world.",
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
     shortcut: '/favicon.ico',
     apple: '/apple-icon.png',
   },
