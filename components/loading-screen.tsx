@@ -13,13 +13,12 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
 
     useEffect(() => {
         // Wait for the animation sequence to finish before calling onLoadingComplete
-        // Letters take (letters.length * 0.1) + 1 second to finish initial reveal
-        // Then we wait a bit more for the "wow" factor
+        // Letters take (letters.length * 0.05) + 0.5 second to finish initial reveal
         const timer = setTimeout(() => {
             setIsExitStarted(true)
             // Small buffer after exit animation starts to let parent know
-            setTimeout(onLoadingComplete, 1000)
-        }, 1500)
+            setTimeout(onLoadingComplete, 500)
+        }, 1000)
 
         return () => clearTimeout(timer)
     }, [onLoadingComplete, letters.length])
@@ -30,7 +29,7 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
             scale: 1.1,
             filter: "blur(20px)",
             transition: {
-                duration: 0.8,
+                duration: 0.4,
                 ease: "easeInOut" as const
             }
         }
@@ -47,8 +46,8 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
             opacity: 1,
             filter: "blur(0px)",
             transition: {
-                delay: i * 0.1,
-                duration: 0.8,
+                delay: i * 0.05,
+                duration: 0.5,
                 ease: [0.2, 0.65, 0.3, 0.9] as any,
             }
         }),
@@ -85,14 +84,14 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
                 <motion.div
                     initial={{ opacity: 0, width: 0 }}
                     animate={{ opacity: 1, width: "100%" }}
-                    transition={{ delay: 1, duration: 1.5, ease: "easeInOut" }}
+                    transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
                     className="h-[1px] bg-gradient-to-r from-transparent via-teal-500 to-transparent mt-4"
                 />
 
                 <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1.2, duration: 1 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
                     className="text-teal-500/60 font-mono text-xs md:text-sm mt-4 tracking-[0.5em] uppercase"
                 >
                     Initializing Experience
