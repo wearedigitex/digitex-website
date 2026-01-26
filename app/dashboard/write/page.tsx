@@ -92,10 +92,18 @@ function WritePageContent() {
     fetch("/api/categories")
       .then(res => res.json())
       .then(data => {
-        setCategories(data)
-        if (data.length > 0 && !category) {
-          setCategory(data[0]._id)
+        if (Array.isArray(data)) {
+          setCategories(data)
+          if (data.length > 0 && !category) {
+            setCategory(data[0]._id)
+          }
+        } else {
+          console.error("WritePage: Expected array for categories, got:", data)
+          setCategories([])
         }
+      })
+      .catch(err => {
+        console.error("Failed to fetch categories:", err)
       })
   }, [])
 
@@ -116,7 +124,12 @@ function WritePageContent() {
       fetch(`/api/submissions/${submissionId}`)
         .then(res => res.json())
         .then(data => {
-          setTitle(data.title)
+          if (data.error) {
+            console.error("Error loading submission:", data.error)
+            alert(`Failed to load submission: ${data.error}`)
+            return
+          }
+          setTitle(data.title || "")
           // Handle both structured slug and legacy/corrupted string slug
           const slugValue = typeof data.slug === "string" ? data.slug : data.slug?.current || ""
           setSlug(slugValue)
@@ -124,7 +137,7 @@ function WritePageContent() {
           setCategory(data.category?._ref || data.category || "")
           setExcerpt(data.excerpt || "")
           if (data.mainImage) {
-            setMainImage(data.mainImage.asset._ref)
+            setMainImage(data.mainImage.asset?._ref || data.mainImage.asset || null)
             setMainImagePreview(urlFor(data.mainImage).url())
             if (data.mainImage.hotspot) {
               setMainImageHotspot(data.mainImage.hotspot)
@@ -137,6 +150,9 @@ function WritePageContent() {
               editor.commands.setContent(data.body)
             }
           }
+        })
+        .catch(err => {
+          console.error("Failed to load submission data:", err)
         })
     }
   }, [submissionId, editor])

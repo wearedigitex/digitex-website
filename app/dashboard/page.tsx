@@ -12,18 +12,28 @@ export default function DashboardPage() {
   const { data: session } = useSession()
   const [submissions, setSubmissions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const isAdmin = (session?.user as any)?.role === "admin"
 
   useEffect(() => {
     async function loadData() {
       try {
+        setError(null)
         // This will be populated by the session
         const response = await fetch("/api/submissions")
         const data = await response.json()
-        setSubmissions(data)
-      } catch (error) {
-        console.error("Failed to load submissions:", error)
+
+        if (Array.isArray(data)) {
+          setSubmissions(data)
+        } else {
+          console.error("Dashboard: Expected array for submissions, got:", data)
+          setError(data.error || "Failed to load submissions")
+          setSubmissions([])
+        }
+      } catch (err) {
+        console.error("Failed to load submissions:", err)
+        setError("An unexpected error occurred while loading submissions")
       } finally {
         setLoading(false)
       }
@@ -39,7 +49,8 @@ export default function DashboardPage() {
       rejected: "bg-red-500/20 text-red-400 border-red-500/30",
       published: "bg-[#28829E]/20 text-[#28829E] border-[#28829E]/30",
     }
-    return colors[status] || colors.draft
+    const safeStatus = (status || "draft").toLowerCase()
+    return colors[safeStatus] || colors.draft
   }
 
   const getStatusEmoji = (status: string) => {
@@ -50,7 +61,8 @@ export default function DashboardPage() {
       rejected: "❌",
       published: "🚀",
     }
-    return emojis[status] || "📄"
+    const safeStatus = (status || "draft").toLowerCase()
+    return emojis[safeStatus] || "📄"
   }
 
   return (
@@ -71,9 +83,9 @@ export default function DashboardPage() {
                 Settings
               </Button>
             </Link>
-            <Button 
+            <Button
               onClick={() => signOut({ callbackUrl: "/" })}
-              variant="outline" 
+              variant="outline"
               className="border-white/20 hover:bg-white/10"
             >
               <LogOut className="w-4 h-4 mr-2" />
@@ -111,7 +123,7 @@ export default function DashboardPage() {
           <div className="p-8 bg-white/5 border border-white/10 rounded-2xl">
             <Eye className="w-12 h-12 text-green-400 mb-4" />
             <h3 className="text-2xl font-bold mb-2">
-              {submissions.filter(s => s.status === "published").length}
+              {Array.isArray(submissions) ? submissions.filter(s => s.status === "published").length : 0}
             </h3>
             <p className="text-gray-400">Published Articles</p>
           </div>
@@ -120,9 +132,23 @@ export default function DashboardPage() {
         {/* Submissions List */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
           <h2 className="text-2xl font-bold mb-6">Your Submissions</h2>
-          
+
           {loading ? (
             <div className="text-center py-12 text-gray-500">Loading...</div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-6 rounded-xl inline-block max-w-md">
+                <p className="font-bold mb-2">Error Loading Submissions</p>
+                <p className="text-sm opacity-80">{error}</p>
+                <Button
+                  onClick={() => window.location.reload()}
+                  variant="outline"
+                  className="mt-4 border-red-500/30 hover:bg-red-500/10"
+                >
+                  Try Refreshing
+                </Button>
+              </div>
+            </div>
           ) : submissions.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
@@ -168,21 +194,21 @@ export default function DashboardPage() {
                         </div>
                       )}
                     </div>
-                      <div className="flex gap-2">
-                        {isAdmin && submission.status === "submitted" && (
-                            <Link href={`/dashboard/review/${submission._id}`}>
-                                <Button variant="secondary" size="sm" className="bg-white/10 hover:bg-white/20 text-white">
-                                    <Eye className="w-4 h-4 mr-2" />
-                                    Review
-                                </Button>
-                            </Link>
-                        )}
-                        <Link href={`/dashboard/write?id=${submission._id}`}>
-                            <Button variant="outline" size="sm" className="border-white/20 hover:bg-white/10">
-                                Edit
-                            </Button>
+                    <div className="flex gap-2">
+                      {isAdmin && submission.status === "submitted" && (
+                        <Link href={`/dashboard/review/${submission._id}`}>
+                          <Button variant="secondary" size="sm" className="bg-white/10 hover:bg-white/20 text-white">
+                            <Eye className="w-4 h-4 mr-2" />
+                            Review
+                          </Button>
                         </Link>
-                      </div>
+                      )}
+                      <Link href={`/dashboard/write?id=${submission._id}`}>
+                        <Button variant="outline" size="sm" className="border-white/20 hover:bg-white/10">
+                          Edit
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}
