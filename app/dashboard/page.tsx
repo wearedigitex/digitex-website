@@ -176,7 +176,7 @@ export default function DashboardPage() {
                       </div>
                       <p className="text-gray-400 text-sm mb-3 line-clamp-2">{submission.excerpt}</p>
                       <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span>Category: {submission.category}</span>
+                        <span>Category: {typeof submission.category === 'string' ? submission.category : (submission.category?.name || 'Uncategorized')}</span>
                         <span>•</span>
                         <span>Submitted: {new Date(submission.submittedAt || submission._createdAt).toLocaleDateString()}</span>
                         {isAdmin && submission.author && (

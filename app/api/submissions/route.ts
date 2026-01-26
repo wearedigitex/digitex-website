@@ -13,12 +13,12 @@ export async function GET(request: NextRequest) {
     const isAdmin = (session.user as any)?.role === "admin"
 
     // Admins see all submissions, contributors see only their own
-    const query = isAdmin 
+    const query = isAdmin
       ? `*[_type == "submission"] | order(_createdAt desc) {
           _id,
           title,
           slug,
-          category,
+          "category": category->name,
           excerpt,
           status,
           submittedAt,
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
           _id,
           title,
           slug,
-          category,
+          "category": category->name,
           excerpt,
           status,
           submittedAt,
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await auth()
-    
+
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const session = await auth()
-    
+
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
