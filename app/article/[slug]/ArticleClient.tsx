@@ -212,6 +212,18 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
           </motion.div>
         )}
 
+        {/* Excerpt */}
+        {post.excerpt && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-xl md:text-2xl font-medium text-gray-300 mb-12 leading-relaxed font-serif italic border-l-4 border-[#28829E] pl-6"
+          >
+            {post.excerpt}
+          </motion.div>
+        )}
+
         {/* Article Body */}
         <motion.div
           initial={{ opacity: 0 }}

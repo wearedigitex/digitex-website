@@ -98,7 +98,7 @@ function WritePageContent() {
 
   // Fetch categories
   useEffect(() => {
-    fetch("/api/categories")
+    fetch("/api/categories", { cache: "no-store" })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -130,7 +130,7 @@ function WritePageContent() {
   // Load existing submission if editing
   useEffect(() => {
     if (submissionId) {
-      fetch(`/api/submissions/${submissionId}`)
+      fetch(`/api/submissions/${submissionId}`, { cache: "no-store" })
         .then(res => res.json())
         .then(data => {
           if (data.error) {
@@ -364,7 +364,7 @@ function WritePageContent() {
               {saving ? "Saving..." :
                 status === "published" ? "Update Article" : "Save Draft"}
             </Button>
-            {status !== "published" && (
+            {(status === "draft" || status === "rejected") && (
               <Button
                 onClick={() => handleSave("submitted")}
                 disabled={saving || submitting}
@@ -373,6 +373,18 @@ function WritePageContent() {
                 <Send className="w-4 h-4 mr-2" />
                 {submitting ? "Submitting..." : "Submit for Review"}
               </Button>
+            )}
+            {status === "submitted" && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-lg border border-yellow-500/20 text-sm font-bold">
+                <CheckCircle className="w-4 h-4" />
+                Submitted
+              </div>
+            )}
+            {status === "published" && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-500 rounded-lg border border-green-500/20 text-sm font-bold">
+                <CheckCircle className="w-4 h-4" />
+                Published
+              </div>
             )}
           </div>
         </div>
