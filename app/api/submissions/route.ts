@@ -122,6 +122,7 @@ export async function PATCH(request: NextRequest) {
             slug: updated.slug,
             category: updated.category,
             excerpt: updated.excerpt,
+            body: updated.body,
             bodyHtml: updated.bodyHtml,
             mainImage: updated.mainImage,
             author: updated.author,
@@ -129,7 +130,6 @@ export async function PATCH(request: NextRequest) {
           .commit()
       } catch (postUpdateErr) {
         console.error("Error syncing to published post:", postUpdateErr)
-        // We don't fail the whole request if sync fails, but log it
       }
     }
 

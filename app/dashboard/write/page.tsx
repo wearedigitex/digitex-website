@@ -291,7 +291,7 @@ function WritePageContent() {
         let msg = "Saved!"
         if (status === "draft") msg = "Draft saved!"
         if (status === "submitted") msg = "Submitted for review!"
-        if (status === "published") msg = "Article Published!"
+        if (status === "published") msg = submissionId ? "Article Updated!" : "Article Published!"
         if (status === "rejected") msg = "Article Rejected."
 
         alert(msg)
@@ -361,8 +361,9 @@ function WritePageContent() {
               className="border-white/20 hover:bg-white/10"
             >
               <Save className="w-4 h-4 mr-2" />
-              {saving ? "Saving..." :
-                status === "published" ? "Update Article" : "Save Draft"}
+              {status === "published"
+                ? (submitting ? "Updating..." : "Update Article")
+                : (saving ? "Saving..." : "Save Draft")}
             </Button>
             {(status === "draft" || status === "rejected") && (
               <Button
