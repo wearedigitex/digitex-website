@@ -91,6 +91,13 @@ export const submission = defineType({
       type: 'text',
       rows: 3,
     }),
+    defineField({
+      name: 'publishedPostId',
+      title: 'Published Post ID',
+      type: 'string',
+      description: 'The ID of the post document created from this submission',
+      readOnly: true,
+    }),
   ],
   preview: {
     select: {

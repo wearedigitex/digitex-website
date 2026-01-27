@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
         excerpt,
         bodyHtml,
         mainImage,
-        author
+        author,
+        status,
+        publishedPostId
       }`,
       { id: submissionId }
     )
@@ -35,8 +37,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Submission not found" }, { status: 404 })
     }
 
-    // Create a post document
-    const post = await adminClient.create({
+    // Idempotency check: if already published or has an associated post ID
+    if (submission.status === "published" && submission.publishedPostId) {
+      // Fetch and return existing post to be helpful
+      const existingPost = await adminClient.fetch(`*[_id == $id][0]`, { id: submission.publishedPostId })
+      if (existingPost) {
+        return NextResponse.json({ success: true, post: existingPost, alreadyPublished: true })
+      }
+    }
+
+    // Use a deterministic ID for the post document
+    // We strip 'drafts.' if it's there to ensure the post ID is clean
+    const deterministicPostId = `post-${submissionId.replace('drafts.', '')}`
+
+    // Create or Update the post document (idempotent)
+    const postData = {
       _type: "post",
       title: submission.title,
       slug: submission.slug,
@@ -46,12 +61,22 @@ export async function POST(request: NextRequest) {
       mainImage: submission.mainImage,
       author: submission.author,
       publishedAt: new Date().toISOString(),
-      views: 0,
+      viewCount: 0,
       likes: 0,
       commentCount: 0,
+    }
+
+    const post = await adminClient.createIfNotExists({
+      _id: deterministicPostId,
+      ...postData
     })
 
-    // Update submission status to published
+    // If it already existed but wasn't synced for some reason, we update it
+    if (post._id === deterministicPostId) {
+      await adminClient.patch(deterministicPostId).set(postData).commit()
+    }
+
+    // Update submission status to published and link the post ID
     await adminClient
       .patch(submissionId)
       .set({ status: "published", publishedPostId: post._id })
