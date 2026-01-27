@@ -45,15 +45,26 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
   }, [])
 
   useEffect(() => {
-    // Increment view count via internal API (this won't hit Sanity CORS directly)
+    // Increment view count via internal API
+    // We add a 3 second delay to ensure it's a real view and not a bounce or fast reload
+    let viewTimeout: NodeJS.Timeout;
+
     if (post?._id) {
-      fetch("/api/views", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId: post._id }),
-      }).catch(err => console.error("Failed to increment views:", err))
+      viewTimeout = setTimeout(() => {
+        fetch("/api/views", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ postId: post._id }),
+        }).catch(err => console.error("Failed to increment views:", err))
+      }, 3000)
     }
 
+    return () => {
+      if (viewTimeout) clearTimeout(viewTimeout)
+    }
+  }, [post?._id])
+
+  useEffect(() => {
     // Only reload if slug changes and doesn't match initialPost
     if (post && post.slug === slug) return;
 
