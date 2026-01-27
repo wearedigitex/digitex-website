@@ -70,8 +70,9 @@ export async function POST(request: NextRequest) {
         isApproved = true // Auto-approve logged-in team members
 
         // Determine the badge title
-        if (userMatch.author.role === "President") {
-          teamTitle = "President"
+        const leadershipRoles = ["President", "Vice President", "Secretary"]
+        if (leadershipRoles.includes(userMatch.author.role)) {
+          teamTitle = userMatch.author.role
         } else if (userMatch.author.department) {
           teamTitle = `${userMatch.author.department} Department`
         } else {
