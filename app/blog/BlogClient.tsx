@@ -138,8 +138,8 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
           <button
             onClick={() => setActiveCategory("All")}
             className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === "All"
-                ? "bg-[#28829E] text-white"
-                : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+              ? "bg-[#28829E] text-white"
+              : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
               }`}
           >
             All Posts
@@ -149,8 +149,8 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
               key={cat._id}
               onClick={() => setActiveCategory(cat._id)}
               className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === cat._id
-                  ? "bg-[#28829E] text-white"
-                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                ? "bg-[#28829E] text-white"
+                : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
                 }`}
             >
               {cat.name}
