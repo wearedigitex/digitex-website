@@ -150,7 +150,7 @@ export default function ReviewPage() {
                     {/* Category Badge */}
                     <div className="mb-4 text-center">
                         <span className="inline-block px-4 py-1 bg-[#28829E]/20 text-[#28829E] rounded-full text-sm font-bold border border-[#28829E]/30">
-                            {submission.category || "Uncategorized"}
+                            {submission.category?.name || submission.category || "Uncategorized"}
                         </span>
                     </div>
 
@@ -179,7 +179,7 @@ export default function ReviewPage() {
                         <div className="flex items-center gap-2">
                             <User className="w-4 h-4" />
                             <span className="text-sm">
-                                {submission.author || "Unknown Author"}
+                                {submission.author?.name || submission.author || "Unknown Author"}
                             </span>
                         </div>
                     </div>
@@ -208,7 +208,7 @@ export default function ReviewPage() {
                     )}
 
                     {/* Article Body */}
-                    <div className="prose prose-invert prose-lg max-w-none mb-16 mx-auto">
+                    <div className="prose prose-invert prose-lg max-w-none mb-16 mx-auto article-content">
                         <div dangerouslySetInnerHTML={{ __html: submission.bodyHtml || "<p>No content.</p>" }} />
                     </div>
                 </article>

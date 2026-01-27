@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { PenSquare, FileText, LogOut, Settings, Eye, LayoutDashboard, Database } from "lucide-react"
+import { PenSquare, FileText, LogOut, Settings, Eye, LayoutDashboard, Database, Trash2 } from "lucide-react"
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -15,6 +15,28 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null)
 
   const isAdmin = (session?.user as any)?.role === "admin"
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete "${title}"? This will also remove it from the blog if it's published. This action cannot be undone.`)) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/submissions/${id}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        setSubmissions(prev => prev.filter(s => s._id !== id))
+      } else {
+        const data = await response.json()
+        alert(`Failed to delete: ${data.error || "Unknown error"}`)
+      }
+    } catch (err) {
+      console.error("Delete error:", err)
+      alert("An unexpected error occurred while deleting")
+    }
+  }
 
   useEffect(() => {
     async function loadData() {
@@ -208,6 +230,15 @@ export default function DashboardPage() {
                           Edit
                         </Button>
                       </Link>
+                      <Button
+                        onClick={() => handleDelete(submission._id, submission.title)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-400 hover:text-red-300 hover:bg-red-950/30"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </div>

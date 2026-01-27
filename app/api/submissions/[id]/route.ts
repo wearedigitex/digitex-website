@@ -21,7 +21,7 @@ export async function GET(
         _createdAt,
         title,
         "slug": slug.current,
-        "category": category->name,
+        "category": category->{ _id, name },
         excerpt,
         body,
         bodyHtml,
@@ -29,7 +29,7 @@ export async function GET(
         status,
         submittedAt,
         reviewNotes,
-        "author": author->name
+        "author": author->{ _id, name }
       }`,
       { id }
     )
@@ -57,12 +57,26 @@ export async function DELETE(
 
     const { id } = await params
 
-    // Verify ownership (optional but recommended, though simplified here since admin/users see their own list)
-    // For now, allow delete if authenticated.
+    // 1. Fetch the submission to find if it has a published post
+    const submission = await adminClient.fetch(
+      `*[_type == "submission" && _id == $id][0] { publishedPostId }`,
+      { id }
+    )
 
+    if (submission?.publishedPostId) {
+      // 2. Delete the associated post document
+      try {
+        await adminClient.delete(submission.publishedPostId)
+      } catch (postErr) {
+        console.error("Error deleting associated post:", postErr)
+        // Continue anyway to delete the submission
+      }
+    }
+
+    // 3. Delete the submission document
     await adminClient.delete(id)
 
-    return NextResponse.json({ success: true, message: "Submission deleted" })
+    return NextResponse.json({ success: true, message: "Submission and associated post deleted" })
   } catch (error) {
     console.error("Error deleting submission:", error)
     return NextResponse.json({ error: "Failed to delete submission" }, { status: 500 })

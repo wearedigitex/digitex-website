@@ -103,7 +103,7 @@ export async function PATCH(request: NextRequest) {
 
     const { id, ...data } = await request.json()
 
-    // Update submission
+    // 1. Update submission
     const updated = await adminClient
       .patch(id)
       .set({
@@ -111,6 +111,27 @@ export async function PATCH(request: NextRequest) {
         submittedAt: data.status === "submitted" ? new Date().toISOString() : undefined,
       })
       .commit()
+
+    // 2. If it's a published article, sync change to the post document
+    if (updated.publishedPostId) {
+      try {
+        await adminClient
+          .patch(updated.publishedPostId)
+          .set({
+            title: updated.title,
+            slug: updated.slug,
+            category: updated.category,
+            excerpt: updated.excerpt,
+            bodyHtml: updated.bodyHtml,
+            mainImage: updated.mainImage,
+            author: updated.author,
+          })
+          .commit()
+      } catch (postUpdateErr) {
+        console.error("Error syncing to published post:", postUpdateErr)
+        // We don't fail the whole request if sync fails, but log it
+      }
+    }
 
     return NextResponse.json({ success: true, submission: updated })
   } catch (error) {

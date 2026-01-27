@@ -68,6 +68,7 @@ function WritePageContent() {
   const [mainImagePreview, setMainImagePreview] = useState<string | null>(null)
   const [mainImageHotspot, setMainImageHotspot] = useState({ x: 0.5, y: 0.5 })
   const [saving, setSaving] = useState(false)
+  const [status, setStatus] = useState<string>("draft")
   const [submitting, setSubmitting] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
 
@@ -130,11 +131,12 @@ function WritePageContent() {
             return
           }
           setTitle(data.title || "")
+          setStatus(data.status || "draft")
           // Handle both structured slug and legacy/corrupted string slug
           const slugValue = typeof data.slug === "string" ? data.slug : data.slug?.current || ""
           setSlug(slugValue)
-          // Category is a reference in the submission schema
-          setCategory(data.category?._ref || data.category || "")
+          // Category is a reference in the submission schema, API returns { _id, name }
+          setCategory(data.category?._id || data.category?._ref || data.category || "")
           setExcerpt(data.excerpt || "")
           if (data.mainImage) {
             setMainImage(data.mainImage.asset?._ref || data.mainImage.asset || null)
@@ -345,22 +347,25 @@ function WritePageContent() {
             </Button>
 
             <Button
-              onClick={() => handleSave("draft")}
+              onClick={() => handleSave(status === "published" ? "published" : "draft")}
               disabled={saving || submitting}
               variant="outline"
               className="border-white/20 hover:bg-white/10"
             >
               <Save className="w-4 h-4 mr-2" />
-              {saving ? "Saving..." : "Save Draft"}
+              {saving ? "Saving..." :
+                status === "published" ? "Update Article" : "Save Draft"}
             </Button>
-            <Button
-              onClick={() => handleSave("submitted")}
-              disabled={saving || submitting}
-              className="bg-[#28829E] hover:bg-teal-700"
-            >
-              <Send className="w-4 h-4 mr-2" />
-              {submitting ? "Submitting..." : "Submit for Review"}
-            </Button>
+            {status !== "published" && (
+              <Button
+                onClick={() => handleSave("submitted")}
+                disabled={saving || submitting}
+                className="bg-[#28829E] hover:bg-teal-700"
+              >
+                <Send className="w-4 h-4 mr-2" />
+                {submitting ? "Submitting..." : "Submit for Review"}
+              </Button>
+            )}
           </div>
         </div>
 
