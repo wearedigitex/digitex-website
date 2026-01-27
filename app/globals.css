@@ -214,6 +214,14 @@
   outline: none !important;
 }
 
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #6b7280;
+  pointer-events: none;
+  height: 0;
+}
+
 .ProseMirror h1 {
   font-size: 2.25rem;
   font-weight: 700;

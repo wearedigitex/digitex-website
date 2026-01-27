@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
+import Placeholder from "@tiptap/extension-placeholder"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -74,8 +75,15 @@ function WritePageContent() {
 
   const [, setUpdate] = useState(0)
   const editor = useEditor({
-    extensions: [StarterKit, CustomImage],
-    content: "<p>Start writing your article...</p>",
+    extensions: [
+      StarterKit,
+      CustomImage,
+      Placeholder.configure({
+        placeholder: "Start writing your article...",
+        emptyEditorClass: 'is-editor-empty',
+      }),
+    ],
+    content: "",
     immediatelyRender: false,
     onTransaction: () => {
       // Force re-render on any editor state change
