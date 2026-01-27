@@ -18,16 +18,18 @@ export async function GET(
     const submission = await adminClient.fetch(
       `*[_type == "submission" && _id == $id][0] {
         _id,
+        _createdAt,
         title,
-        "slug": slug,
-        category,
+        "slug": slug.current,
+        "category": category->name,
         excerpt,
         body,
         bodyHtml,
         mainImage,
         status,
         submittedAt,
-        reviewNotes
+        reviewNotes,
+        "author": author->name
       }`,
       { id }
     )

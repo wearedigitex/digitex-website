@@ -13,7 +13,7 @@ export default function ReviewPage() {
     const router = useRouter()
     const params = useParams()
     const { data: session } = useSession()
-    
+
     // Type assertion to access role - assuming NextAuth type augmentation or accepting 'any' for now
     const isAdmin = (session?.user as any)?.role === "admin"
 
@@ -124,7 +124,7 @@ export default function ReviewPage() {
                         </span>
                     </div>
                     <div className="flex gap-2">
-                         <Button
+                        <Button
                             onClick={() => handleAction("rejected")}
                             className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50"
                             disabled={actionLoading}
@@ -146,11 +146,11 @@ export default function ReviewPage() {
 
             {/* Content Preview */}
             <main className="flex-1 overflow-y-auto bg-black p-6 md:p-12">
-                 <article className="max-w-4xl mx-auto">
+                <article className="max-w-4xl mx-auto">
                     {/* Category Badge */}
                     <div className="mb-4 text-center">
                         <span className="inline-block px-4 py-1 bg-[#28829E]/20 text-[#28829E] rounded-full text-sm font-bold border border-[#28829E]/30">
-                            {submission.category}
+                            {submission.category || "Uncategorized"}
                         </span>
                     </div>
 
@@ -164,13 +164,22 @@ export default function ReviewPage() {
                         <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
                             <span className="text-sm">
-                                {format(new Date(submission.submittedAt || submission._createdAt), 'MMM dd, yyyy')}
+                                {(() => {
+                                    const dateStr = submission.submittedAt || submission._createdAt
+                                    if (!dateStr) return "Unknown Date"
+                                    try {
+                                        return format(new Date(dateStr), 'MMM dd, yyyy')
+                                    } catch (e) {
+                                        console.error("Date formatting error:", e)
+                                        return "Invalid Date"
+                                    }
+                                })()}
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
                             <User className="w-4 h-4" />
                             <span className="text-sm">
-                                {submission.author?.name || "Unknown Author"}
+                                {submission.author || "Unknown Author"}
                             </span>
                         </div>
                     </div>
@@ -182,10 +191,10 @@ export default function ReviewPage() {
                                 src={mainImagePreview}
                                 alt={submission.title}
                                 className="w-full h-full object-cover"
-                                style={{ 
-                                    objectPosition: mainImageHotspot 
-                                        ? `50% ${mainImageHotspot.y * 100}%` 
-                                        : 'center' 
+                                style={{
+                                    objectPosition: mainImageHotspot
+                                        ? `50% ${mainImageHotspot.y * 100}%`
+                                        : 'center'
                                 }}
                             />
                         </div>
