@@ -51,6 +51,12 @@ export const comment = defineType({
       description: 'Whether this comment is from a verify team member',
     }),
     defineField({
+      name: 'teamTitle',
+      title: 'Team Title/Badge',
+      type: 'string',
+      description: 'The badge to display next to the name (e.g. President or Digital Lead)',
+    }),
+    defineField({
       name: 'autoApproved',
       title: 'Auto-Approved (Counted)',
       type: 'boolean',

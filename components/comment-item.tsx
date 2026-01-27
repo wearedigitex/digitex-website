@@ -13,6 +13,7 @@ interface Comment {
   content: string // Note: API returns 'comment' field, mapped to this
   createdAt: string
   isTeamMember?: boolean
+  teamTitle?: string
   parentCommentId?: string
 }
 
@@ -27,10 +28,10 @@ interface CommentItemProps {
   replyForm: React.ReactNode
 }
 
-export function CommentItem({ 
-  comment, 
-  allComments, 
-  postId, 
+export function CommentItem({
+  comment,
+  allComments,
+  postId,
   level = 0,
   onReply,
   onDelete,
@@ -71,7 +72,7 @@ export function CommentItem({
               {comment.isTeamMember && (
                 <span className="px-2 py-0.5 rounded-full bg-[#28829E]/20 border border-[#28829E]/30 text-[#28829E] text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3" />
-                  TEAM
+                  {comment.teamTitle || "TEAM"}
                 </span>
               )}
             </div>
@@ -86,7 +87,7 @@ export function CommentItem({
           </p>
 
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => onReply(comment._id)}
               className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-[#28829E] transition-colors"
             >
@@ -95,7 +96,7 @@ export function CommentItem({
             </button>
 
             {/* Delete button for everyone (either instant for team or request for visitors) */}
-            <button 
+            <button
               onClick={() => onDelete(comment._id)}
               className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-red-400 transition-colors ml-auto"
             >
@@ -109,14 +110,14 @@ export function CommentItem({
       {/* Reply Form Injection */}
       <AnimatePresence>
         {activeReplyId === comment._id && (
-            <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className={cn("overflow-hidden", isReply ? "ml-8 md:ml-12" : "")}
-            >
-                {replyForm}
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className={cn("overflow-hidden", isReply ? "ml-8 md:ml-12" : "")}
+          >
+            {replyForm}
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -124,7 +125,7 @@ export function CommentItem({
       {replies.length > 0 && (
         <div className="flex flex-col gap-4">
           {replies.map(reply => (
-            <CommentItem 
+            <CommentItem
               key={reply._id}
               comment={reply}
               allComments={allComments}
