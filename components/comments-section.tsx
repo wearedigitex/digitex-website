@@ -64,8 +64,8 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
     if (session?.user) {
       setFormData(prev => ({
         ...prev,
-        name: (session.user as any).authorName || session.user.name || prev.name,
-        email: session.user.email || prev.email
+        name: (session.user as any)?.authorName || session.user?.name || prev.name,
+        email: session.user?.email || prev.email
       }))
     }
   }, [session])
