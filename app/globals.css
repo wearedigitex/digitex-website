@@ -112,6 +112,11 @@
     background-size: 24px 24px;
     mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
   }
+
+  /* Custom Scroll Margin for Anchor Links */
+  * {
+    scroll-margin-top: 100px;
+  }
 }
 
 /* Custom Scrollbar */

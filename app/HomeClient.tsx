@@ -58,7 +58,14 @@ export default function HomePage() {
         if (element) {
           // Small delay to ensure layout is settled and 3D background active
           setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth' })
+            const headerOffset = 100;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
           }, 100)
         }
       }
@@ -278,7 +285,7 @@ export default function HomePage() {
         </section>
 
         {/* Our Foundation Section */}
-        <section id="foundation" className="relative z-10 py-32 bg-black/90 border-t border-white/5 overflow-hidden backdrop-blur-sm">
+        <section id="foundation" className="relative z-10 py-32 bg-black/90 border-t border-white/5 overflow-hidden backdrop-blur-sm scroll-mt-32">
           {/* Background Orbs */}
           <Orb color="bg-teal-600" className="-left-40 top-20 opacity-30" />
           <Orb color="bg-purple-600" className="-right-40 bottom-20 opacity-20" />
@@ -336,7 +343,7 @@ export default function HomePage() {
           <Orb color="bg-[#28829E]" className="-right-20 bottom-0 opacity-15 blur-[80px]" />
 
           {/* Team Section */}
-          <section id="team" className="relative z-10 pt-12 pb-24">
+          <section id="team" className="relative z-10 pt-12 pb-24 scroll-mt-32">
             <div className="max-w-7xl mx-auto px-6 relative z-10">
               <h2 className="text-4xl md:text-5xl font-bold mb-16">Meet the Team</h2>
 
@@ -374,7 +381,7 @@ export default function HomePage() {
 
 
           {/* Contact Section */}
-          <section id="contact" className="relative z-10">
+          <section id="contact" className="relative z-10 scroll-mt-32">
             <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
               <p className="text-gray-400 mb-12 text-lg">
