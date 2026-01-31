@@ -39,6 +39,8 @@ export default function HomePage() {
     isMounted: false,
     shouldSkip: false
   })
+  const [isTeamLoaded, setIsTeamLoaded] = useState(false)
+  const initialScrollDone = useRef(false)
 
   useEffect(() => {
     const hasSeen = !!sessionStorage.getItem("hasSeenLoader")
@@ -51,27 +53,29 @@ export default function HomePage() {
 
   // Handle anchor scrolling after loading finishes
   useEffect(() => {
-    if (loadingState.isMounted && !loadingState.isLoading && typeof window !== 'undefined' && window.location.hash) {
+    // Wait until main loader is gone, team data is fetched, and we haven't scrolled yet
+    if (loadingState.isMounted && !loadingState.isLoading && isTeamLoaded && !initialScrollDone.current && typeof window !== 'undefined' && window.location.hash) {
       const handleHashScroll = () => {
         const id = window.location.hash.substring(1)
         const element = document.getElementById(id)
         if (element) {
+          initialScrollDone.current = true
           // Small delay to ensure layout is settled and 3D background active
           setTimeout(() => {
-            const headerOffset = 100;
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            const headerOffset = 100
+            const elementPosition = element.getBoundingClientRect().top
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset
 
             window.scrollTo({
               top: offsetPosition,
               behavior: "smooth"
-            });
+            })
           }, 100)
         }
       }
       handleHashScroll()
     }
-  }, [loadingState.isMounted, loadingState.isLoading])
+  }, [loadingState.isMounted, loadingState.isLoading, isTeamLoaded])
 
   useEffect(() => {
     async function loadTeam() {
@@ -84,6 +88,8 @@ export default function HomePage() {
         setDepartments(departmentsData)
       } catch (error) {
         console.error("Failed to load team:", error)
+      } finally {
+        setIsTeamLoaded(true)
       }
     }
     loadTeam()
