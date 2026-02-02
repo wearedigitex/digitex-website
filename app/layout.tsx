@@ -22,6 +22,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: '#000000',
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,6 +35,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${beVietnamPro.variable} scroll-smooth antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+      </head>
       <body className="bg-black text-white antialiased selection:bg-teal-500/30 selection:text-teal-200">
         <SiteLayoutClient>
           {children}

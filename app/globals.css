@@ -120,8 +120,15 @@
     mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
   }
 
-  /* Custom Scroll Margin for Anchor Links */
-  * {
+  /* Custom Scroll Margin for Anchor Links (Target headers and sections for better perf) */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  section,
+  .scroll-target {
     scroll-margin-top: 100px;
   }
 }
