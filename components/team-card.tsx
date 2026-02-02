@@ -49,20 +49,28 @@ export function TeamCard({ member }: TeamCardProps) {
 
                         {/* Front Side (Image) */}
                         <div className="absolute inset-0 h-full w-full [backface-visibility:hidden] rounded-xl overflow-hidden shadow-inner bg-[#111]">
-                            {displayImageUrl ? (
+                            {member.image ? (
+                                <Image
+                                    src={urlFor(member.image).width(400).height(500).auto('format').url()}
+                                    alt={member.name}
+                                    fill
+                                    className="object-cover"
+                                    style={{ objectPosition: getObjectPosition(member.image?.hotspot) }}
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                />
+                            ) : displayImageUrl ? (
                                 <Image
                                     src={displayImageUrl}
                                     alt={member.name}
                                     fill
                                     className="object-cover"
-                                    style={{ objectPosition: getObjectPosition(member.image?.hotspot) }}
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                 />
                             ) : (
                                 <div className="flex items-center justify-center h-full">
                                     <User className="w-12 h-12 text-gray-800" />
                                 </div>
                             )}
-                            {/* Gradient Overlay for name contrast if needed, but here name is below */}
                         </div>
 
                         {/* Back Side (Bio) */}

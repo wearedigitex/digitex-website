@@ -11,7 +11,6 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MagneticButton } from "@/components/magnetic-button"
-import { PlexusScene } from "@/components/canvas/plexus-scene"
 import { Orb } from "@/components/ui/orb"
 import { SpotlightCard } from "@/components/ui/spotlight-card"
 import { getTeamMembers, getDepartments } from "@/lib/sanity"
@@ -19,6 +18,12 @@ import { TeamCard } from "@/components/team-card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { LoadingScreen } from "@/components/loading-screen"
 import { AnimatePresence } from "framer-motion"
+import dynamic from "next/dynamic"
+
+const PlexusScene = dynamic(() => import("@/components/canvas/plexus-scene").then(mod => mod.PlexusScene), {
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-black/20" />
+})
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -435,6 +440,7 @@ export default function HomePage() {
                     <Button
                       disabled={isSubmitting}
                       className="w-full h-14 bg-[#28829E] hover:bg-teal-700 text-white font-bold rounded-xl text-lg shadow-[0_0_20px_rgba(40,130,158,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label={isSubmitting ? "Sending message..." : "Send message"}
                     >
                       {isSubmitting ? "Sending..." : "Send Message"}
                       {!isSubmitting && <MessageSquare className="ml-2 w-5 h-5" />}
