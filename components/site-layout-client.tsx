@@ -22,7 +22,7 @@ export function SiteLayoutClient({
       {isStudioPage ? (
         <>{children}</>
       ) : (
-        <div className="hide-system-cursor cursor-none [&_*]:cursor-none">
+        <div>
           <NoiseOverlay />
           <Navigation />
           <PageTransition>

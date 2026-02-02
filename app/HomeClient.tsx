@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Link from "next/link"
-import Image from "next/image"
 import { ArrowRight, Zap, Globe, MessageSquare, Users, Target, Lightbulb, Instagram, Linkedin, Mail } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -242,10 +241,8 @@ export default function HomePage() {
             </motion.div>
 
             <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.05, ease: "linear" }}
-              className="flex flex-col items-center mb-6 will-change-[opacity]"
+              initial={{ opacity: 1 }}
+              className="flex flex-col items-center mb-6"
             >
               <span className="text-7xl md:text-9xl font-black tracking-tighter animate-gradient-text">
                 DIGITEX

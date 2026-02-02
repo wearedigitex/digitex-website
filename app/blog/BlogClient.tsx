@@ -275,7 +275,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
                   <div className="aspect-[4/3] bg-[#0A0A0A] rounded-2xl overflow-hidden mb-6 border border-white/5 group-hover:border-[#28829E]/50 transition-colors relative">
                     {post.mainImage ? (
                       <Image
-                        src={urlFor(post.mainImage).url()}
+                        src={urlFor(post.mainImage).width(600).height(450).auto('format').url()}
                         alt={post.title}
                         fill
                         priority={index < 2}

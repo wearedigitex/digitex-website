@@ -195,6 +195,7 @@ export function Navigation() {
           <button
             className="md:hidden text-white"
             onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open menu"
           >
             <Menu className="w-6 h-6" />
           </button>

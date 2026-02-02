@@ -201,7 +201,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
             className="relative aspect-[16/9] rounded-3xl overflow-hidden mb-12 border border-white/10 shadow-2xl"
           >
             <Image
-              src={urlFor(post.mainImage).url()}
+              src={urlFor(post.mainImage).width(1200).height(675).auto('format').url()}
               alt={post.title}
               fill
               priority
@@ -260,10 +260,11 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
                     return (
                       <div className="my-10 relative w-full h-[450px] rounded-2xl overflow-hidden border border-white/10 shadow-lg">
                         <Image
-                          src={urlFor(value).url()}
+                          src={urlFor(value).width(800).auto('format').url()}
                           alt={value.alt || "Article Image"}
                           fill
                           className="object-cover"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                         />
                       </div>
                     )
@@ -288,10 +289,11 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
               {post.author.image ? (
                 <div className="relative w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 border border-white/10">
                   <Image
-                    src={urlFor(post.author.image).url()}
+                    src={urlFor(post.author.image).width(200).height(200).auto('format').url()}
                     alt={post.author.name}
                     fill
                     className="object-cover"
+                    sizes="96px"
                     style={{ objectPosition: getObjectPosition(post.author.image?.hotspot) }}
                   />
                 </div>
@@ -331,10 +333,11 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
                   <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-5 border border-white/10 shadow-md">
                     {rPost.mainImage ? (
                       <Image
-                        src={urlFor(rPost.mainImage).url()}
+                        src={urlFor(rPost.mainImage).width(400).height(250).auto('format').url()}
                         alt={rPost.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 768px) 100vw, 300px"
                         style={{ objectPosition: getObjectPosition(rPost.mainImage?.hotspot) }}
                       />
                     ) : (

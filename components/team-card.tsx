@@ -51,7 +51,7 @@ export function TeamCard({ member }: TeamCardProps) {
                         <div className="absolute inset-0 h-full w-full [backface-visibility:hidden] rounded-xl overflow-hidden shadow-inner bg-[#111]">
                             {member.image ? (
                                 <Image
-                                    src={urlFor(member.image).width(400).height(500).auto('format').url()}
+                                    src={urlFor(member.image).width(320).height(400).auto('format').url()}
                                     alt={member.name}
                                     fill
                                     className="object-cover"

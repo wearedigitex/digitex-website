@@ -104,7 +104,7 @@ function ConnectingLines() {
 export function PlexusScene() {
     return (
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
-            <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 12], fov: 60 }} gl={{ antialias: true, alpha: true }}>
+            <Canvas dpr={[1, 1]} camera={{ position: [0, 0, 12], fov: 60 }} gl={{ antialias: true, alpha: true }}>
                 <Environment preset="city" />
 
                 {/* Balanced Lighting */}
