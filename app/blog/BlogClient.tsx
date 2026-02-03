@@ -133,8 +133,8 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
 
       {/* Filters & Search */}
       <div className="max-w-7xl mx-auto mb-8 space-y-6">
-        {/* Category Filters */}
-        <div className="flex flex-wrap gap-2">
+        {/* Category Filters - min-height prevents CLS */}
+        <div className="flex flex-wrap gap-2 min-h-[40px]">
           <button
             onClick={() => setActiveCategory("All")}
             className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === "All"
@@ -144,22 +144,31 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
           >
             All Posts
           </button>
-          {categories.map((cat) => (
-            <button
-              key={cat._id}
-              onClick={() => setActiveCategory(cat._id)}
-              className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === cat._id
-                ? "bg-[#28829E] text-white"
-                : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
-                }`}
-            >
-              {cat.name}
-            </button>
-          ))}
+          {loading ? (
+            // Skeleton placeholders for categories during load
+            <>
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="w-24 h-9 rounded-full" />
+              ))}
+            </>
+          ) : (
+            categories.map((cat) => (
+              <button
+                key={cat._id}
+                onClick={() => setActiveCategory(cat._id)}
+                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === cat._id
+                  ? "bg-[#28829E] text-white"
+                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                  }`}
+              >
+                {cat.name}
+              </button>
+            ))
+          )}
         </div>
 
-        {/* Search, Year, Sort, Clear */}
-        <div className="flex flex-col md:flex-row gap-4">
+        {/* Search, Year, Sort, Clear - min-height prevents CLS */}
+        <div className="flex flex-col md:flex-row gap-4 min-h-[48px]">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <Input
@@ -225,16 +234,19 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
         </p>
       </div>
 
-      {/* Blog Grid */}
+      {/* Blog Grid - skeleton heights match actual card heights */}
       {loading ? (
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="space-y-6">
-              <Skeleton className="aspect-[4/3] rounded-2xl" />
-              <div className="space-y-3">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-20 w-full" />
+            <div key={i} className="flex flex-col h-full">
+              {/* Image skeleton with same aspect ratio as actual cards */}
+              <Skeleton className="aspect-[4/3] rounded-2xl mb-6" />
+              {/* Content skeleton matching actual content structure */}
+              <div className="pr-4 flex-1 flex flex-col">
+                <Skeleton className="h-4 w-40 mb-2" />
+                <Skeleton className="h-8 w-full mb-3" />
+                <Skeleton className="h-12 w-full mb-4" />
+                <Skeleton className="h-5 w-28" />
               </div>
             </div>
           ))}

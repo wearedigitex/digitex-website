@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { CommentsSection } from "@/components/comments-section"
 import { getObjectPosition } from "@/lib/utils"
 import { LikeButton } from "@/components/like-button"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface ArticleClientProps {
   initialPost: any
@@ -99,9 +100,45 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-black text-white pt-24 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center py-20">
-          <div className="text-gray-500 animate-pulse text-xl">Decoding Article...</div>
+      <main className="min-h-screen bg-black text-white pt-24 pb-20 relative">
+        {/* Skeleton loading state matching actual article layout */}
+        <div className="max-w-4xl mx-auto px-6">
+          {/* Back button skeleton */}
+          <Skeleton className="h-5 w-28 mb-8" />
+
+          {/* Category badge skeleton */}
+          <Skeleton className="h-7 w-24 rounded-full mb-4" />
+
+          {/* Title skeleton */}
+          <Skeleton className="h-12 md:h-16 w-full mb-3" />
+          <Skeleton className="h-12 md:h-16 w-3/4 mb-6" />
+
+          {/* Meta info skeleton */}
+          <div className="flex flex-wrap items-center gap-6 mb-8 pb-8 border-b border-white/10">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-5 w-28" />
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-5 w-16" />
+            <Skeleton className="h-9 w-28 rounded-lg ml-auto" />
+          </div>
+
+          {/* Featured image skeleton */}
+          <Skeleton className="aspect-[16/9] rounded-3xl mb-12" />
+
+          {/* Excerpt skeleton */}
+          <div className="border-l-4 border-[#28829E] pl-6 mb-12">
+            <Skeleton className="h-6 w-full mb-2" />
+            <Skeleton className="h-6 w-5/6" />
+          </div>
+
+          {/* Body skeleton */}
+          <div className="space-y-4 mb-16">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-4/5" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-3/4" />
+          </div>
         </div>
       </main>
     )

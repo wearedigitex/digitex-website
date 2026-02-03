@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { PenSquare, FileText, LogOut, Settings, Eye, LayoutDashboard, Database, Trash2 } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -156,7 +157,30 @@ export default function DashboardPage() {
           <h2 className="text-2xl font-bold mb-6">Your Submissions</h2>
 
           {loading ? (
-            <div className="text-center py-12 text-gray-500">Loading...</div>
+            // Skeleton placeholders matching submission card dimensions
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-6 bg-black/40 border border-white/10 rounded-xl">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Skeleton className="h-6 w-48" />
+                        <Skeleton className="h-6 w-24 rounded-full" />
+                      </div>
+                      <Skeleton className="h-4 w-full mb-3" />
+                      <div className="flex items-center gap-4">
+                        <Skeleton className="h-3 w-28" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Skeleton className="h-8 w-16 rounded" />
+                      <Skeleton className="h-8 w-20 rounded" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : error ? (
             <div className="text-center py-12">
               <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-6 rounded-xl inline-block max-w-md">

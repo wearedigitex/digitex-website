@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { CommentItem } from "./comment-item"
 import { cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface Comment {
   _id: string
@@ -254,7 +255,22 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       {/* Comments List */}
       <div className="space-y-8">
         {loading ? (
-          <div className="text-center py-10 text-gray-500">Loading comments...</div>
+          // Skeleton placeholders matching comment card dimensions
+          <div className="space-y-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-[#0A0A0A] border border-white/10 rounded-2xl p-6">
+                <div className="flex items-start gap-4 mb-4">
+                  <Skeleton className="w-10 h-10 rounded-full" />
+                  <div className="flex-1">
+                    <Skeleton className="h-5 w-32 mb-2" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            ))}
+          </div>
         ) : !comments || comments.length === 0 ? (
           <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
             <p className="text-gray-400">No comments yet. Be the first to join the conversation!</p>
