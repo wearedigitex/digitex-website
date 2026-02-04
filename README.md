@@ -14,8 +14,8 @@ The official website for Digitex, built with Next.js, Tailwind CSS, and Sanity.i
 - **Comments System**: Threaded discussions with moderation
 - **Engagement Tracking**: Real-time article view counting and like system
 - **Rich Text Editor**: TipTap (for article writing)
-- **Custom Cursor**: Custom cursor with magnetic button effects
-- **Smooth Scrolling**: Lenis smooth scroll library
+- **Performance**: Optimized for Core Web Vitals (CLS, LCP, FCP)
+- **Analytics**: Vercel Speed Insights & Analytics
 
 ## Getting Started
 
@@ -180,6 +180,28 @@ digitex-website/
 - **Custom Domain**: Uses `wearedigitex.org` domain
 
 See `RESEND_SETUP.md` for detailed email configuration.
+
+### 6. Performance Optimizations
+
+The website is optimized for Core Web Vitals (CLS, LCP, FCP):
+
+- **Loading Screen**: Fast animated intro (1.35s total) that only shows on first visit per session
+- **3D Background**: PlexusScene loads only after content is ready (deferred loading)
+- **Image Loading**:
+  - Navigation logo: Priority loading with explicit dimensions
+  - Blog images: First 2 posts load with priority, rest are lazy loaded
+  - Team cards: All images use `loading="lazy"`
+- **Page Transitions**: Opacity-only animations (no scale transforms that cause CLS)
+- **Skeleton Loaders**: All dynamic content shows skeleton placeholders during loading:
+  - Blog page: Category filters, search bar, and post cards
+  - Article page: Full article layout skeleton
+  - Dashboard: Submission list skeleton
+  - Comments: Comment card skeletons
+
+**Loading Screen Configuration** (in `components/loading-screen.tsx`):
+- Display time: 1150ms before exit animation
+- Exit animation: 200ms
+- Letter animation: 0.02s stagger, 0.2s duration each
 
 ## Maintenance Guide
 
@@ -365,6 +387,19 @@ npx tsx scripts/initialize-likes.ts
 - Check Resend dashboard for domain verification status
 - See `RESEND_SETUP.md` for detailed setup
 
+### Poor Performance / Low Experience Score
+- Run `npm run build` to check for any build warnings
+- Ensure images have proper dimensions or use `fill` with sized containers
+- Check that 3D canvas only loads after loading screen completes
+- Verify skeleton loaders appear during data fetching
+- Use Chrome DevTools Lighthouse to audit Core Web Vitals
+
+### Layout Shift Issues (CLS)
+- Ensure all images have width/height or aspect-ratio containers
+- Check that loading states reserve the same space as loaded content
+- Verify no scale transforms in animations
+- Use `min-height` on dynamic containers
+
 ### Custom cursor appearing in whitespace
 The website uses a custom cursor. If you see the system cursor:
 - It's likely on the browser scrollbar (expected behavior)
@@ -407,10 +442,15 @@ Make sure all environment variables from `.env.local` are set in Vercel:
 | `components/like-button.tsx` | Like/unlike functionality |
 | `components/comments-section.tsx` | Threaded comments system |
 | `app/dashboard/write/page.tsx` | Article writing interface |
-| `app/HomeClient.tsx` | Homepage with dynamic team sections |
+| `app/HomeClient.tsx` | Homepage with dynamic team sections and 3D background |
 | `app/api/likes/route.ts` | Like count API endpoint |
 | `sanity/schemaTypes/post.ts` | Blog post schema definition |
 | `sanity/schemaTypes/department.ts` | Department schema definition |
+| `components/loading-screen.tsx` | Animated loading intro (performance optimized) |
+| `components/page-transition.tsx` | Page transition animations (opacity only) |
+| `components/canvas/plexus-scene.tsx` | 3D WebGL background (deferred loading) |
+| `components/team-card.tsx` | Team member cards with lazy loaded images |
+| `components/ui/skeleton.tsx` | Reusable skeleton loader component |
 | `scripts/sync-comment-counts.ts` | Re-sync all comment counts |
 | `scripts/setup-departments.ts` | Create initial departments |
 | `scripts/migrate-authors-to-departments.ts` | Migrate authors to departments |
@@ -428,12 +468,19 @@ For technical issues or questions:
 
 ---
 
-**Last Updated**: January 2026
+**Last Updated**: February 2026
 
 **Recent Updates**:
-- ✅ **Secure Comment Deletion**: Two-tiered deletion system for team members and visitors.
-- ✅ **Comment Count Sync**: Automated synchronization of post comment counts via custom Sanity actions.
-- ✅ **Dynamic Departments**: "Leadership" department prioritized and managed via CMS.
-- ✅ **Data Recovery**: Re-sync scripts for likes and comment counts.
+- ✅ **Performance Optimization**: Improved Real Experience Score with CLS/LCP fixes
+  - Navigation logo priority loading
+  - Deferred 3D canvas loading
+  - Optimized page transitions (removed scale transforms)
+  - Lazy loading for team card images
+  - Faster loading screen animation
+- ✅ **Skeleton Loaders**: Added proper skeleton placeholders for blog, article, dashboard, and comments
+- ✅ **Secure Comment Deletion**: Two-tiered deletion system for team members and visitors
+- ✅ **Comment Count Sync**: Automated synchronization of post comment counts via custom Sanity actions
+- ✅ **Dynamic Departments**: "Leadership" department prioritized and managed via CMS
+- ✅ **Data Recovery**: Re-sync scripts for likes and comment counts
 
 **Website**: [wearedigitex.org](https://wearedigitex.org)
