@@ -80,11 +80,13 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-3">
             <div className="flex items-center gap-3">
-              <div className="relative w-8 h-8 group-hover:scale-110 transition-transform duration-300">
+              <div className="relative group-hover:scale-110 transition-transform duration-300">
                 <Image
                   src="/DigitexLogo.png"
                   alt="Digitex Logo"
-                  fill
+                  width={32}
+                  height={32}
+                  priority
                   className="object-contain"
                 />
               </div>

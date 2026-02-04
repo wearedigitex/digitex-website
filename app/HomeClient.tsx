@@ -205,9 +205,9 @@ export default function HomePage() {
       <main className={`bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-teal-500/30 ${loadingState.shouldSkip ? "" : "transition-opacity duration-1000"} ${loadingState.isLoading ? "opacity-0" : "opacity-100"}`}>
         {!loadingState.isMounted && <div className="fixed inset-0 bg-black z-[100]" />}
 
-        {/* 3D Background */}
+        {/* 3D Background - Only load after content is ready to improve LCP */}
         <div className="fixed inset-0 z-0">
-          <PlexusScene />
+          {!loadingState.isLoading && loadingState.isMounted && <PlexusScene />}
           <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
         </div>
 

@@ -54,6 +54,7 @@ export function TeamCard({ member }: TeamCardProps) {
                                     src={urlFor(member.image).width(320).height(400).auto('format').url()}
                                     alt={member.name}
                                     fill
+                                    loading="lazy"
                                     className="object-cover"
                                     style={{ objectPosition: getObjectPosition(member.image?.hotspot) }}
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -63,6 +64,7 @@ export function TeamCard({ member }: TeamCardProps) {
                                     src={displayImageUrl}
                                     alt={member.name}
                                     fill
+                                    loading="lazy"
                                     className="object-cover"
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                 />

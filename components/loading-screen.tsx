@@ -12,13 +12,12 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
     const letters = "DIGITEX".split("")
 
     useEffect(() => {
-        // Wait for the animation sequence to finish before calling onLoadingComplete
-        // Letters take (letters.length * 0.05) + 0.5 second to finish initial reveal
+        // Drastically reduced animation time for better performance
         const timer = setTimeout(() => {
             setIsExitStarted(true)
-            // Small buffer after exit animation starts to let parent know
-            setTimeout(onLoadingComplete, 500)
-        }, 1000)
+            // Minimal buffer before parent is notified
+            setTimeout(onLoadingComplete, 200)
+        }, 400) // Reduced from 1000ms
 
         return () => clearTimeout(timer)
     }, [onLoadingComplete, letters.length])
@@ -37,17 +36,17 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
 
     const letterVariants = {
         initial: {
-            y: 20,
+            y: 10,
             opacity: 0,
-            filter: "blur(10px)"
+            filter: "blur(5px)"
         },
         animate: (i: number) => ({
             y: 0,
             opacity: 1,
             filter: "blur(0px)",
             transition: {
-                delay: i * 0.05,
-                duration: 0.5,
+                delay: i * 0.02, // Faster stagger
+                duration: 0.2,   // Faster animation
                 ease: [0.2, 0.65, 0.3, 0.9] as any,
             }
         }),
@@ -84,17 +83,17 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
                 <motion.div
                     initial={{ opacity: 0, width: 0 }}
                     animate={{ opacity: 1, width: "100%" }}
-                    transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
+                    transition={{ delay: 0.15, duration: 0.2, ease: "easeInOut" }}
                     className="h-[1px] bg-gradient-to-r from-transparent via-teal-500 to-transparent mt-4"
                 />
 
                 <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.7, duration: 0.5 }}
+                    transition={{ delay: 0.2, duration: 0.15 }}
                     className="text-teal-500/60 font-mono text-xs md:text-sm mt-4 tracking-[0.5em] uppercase"
                 >
-                    Initializing Experience
+                    Loading
                 </motion.p>
             </div>
         </motion.div>
