@@ -12,12 +12,12 @@ export const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
     const letters = "DIGITEX".split("")
 
     useEffect(() => {
-        // Drastically reduced animation time for better performance
+        // Loading screen display time (increased by 0.75s per user request)
         const timer = setTimeout(() => {
             setIsExitStarted(true)
             // Minimal buffer before parent is notified
             setTimeout(onLoadingComplete, 200)
-        }, 400) // Reduced from 1000ms
+        }, 1150) // 400ms + 750ms = 1150ms
 
         return () => clearTimeout(timer)
     }, [onLoadingComplete, letters.length])
