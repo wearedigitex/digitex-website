@@ -9,7 +9,7 @@ import { getBlogPosts, urlFor, getCategories } from "@/lib/sanity"
 import { format } from "date-fns"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { getObjectPosition } from "@/lib/utils"
+import { getObjectPosition, getDisplayViews } from "@/lib/utils"
 import { LikeButton } from "@/components/like-button"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -94,7 +94,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
         case "oldest":
           return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
         case "views":
-          return (b.viewCount || 0) - (a.viewCount || 0)
+          return getDisplayViews(b.viewCount) - getDisplayViews(a.viewCount)
         case "likes":
           return (b.likes || 0) - (a.likes || 0)
         case "comments":
@@ -312,7 +312,7 @@ export default function BlogPage({ initialPosts = [] }: BlogClientProps) {
                     <div className="absolute bottom-4 right-4 flex items-center gap-3 text-xs text-white/80">
                       <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg">
                         <Eye className="w-3 h-3" />
-                        <span>{post.viewCount || 0}</span>
+                        <span>{getDisplayViews(post.viewCount)}</span>
                       </div>
                       <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg">
                         <MessageSquare className="w-3 h-3" />
