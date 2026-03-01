@@ -9,8 +9,3 @@ export function getObjectPosition(hotspot?: { x: number, y: number }) {
   if (!hotspot) return "center"
   return `${hotspot.x * 100}% ${hotspot.y * 100}%`
 }
-
-export function getDisplayViews(views: number | null | undefined): number {
-  const baseViews = views || 0;
-  return baseViews === 0 ? 342 : baseViews * 14 + 342;
-}

@@ -11,7 +11,7 @@ import { motion, useScroll, useSpring } from "framer-motion"
 import { getPostBySlug, getRecentPosts, urlFor } from "@/lib/sanity"
 import { Button } from "@/components/ui/button"
 import { CommentsSection } from "@/components/comments-section"
-import { getObjectPosition, getDisplayViews } from "@/lib/utils"
+import { getObjectPosition } from "@/lib/utils"
 import { LikeButton } from "@/components/like-button"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -211,7 +211,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
             )}
             <div className="flex items-center gap-2">
               <Eye className="w-4 h-4" />
-              <span className="text-sm">{getDisplayViews(post.viewCount)} views</span>
+              <span className="text-sm">{post.viewCount || 0} views</span>
             </div>
             <div className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
@@ -398,7 +398,7 @@ export default function ArticlePage({ initialPost, initialRecentPosts = [] }: Ar
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Eye className="w-3.5 h-3.5" />
-                      {getDisplayViews(rPost.viewCount)}
+                      {rPost.viewCount || 0}
                     </span>
                   </div>
                 </Link>
