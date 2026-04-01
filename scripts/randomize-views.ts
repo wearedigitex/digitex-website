@@ -16,17 +16,17 @@ const adminClient = createClient({
 })
 
 async function randomizeViews() {
-    const posts = await adminClient.fetch(`*[_type == "post"]{_id, title}`)
-    console.log(`Found ${posts.length} posts to update.`)
+    const posts = await adminClient.fetch(`*[_type == "post" && (!defined(viewCount) || viewCount <= 10)]{_id, title, viewCount}`)
+    console.log(`Found ${posts.length} posts with <= 10 views to update.`)
 
     for (const post of posts) {
-        const randomViews = Math.floor(Math.random() * 101) + 100 // 100 to 200 included
+        const randomViews = Math.floor(Math.random() * 51) + 50 // 50 to 100 included
         await adminClient
             .patch(post._id)
             .set({ viewCount: randomViews })
             .commit()
 
-        console.log(`✅ Updated ${post.title} to ${randomViews} views`)
+        console.log(`✅ Updated ${post.title} (previously ${post.viewCount || 0}) to ${randomViews} views`)
     }
 
     console.log("All posts updated!")

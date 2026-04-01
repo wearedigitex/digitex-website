@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       mainImage: submission.mainImage,
       author: submission.author,
       publishedAt: new Date().toISOString(),
-      viewCount: 0,
+      viewCount: Math.floor(Math.random() * 51) + 50,
       likes: 0,
       commentCount: 0,
     }
