@@ -14,7 +14,7 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
   title: "Digitex | Independent Tech News",
-  description: "A student-led digital publication uniting voices from different fields to explore how technology is reshaping our world.",
+  description: "A student-led platform uniting curious minds from diverse backgrounds to explore their interests, discover their passions, and prepare for the paths they wish to pursue.",
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon.ico',

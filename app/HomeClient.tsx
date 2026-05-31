@@ -267,7 +267,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               className="text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed font-light mx-auto"
             >
-              Digitex is a student-led publication exploring the intersection of technology, innovation, and society.
+              Digitex is a student-led platform empowering the next generation to explore their interests, discover their passions, and find their path forward.
             </motion.p>
 
             <motion.div
@@ -312,7 +312,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Who We Are</h3>
                 <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
-                  A student-led digital publication uniting voices from different fields to explore how technology is reshaping our world.
+                  A student-led platform uniting curious minds from diverse backgrounds to explore their interests, discover their passions, and prepare for the paths they wish to pursue.
                 </p>
               </SpotlightCard>
 
@@ -324,7 +324,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">What We Do</h3>
                 <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
-                  We publish insights, spotlight innovators, and host creative initiatives that connect students, alumni, and professionals across industries.
+                  We publish in-depth articles on technology and its impact across industries, spotlight professionals, and create experiences that help students connect with the fields that matter to them.
                 </p>
               </SpotlightCard>
 
@@ -336,7 +336,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Vision</h3>
                 <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
-                  To build a global hub where curiosity meets innovation, and where the next generation of thinkers collaborates to shape the future.
+                  To build a global platform where every student has the exposure, mentorship, and resources to discover what drives them - and the confidence to pursue it.
                 </p>
               </SpotlightCard>
             </div>
